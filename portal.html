@@ -1,0 +1,1769 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Пропедевтика анестезіології — навчальний портал</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=Inter:wght@400;500;600;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#101418;
+  --panel:#171c22;
+  --panel-2:#1e252d;
+  --line:#2a333d;
+  --ink:#e8edf2;
+  --ink-dim:#8d9aa8;
+  --ink-faint:#5d6874;
+  --phos:#3ddc97;
+  --phos-dim:#1f7a55;
+  --cyan:#4dd0e1;
+  --amber:#f0b429;
+  --red:#ef5350;
+  --violet:#a78bfa;
+  --r:10px;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{
+  background:var(--bg);
+  color:var(--ink);
+  font-family:Inter,system-ui,sans-serif;
+  font-size:15px;
+  line-height:1.6;
+  -webkit-font-smoothing:antialiased;
+}
+h1,h2,h3,h4{line-height:1.25;margin:0}
+button{font-family:inherit;cursor:pointer}
+input,select{font-family:inherit}
+.mono{font-family:'IBM Plex Mono',ui-monospace,monospace;font-variant-numeric:tabular-nums}
+
+/* ---------- HEADER ---------- */
+header{
+  position:sticky;top:0;z-index:60;
+  background:rgba(16,20,24,.94);
+  backdrop-filter:blur(10px);
+  border-bottom:1px solid var(--line);
+}
+.hwrap{max-width:1400px;margin:0 auto;padding:12px 20px;display:flex;gap:20px;align-items:center;flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:12px;flex:1;min-width:250px}
+.pulse-mark{width:38px;height:38px;flex-shrink:0}
+.pulse-mark path{stroke:var(--phos);stroke-width:2;fill:none;stroke-linecap:round;stroke-linejoin:round;
+  stroke-dasharray:120;stroke-dashoffset:120;animation:trace 3s linear infinite}
+@keyframes trace{to{stroke-dashoffset:-120}}
+.brand h1{font-size:16px;font-weight:800;letter-spacing:-.01em}
+.brand p{margin:1px 0 0;font-size:11px;color:var(--ink-faint);font-family:'IBM Plex Mono',monospace;letter-spacing:.04em}
+
+.patient-bar{display:flex;gap:14px;align-items:center;flex-wrap:wrap;
+  background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:8px 14px}
+.pfield{display:flex;flex-direction:column;gap:3px}
+.pfield label{font-size:9px;text-transform:uppercase;letter-spacing:.1em;color:var(--ink-faint);font-weight:600}
+.pfield .row{display:flex;align-items:center;gap:7px}
+.pfield input[type=range]{width:88px;accent-color:var(--phos)}
+.pfield input[type=number],.pfield select{
+  background:var(--panel-2);border:1px solid var(--line);color:var(--ink);
+  border-radius:6px;padding:3px 6px;font-size:13px;font-family:'IBM Plex Mono',monospace}
+.pfield input:focus,.pfield select:focus{outline:2px solid var(--phos);outline-offset:1px}
+.pval{font-family:'IBM Plex Mono',monospace;font-weight:700;color:var(--phos);font-size:14px;min-width:52px}
+
+/* ---------- NAV ---------- */
+nav{background:var(--panel);border-bottom:1px solid var(--line);position:sticky;top:63px;z-index:55}
+.nwrap{max-width:1400px;margin:0 auto;padding:0 20px;display:flex;gap:2px;overflow-x:auto}
+.tab{
+  background:none;border:none;border-bottom:2px solid transparent;
+  padding:12px 16px;color:var(--ink-faint);text-align:left;white-space:nowrap;
+  transition:color .15s,border-color .15s;display:flex;flex-direction:column;gap:1px}
+.tab .d{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.12em;text-transform:uppercase;font-weight:600}
+.tab .t{font-size:13px;font-weight:600}
+.tab:hover{color:var(--ink-dim)}
+.tab[aria-selected=true]{color:var(--phos);border-bottom-color:var(--phos)}
+.tab:focus-visible{outline:2px solid var(--phos);outline-offset:-2px}
+
+/* ---------- LAYOUT ---------- */
+main{max-width:1400px;margin:0 auto;padding:22px 20px 60px;display:grid;grid-template-columns:1fr 320px;gap:22px;align-items:start}
+@media(max-width:1080px){main{grid-template-columns:1fr}.rail{position:static!important}}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:20px;margin-bottom:18px}
+.panel-dark{background:#0b0e11}
+section[role=tabpanel]{animation:fade .3s ease}
+@keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+
+.eyebrow{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--phos);font-weight:600;margin-bottom:6px}
+h2.mod{font-size:22px;font-weight:800;letter-spacing:-.02em;margin-bottom:8px}
+h3.sub{font-size:15px;font-weight:700;margin-bottom:4px}
+.lede{color:var(--ink-dim);font-size:14px;max-width:70ch}
+.hint{font-size:12px;color:var(--ink-faint);margin-top:4px}
+.divider{height:1px;background:var(--line);margin:18px 0}
+
+/* ---------- MONITOR RAIL ---------- */
+.rail{position:sticky;top:130px}
+.mon{background:#05070a;border:1px solid var(--line);border-radius:var(--r);overflow:hidden}
+.mon-head{display:flex;justify-content:space-between;align-items:center;
+  padding:7px 11px;border-bottom:1px solid var(--line);background:#0b0e11}
+.mon-head span{font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--ink-faint)}
+.mon canvas{display:block;width:100%;height:200px;background:#05070a}
+.vitals{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--line)}
+.vital{background:#05070a;padding:9px 11px}
+.vital .lbl{font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:.09em;
+  text-transform:uppercase;color:var(--ink-faint);display:flex;justify-content:space-between}
+.vital .num{font-family:'IBM Plex Mono',monospace;font-size:27px;font-weight:700;line-height:1.1}
+.v-hr .num{color:var(--phos)} .v-sp .num{color:var(--cyan)}
+.v-bp .num{color:var(--amber);font-size:20px;padding-top:6px} .v-co .num{color:var(--violet)}
+.alarm{animation:alarmflash 1.1s infinite}
+@keyframes alarmflash{0%,100%{background:#05070a}50%{background:rgba(239,83,80,.16)}}
+.presets{display:flex;flex-wrap:wrap;gap:5px;padding:9px;border-top:1px solid var(--line);background:#0b0e11}
+.preset{background:var(--panel-2);border:1px solid var(--line);color:var(--ink-dim);
+  border-radius:6px;padding:5px 9px;font-size:11px;font-weight:600;transition:.15s}
+.preset:hover{color:var(--ink);border-color:var(--ink-faint)}
+.preset[aria-pressed=true]{background:var(--phos);color:#05070a;border-color:var(--phos)}
+.mon-note{padding:9px 11px;font-size:11px;color:var(--ink-dim);border-top:1px solid var(--line);
+  background:#0b0e11;min-height:52px}
+
+/* ---------- GENERIC UI ---------- */
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+@media(max-width:760px){.grid2,.grid3{grid-template-columns:1fr}}
+.card{background:var(--panel-2);border:1px solid var(--line);border-radius:8px;padding:14px}
+.card h4{font-size:13px;font-weight:700;margin-bottom:5px}
+.card p{margin:0;font-size:13px;color:var(--ink-dim)}
+
+table{width:100%;border-collapse:collapse;font-size:13px}
+th,td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.08em;
+  text-transform:uppercase;color:var(--ink-faint);font-weight:600}
+td.n{font-family:'IBM Plex Mono',monospace;color:var(--phos)}
+.scroll{overflow-x:auto}
+
+.btn{background:var(--panel-2);border:1px solid var(--line);color:var(--ink);
+  border-radius:7px;padding:9px 14px;font-size:13px;font-weight:600;transition:.15s}
+.btn:hover{border-color:var(--phos);color:var(--phos)}
+.btn:focus-visible{outline:2px solid var(--phos);outline-offset:2px}
+.btn-primary{background:var(--phos);color:#05070a;border-color:var(--phos)}
+.btn-primary:hover{background:#5ae8ab;color:#05070a}
+.btn-ghost{background:none}
+
+.choice{display:block;width:100%;text-align:left;background:var(--panel-2);
+  border:1px solid var(--line);border-radius:8px;padding:12px 14px;margin-bottom:8px;
+  color:var(--ink);font-size:13px;line-height:1.5;transition:.15s}
+.choice:hover:not(:disabled){border-color:var(--phos)}
+.choice:disabled{cursor:default;opacity:.85}
+.choice.good{border-color:var(--phos);background:rgba(61,220,151,.09)}
+.choice.bad{border-color:var(--red);background:rgba(239,83,80,.09)}
+.choice:focus-visible{outline:2px solid var(--phos);outline-offset:2px}
+
+.note{border-left:3px solid var(--phos);background:rgba(61,220,151,.06);
+  padding:11px 14px;border-radius:0 7px 7px 0;font-size:13px;margin:12px 0}
+.note.warn{border-color:var(--amber);background:rgba(240,180,41,.07)}
+.note.danger{border-color:var(--red);background:rgba(239,83,80,.07)}
+.note b{color:var(--ink)}
+
+.chip{display:inline-block;font-family:'IBM Plex Mono',monospace;font-size:10px;
+  padding:2px 7px;border-radius:4px;background:var(--panel-2);
+  border:1px solid var(--line);color:var(--ink-dim);letter-spacing:.05em}
+.chip.ok{color:var(--phos);border-color:var(--phos-dim)}
+.chip.no{color:var(--red);border-color:rgba(239,83,80,.4)}
+
+.log{background:#05070a;border:1px solid var(--line);border-radius:7px;
+  padding:11px;max-height:210px;overflow-y:auto;font-size:12px;
+  font-family:'IBM Plex Mono',monospace;line-height:1.7}
+.log div{padding:3px 0;border-bottom:1px solid rgba(42,51,61,.5)}
+.log .ok{color:var(--phos)} .log .er{color:var(--red)} .log .in{color:var(--ink-dim)}
+::-webkit-scrollbar{width:8px;height:8px}
+::-webkit-scrollbar-track{background:#05070a}
+::-webkit-scrollbar-thumb{background:var(--line);border-radius:4px}
+
+/* ---------- ECG TRAINER ---------- */
+.torso{position:relative;width:100%;max-width:300px;aspect-ratio:3/4;margin:0 auto;
+  background:var(--panel-2);border:1px solid var(--line);border-radius:14px;overflow:hidden}
+.torso svg.body{position:absolute;inset:0;width:100%;height:100%;opacity:.3}
+.site{position:absolute;width:34px;height:34px;border-radius:50%;transform:translate(-50%,-50%);
+  border:1px dashed var(--ink-faint);background:rgba(30,37,45,.9);color:var(--ink-faint);
+  font-family:'IBM Plex Mono',monospace;font-size:9px;font-weight:700;
+  display:flex;align-items:center;justify-content:center;transition:.15s}
+.site:hover{border-color:var(--phos);color:var(--phos)}
+.site:focus-visible{outline:2px solid var(--phos);outline-offset:2px}
+.site.filled{border-style:solid;color:#05070a}
+.electrode-list{display:flex;flex-direction:column;gap:7px}
+.el{display:flex;align-items:center;gap:9px;width:100%;background:var(--panel-2);
+  border:1px solid var(--line);border-radius:7px;padding:9px 11px;color:var(--ink);
+  font-size:12px;font-weight:600;transition:.15s;text-align:left}
+.el:hover{border-color:var(--phos)}
+.el[aria-pressed=true]{border-color:var(--phos);background:rgba(61,220,151,.1)}
+.el:focus-visible{outline:2px solid var(--phos);outline-offset:2px}
+.dot{width:14px;height:14px;border-radius:50%;flex-shrink:0;border:1px solid rgba(255,255,255,.25)}
+.el .st{margin-left:auto;font-family:'IBM Plex Mono',monospace;font-size:9px;color:var(--ink-faint);font-weight:500}
+
+/* ---------- CHECKLIST ---------- */
+.check{display:flex;gap:11px;align-items:flex-start;padding:10px 12px;
+  background:var(--panel-2);border:1px solid var(--line);border-radius:7px;margin-bottom:7px;cursor:pointer}
+.check input{margin-top:3px;accent-color:var(--phos);width:16px;height:16px;flex-shrink:0}
+.check div{font-size:13px}
+.check .cd{font-size:11px;color:var(--ink-faint);margin-top:2px}
+.check:has(input:checked){border-color:var(--phos-dim);background:rgba(61,220,151,.05)}
+
+/* ---------- PROGRESS / METERS ---------- */
+.bar{height:7px;background:var(--panel-2);border-radius:4px;overflow:hidden;border:1px solid var(--line)}
+.bar i{display:block;height:100%;background:var(--phos);transition:width .3s}
+.depth{width:100%;accent-color:var(--phos)}
+
+/* ---------- QUIZ ---------- */
+.q{background:var(--panel-2);border:1px solid var(--line);border-radius:8px;padding:15px;margin-bottom:12px}
+.q .qt{font-size:13px;font-weight:600;margin-bottom:10px}
+.q label{display:flex;gap:9px;align-items:flex-start;padding:7px 9px;border-radius:6px;
+  font-size:13px;cursor:pointer;transition:background .15s}
+.q label:hover{background:rgba(255,255,255,.03)}
+.q input{margin-top:3px;accent-color:var(--phos);flex-shrink:0}
+.q label.correct{background:rgba(61,220,151,.12);color:var(--phos)}
+.q label.wrong{background:rgba(239,83,80,.12);color:var(--red)}
+.q .exp{font-size:12px;color:var(--ink-dim);margin-top:9px;padding-top:9px;border-top:1px solid var(--line)}
+
+.score-big{font-family:'IBM Plex Mono',monospace;font-size:44px;font-weight:700;color:var(--phos);line-height:1}
+.hidden{display:none!important}
+footer{border-top:1px solid var(--line);padding:22px 20px;text-align:center;
+  font-size:11px;color:var(--ink-faint);font-family:'IBM Plex Mono',monospace}
+
+/* ---------- ACCESS GATE ---------- */
+#gate{position:fixed;inset:0;z-index:200;background:var(--bg);
+  display:flex;align-items:center;justify-content:center;padding:24px;overflow-y:auto}
+.gate-card{width:100%;max-width:420px;background:var(--panel);border:1px solid var(--line);
+  border-radius:14px;padding:30px}
+.gate-card h2{font-size:19px;font-weight:800;margin-bottom:6px}
+.gate-card p.sub{font-size:13px;color:var(--ink-dim);margin:0 0 20px}
+.gate-field{margin-bottom:14px}
+.gate-field label{display:block;font-size:11px;text-transform:uppercase;letter-spacing:.09em;
+  color:var(--ink-faint);font-weight:600;margin-bottom:5px}
+.gate-field input{width:100%;background:var(--panel-2);border:1px solid var(--line);
+  color:var(--ink);border-radius:7px;padding:10px 12px;font-size:14px}
+.gate-field input:focus{outline:2px solid var(--phos);outline-offset:1px}
+.gate-tabs{display:flex;gap:4px;margin-bottom:20px;border-bottom:1px solid var(--line)}
+.gate-tabs button{flex:1;background:none;border:none;border-bottom:2px solid transparent;
+  padding:9px;color:var(--ink-faint);font-size:13px;font-weight:600}
+.gate-tabs button[aria-selected=true]{color:var(--phos);border-bottom-color:var(--phos)}
+.gate-msg{font-size:12px;padding:10px 12px;border-radius:7px;margin-top:12px;display:none}
+.gate-msg.err{display:block;background:rgba(239,83,80,.1);border:1px solid rgba(239,83,80,.35);color:#ff8a85}
+.gate-msg.ok{display:block;background:rgba(61,220,151,.1);border:1px solid var(--phos-dim);color:var(--phos)}
+.code-out{font-family:'IBM Plex Mono',monospace;font-size:26px;font-weight:700;color:var(--phos);
+  text-align:center;padding:16px;background:var(--panel-2);border:1px dashed var(--phos-dim);
+  border-radius:8px;letter-spacing:.08em;margin:14px 0}
+.tab.locked{opacity:.45}
+.tab.locked .t::after{content:' 🔒';font-size:10px}
+.lockwall{text-align:center;padding:46px 24px}
+.lockwall .big{font-family:'IBM Plex Mono',monospace;font-size:40px;color:var(--ink-faint);margin-bottom:12px}
+.lockwall h3{font-size:17px;margin-bottom:8px}
+.lockwall p{color:var(--ink-dim);font-size:13px;max-width:44ch;margin:0 auto}
+.whoami{display:flex;align-items:center;gap:9px;font-size:11px;color:var(--ink-faint);
+  font-family:'IBM Plex Mono',monospace}
+.whoami b{color:var(--phos);font-weight:600}
+.whoami button{background:none;border:none;color:var(--ink-faint);font-size:11px;
+  text-decoration:underline;padding:0}
+.whoami button:hover{color:var(--ink)}
+.progress-strip{display:flex;gap:5px;margin-top:8px}
+.pip{flex:1;height:4px;border-radius:2px;background:var(--panel-2);border:1px solid var(--line)}
+.pip.open{background:var(--phos-dim);border-color:var(--phos-dim)}
+.pip.passed{background:var(--phos);border-color:var(--phos)}
+
+</style>
+</head>
+<body>
+
+<div id="gate">
+  <div class="gate-card">
+    <div style="display:flex;align-items:center;gap:11px;margin-bottom:18px">
+      <svg class="pulse-mark" viewBox="0 0 40 40" aria-hidden="true" style="width:32px;height:32px">
+        <path d="M2 20h7l3-9 5 18 4-13 3 4h14"/>
+      </svg>
+      <div>
+        <h2>Пропедевтика анестезіології</h2>
+        <p class="sub" style="margin:0">Доступ для лікарів-інтернів</p>
+      </div>
+    </div>
+
+    <div class="gate-tabs" role="tablist">
+      <button id="gtLogin" role="tab" aria-selected="true">Вхід за кодом</button>
+      <button id="gtReg" role="tab" aria-selected="false">Перша реєстрація</button>
+    </div>
+
+    <div id="gateLogin">
+      <div class="gate-field">
+        <label for="inCode">Код доступу</label>
+        <input id="inCode" type="text" placeholder="KV-AB1234" autocomplete="off" spellcheck="false">
+      </div>
+      <button class="btn btn-primary" id="btnLogin" style="width:100%">Увійти</button>
+    </div>
+
+    <div id="gateReg" class="hidden">
+      <div class="gate-field">
+        <label for="inName">Прізвище та ім'я</label>
+        <input id="inName" type="text" placeholder="Шевченко Тарас" autocomplete="off">
+      </div>
+      <div class="gate-field">
+        <label for="inGroup">Група / база стажування</label>
+        <input id="inGroup" type="text" placeholder="Інтернатура, 1-й рік" autocomplete="off">
+      </div>
+      <button class="btn btn-primary" id="btnReg" style="width:100%">Зареєструватися</button>
+      <p class="sub" style="margin:12px 0 0;font-size:11px">Після реєстрації ви отримаєте код доступу.
+      Запишіть його — він знадобиться, якщо відкриєте портал з іншого пристрою.</p>
+    </div>
+
+    <div id="gateMsg" class="gate-msg"></div>
+    <div id="gateCode" class="hidden">
+      <div class="code-out" id="codeOut">—</div>
+      <button class="btn btn-primary" id="btnEnter" style="width:100%">Почати навчання</button>
+    </div>
+  </div>
+</div>
+
+
+<header>
+  <div class="hwrap">
+    <div class="brand">
+      <svg class="pulse-mark" viewBox="0 0 40 40" aria-hidden="true">
+        <path d="M2 20h7l3-9 5 18 4-13 3 4h14"/>
+      </svg>
+      <div>
+        <h1>Пропедевтика анестезіології</h1>
+        <p>Симуляційний портал для лікарів-інтернів · 5 днів</p>
+      </div>
+    </div>
+    <div class="patient-bar">
+      <div class="pfield">
+        <label for="gWeight">Фактична вага</label>
+        <div class="row">
+          <input type="range" id="gWeight" min="30" max="150" step="1" value="70">
+          <span class="pval" id="gWeightV">70 кг</span>
+        </div>
+      </div>
+      <div class="pfield">
+        <label for="gHeight">Зріст</label>
+        <div class="row">
+          <input type="number" id="gHeight" min="130" max="215" value="175" style="width:62px">
+          <span style="font-size:11px;color:var(--ink-faint)">см</span>
+        </div>
+      </div>
+      <div class="pfield">
+        <label for="gSex">Стать</label>
+        <select id="gSex">
+          <option value="male">Чоловік</option>
+          <option value="female">Жінка</option>
+        </select>
+      </div>
+    </div>
+    <div class="whoami" id="whoami">
+      <span>Інтерн: <b id="whoName">—</b></span>
+      <span id="whoCode"></span>
+      <button id="btnLogout" type="button">Вийти</button>
+    </div>
+  </div>
+</header>
+
+<nav>
+  <div class="nwrap" role="tablist" aria-label="Дні курсу">
+    <button class="tab" role="tab" aria-selected="true"  aria-controls="p1" id="t1" data-day="1"><span class="d">День 01</span><span class="t">Моніторинг</span></button>
+    <button class="tab" role="tab" aria-selected="false" aria-controls="p2" id="t2" data-day="2"><span class="d">День 02</span><span class="t">Дихальні шляхи</span></button>
+    <button class="tab" role="tab" aria-selected="false" aria-controls="p3" id="t3" data-day="3"><span class="d">День 03</span><span class="t">Загальна анестезія</span></button>
+    <button class="tab" role="tab" aria-selected="false" aria-controls="p4" id="t4" data-day="4"><span class="d">День 04</span><span class="t">Регіонарна</span></button>
+    <button class="tab" role="tab" aria-selected="false" aria-controls="p5" id="t5" data-day="5"><span class="d">День 05</span><span class="t">Реанімація</span></button>
+  </div>
+</nav>
+
+<main>
+<div class="content">
+
+<!-- ================= DAY 1 ================= -->
+<section id="p1" role="tabpanel" aria-labelledby="t1">
+  <div class="panel">
+    <div class="eyebrow">Модуль 1 · Вступ та безпека</div>
+    <h2 class="mod">Вступ до анестезіології та приліжковий моніторинг</h2>
+    <p class="lede">Анестезіолог — єдиний лікар в операційній, чиє завдання не втручання, а підтримання
+    гомеостазу. Перш ніж торкнутися шприца, ви маєте бачити пацієнта: ЕКГ, сатурацію, тиск, капнограму.
+    Монітор праворуч працює на всіх п'яти днях — перемикайте стани й спостерігайте.</p>
+
+    <div class="divider"></div>
+
+    <h3 class="sub">Стандарт мінімального моніторингу (ASA / наказ МОЗ)</h3>
+    <p class="hint">Присутній під час кожної анестезії, незалежно від її тривалості та виду.</p>
+    <div class="grid3" style="margin-top:12px">
+      <div class="card"><h4>Оксигенація</h4><p>Пульсоксиметрія безперервно + аналіз FiO₂ у дихальному контурі.</p></div>
+      <div class="card"><h4>Вентиляція</h4><p>Капнографія (EtCO₂) — обов'язкова при інтубації трахеї та ЛМ.</p></div>
+      <div class="card"><h4>Кровообіг</h4><p>ЕКГ безперервно, АТ і ЧСС мінімум кожні 5 хв.</p></div>
+      <div class="card"><h4>Температура</h4><p>При втручаннях понад 30 хв або ризику гіпотермії.</p></div>
+      <div class="card"><h4>Нейром'язовий блок</h4><p>TOF-моніторинг при використанні міорелаксантів.</p></div>
+      <div class="card"><h4>Присутність</h4><p>Кваліфікований персонал у залі протягом усієї анестезії.</p></div>
+    </div>
+  </div>
+
+  <div class="panel">
+    <h3 class="sub">Практикум: накладання 5-канального кабелю ЕКГ</h3>
+    <p class="hint">Оберіть електрод, потім — анатомічну точку. Пацієнт зображений обличчям до вас:
+    його права сторона — ліворуч на екрані.</p>
+
+    <div class="grid2" style="margin-top:16px;align-items:center">
+      <div class="electrode-list" id="elList"></div>
+      <div>
+        <div class="torso" id="torso">
+          <svg class="body" viewBox="0 0 120 160" aria-hidden="true">
+            <ellipse cx="60" cy="22" rx="15" ry="17" fill="none" stroke="#5d6874" stroke-width="1.5"/>
+            <path d="M45 40 Q60 46 75 40 L88 52 Q94 58 94 70 L92 118 Q92 128 86 130 L34 130 Q28 128 28 118 L26 70 Q26 58 32 52 Z"
+                  fill="none" stroke="#5d6874" stroke-width="1.5"/>
+            <path d="M32 52 L16 92" stroke="#5d6874" stroke-width="1.5" fill="none"/>
+            <path d="M88 52 L104 92" stroke="#5d6874" stroke-width="1.5" fill="none"/>
+            <path d="M46 130 L44 158 M74 130 L76 158" stroke="#5d6874" stroke-width="1.5" fill="none"/>
+            <path d="M60 60 L60 100" stroke="#2a333d" stroke-width="1" stroke-dasharray="3 3"/>
+          </svg>
+        </div>
+        <div style="text-align:center;margin-top:12px">
+          <div class="mono" style="font-size:13px">Правильно: <b id="ecgScore" style="color:var(--phos)">0 / 5</b></div>
+          <div class="bar" style="max-width:220px;margin:8px auto 0"><i id="ecgBar" style="width:0"></i></div>
+          <button class="btn btn-ghost" id="ecgReset" style="margin-top:11px;font-size:12px;padding:6px 12px">Скинути</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="note" style="margin-top:18px">
+      <b>AHA vs IEC.</b> В українських клініках трапляються обидва стандарти — плутанина кольорів
+      є реальною причиною хибної інтерпретації ЕКГ. Звіряйтесь із маркуванням на самому кабелі.
+    </div>
+    <div class="scroll">
+      <table>
+        <thead><tr><th>Відведення</th><th>Точка накладання</th><th>AHA</th><th>IEC</th></tr></thead>
+        <tbody>
+          <tr><td>RA</td><td>Права підключична ділянка</td><td class="n">Білий</td><td class="n">Червоний</td></tr>
+          <tr><td>LA</td><td>Ліва підключична ділянка</td><td class="n">Чорний</td><td class="n">Жовтий</td></tr>
+          <tr><td>RL</td><td>Права клубова ость</td><td class="n">Зелений</td><td class="n">Чорний</td></tr>
+          <tr><td>LL</td><td>Ліва клубова ость</td><td class="n">Червоний</td><td class="n">Зелений</td></tr>
+          <tr><td>V</td><td>V4: 5-те міжребер'я, l. medioclavicularis sin.</td><td class="n">Коричневий</td><td class="n">Білий</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="panel">
+    <h3 class="sub">Читання пульсоксиметричної кривої</h3>
+    <p class="lede" style="font-size:13px">Цифра SpO₂ без огляду на форму плетизмограми не означає нічого.
+    Плоска крива при «нормальних» 98% — це артефакт, а не оксигенація.</p>
+    <div class="grid3" style="margin-top:14px">
+      <div class="card"><h4>Гарна крива</h4><p>Чіткий підйом, дикротична виїмка, стабільна амплітуда. Показнику можна довіряти.</p></div>
+      <div class="card"><h4>Низька амплітуда</h4><p>Гіпоперфузія, гіпотермія, вазоконстрикція. Зігрійте кінцівку, змініть датчик.</p></div>
+      <div class="card"><h4>Хибно високий SpO₂</h4><p>Отруєння CO (карбоксигемоглобін). Потрібна ко-оксиметрія, не пульсоксиметр.</p></div>
+    </div>
+    <div class="note warn">
+      <b>Затримка.</b> SpO₂ реагує на апное з запізненням 30–60 с (довше при периферичному датчику).
+      Капнографія показує втрату вентиляції за 1–2 вдихи — тому саме EtCO₂ є стандартом підтвердження інтубації.
+    </div>
+  </div>
+</section>
+
+<!-- ================= DAY 2 ================= -->
+<section id="p2" role="tabpanel" aria-labelledby="t2" class="hidden">
+  <div class="panel">
+    <div class="eyebrow">Модуль 2 · Дихальні шляхи</div>
+    <h2 class="mod">Оцінка дихальних шляхів та наркозний апарат</h2>
+    <p class="lede">Складні дихальні шляхи майже завжди можна передбачити — за умови, що ви їх оцінили.
+    Найнебезпечніший сценарій «не можу інтубувати, не можу вентилювати» починається з пропущеного огляду.</p>
+  </div>
+
+  <div class="panel">
+    <h3 class="sub">Класифікація Mallampati</h3>
+    <p class="hint">Пацієнт сидить, голова в нейтральному положенні, рот максимально відкритий,
+    язик висунутий, без фонації. Оцінюється те, що видно.</p>
+    <div class="grid2" style="margin-top:14px">
+      <div>
+        <div id="mallampatiBtns"></div>
+      </div>
+      <div class="card" id="mallampatiInfo" style="min-height:190px"></div>
+    </div>
+    <div class="divider"></div>
+    <h3 class="sub">Cormack–Lehane: що ви бачите вже при ларингоскопії</h3>
+    <p class="hint">Mallampati прогнозує до втручання, Cormack–Lehane констатує під час нього.</p>
+    <div class="scroll" style="margin-top:12px">
+      <table>
+        <thead><tr><th>Ступінь</th><th>Видима картина</th><th>Тактика</th></tr></thead>
+        <tbody>
+          <tr><td class="n">I</td><td>Голосова щілина видима повністю</td><td>Звичайна інтубація</td></tr>
+          <tr><td class="n">II</td><td>Видима задня комісура / частина щілини</td><td>Провідник (стилет), BURP-маневр</td></tr>
+          <tr><td class="n">III</td><td>Видимий лише надгортанник</td><td>Бужі, відеоларингоскоп, кличте допомогу</td></tr>
+          <tr><td class="n">IV</td><td>Не видно навіть надгортанника</td><td>Надгортанний пристрій, ФОБ, алгоритм DAS</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="note warn">
+      <b>Інші предиктори.</b> Тироментальна відстань &lt; 6 см · відкривання рота &lt; 3 см ·
+      обмежене розгинання шиї · ІМТ &gt; 35 · «борода і відсутність зубів» (складна масочна вентиляція) ·
+      апное сну в анамнезі.
+    </div>
+  </div>
+
+  <div class="panel">
+    <h3 class="sub">Pre-use check-list наркозно-дихального апарата</h3>
+    <p class="hint">Виконується перед кожним операційним днем і повторно скорочено — перед кожним пацієнтом.</p>
+    <div id="checklist" style="margin-top:14px"></div>
+    <div id="checkStatus" class="note" style="margin-top:14px"></div>
+  </div>
+
+  <div class="panel">
+    <h3 class="sub">Калькулятор протективної вентиляції</h3>
+    <p class="hint">Дихальний об'єм рахується від ідеальної маси тіла (IBW), а не від фактичної.
+    Пацієнт вагою 120 кг має легені свого зросту, а не своєї ваги.</p>
+    <div class="grid2" style="margin-top:14px">
+      <div class="card">
+        <h4>Розрахунок</h4>
+        <table style="margin-top:6px">
+          <tr><td>IBW (формула Devine)</td><td class="n" id="vIBW">—</td></tr>
+          <tr><td>Vt 6 мл/кг (протективний)</td><td class="n" id="vVt6">—</td></tr>
+          <tr><td>Vt 8 мл/кг (верхня межа)</td><td class="n" id="vVt8">—</td></tr>
+          <tr><td>ЧД стартова</td><td class="n" id="vRR">12 /хв</td></tr>
+          <tr><td>Хвилинна вентиляція</td><td class="n" id="vMV">—</td></tr>
+          <tr><td>PEEP стартовий</td><td class="n">5 см H₂O</td></tr>
+        </table>
+      </div>
+      <div class="card">
+        <h4>Цільові показники</h4>
+        <p style="margin-bottom:8px">Piₚₗₐₜₑₐᵤ &lt; 30 см H₂O · Driving pressure &lt; 15 см H₂O ·
+        EtCO₂ 35–45 мм рт.ст. · SpO₂ ≥ 94%.</p>
+        <p>Титруйте ЧД за капнограмою, а не за формулою. Мета — нормокапнія, а не «красиве» число на екрані.</p>
+      </div>
+    </div>
+    <div class="note danger">
+      <b>Vt 10–12 мл/кг — застарілий підхід.</b> Він асоціюється з післяопераційними легеневими
+      ускладненнями навіть у пацієнтів зі здоровими легенями.
+    </div>
+  </div>
+</section>
+
+<!-- ================= DAY 3 ================= -->
+<section id="p3" role="tabpanel" aria-labelledby="t3" class="hidden">
+  <div class="panel">
+    <div class="eyebrow">Модуль 3 · Загальна анестезія</div>
+    <h2 class="mod">Компоненти, етапи та критичні інциденти</h2>
+    <p class="lede">Тріада анестезії — гіпноз, анальгезія, міорелаксація — це три окремі цілі,
+    які досягаються трьома різними класами препаратів. Спроба закрити всі три одним препаратом
+    закінчується або передозуванням, або інтранаркозним пробудженням.</p>
+  </div>
+
+  <div class="panel">
+    <h3 class="sub">Калькулятор доз індукції</h3>
+    <p class="hint">Дози перераховуються від фактичної ваги в шапці сторінки. Для ліпофільних препаратів
+    у пацієнтів з ожирінням орієнтуйтесь на скориговану масу.</p>
+    <div style="display:flex;gap:7px;flex-wrap:wrap;margin:14px 0" id="drugBtns"></div>
+    <div id="drugCard"></div>
+  </div>
+
+  <div class="panel">
+    <h3 class="sub">Симулятор: гострий ларингоспазм після екстубації</h3>
+    <p class="hint">Чотири рішення. Кожне змінює стан пацієнта. SpO₂ нижче 70% — критична межа.</p>
+
+    <div class="grid2" style="margin:16px 0;align-items:start">
+      <div class="card" style="display:flex;gap:18px;justify-content:space-around;text-align:center">
+        <div><div class="lbl mono" style="font-size:9px;color:var(--ink-faint);letter-spacing:.09em">SPO₂</div>
+          <div class="mono" id="lsSp" style="font-size:32px;font-weight:700;color:var(--cyan)">94</div></div>
+        <div><div class="lbl mono" style="font-size:9px;color:var(--ink-faint);letter-spacing:.09em">ЧСС</div>
+          <div class="mono" id="lsHr" style="font-size:32px;font-weight:700;color:var(--phos)">110</div></div>
+      </div>
+      <div class="log" id="lsLog"><div class="in">Журнал дій порожній.</div></div>
+    </div>
+
+    <div id="lsStage"></div>
+    <button class="btn btn-ghost" id="lsReset" style="margin-top:12px;font-size:12px;padding:6px 12px">Почати спочатку</button>
+
+    <div class="note danger" style="margin-top:16px">
+      <b>Ключове.</b> Сукцинілхолін 0,5 мг/кг в/в (або 4 мг/кг в/м за відсутності доступу)
+      завжди супроводжується атропіном 0,02 мг/кг — гіпоксична брадикардія на тлі деполяризуючого
+      релаксанта може перейти в асистолію, особливо в дітей.
+    </div>
+  </div>
+</section>
+
+<!-- ================= DAY 4 ================= -->
+<section id="p4" role="tabpanel" aria-labelledby="t4" class="hidden">
+  <div class="panel">
+    <div class="eyebrow">Модуль 4 · Регіонарна анестезія</div>
+    <h2 class="mod">Нейроаксіальні блокади та системна токсичність анестетиків</h2>
+    <p class="lede">Регіонарна анестезія виглядає простою, доки не станеться ускладнення.
+    Два стани, які треба вміти розпізнати за секунди: тотальний спінальний блок і LAST.</p>
+  </div>
+
+  <div class="panel">
+    <h3 class="sub">Спінальна vs епідуральна</h3>
+    <div class="scroll" style="margin-top:12px">
+      <table>
+        <thead><tr><th></th><th>Спінальна</th><th>Епідуральна</th></tr></thead>
+        <tbody>
+          <tr><td>Простір</td><td>Субарахноїдальний, ліквор</td><td>Епідуральний, поза ТМО</td></tr>
+          <tr><td>Рівень пункції</td><td>Нижче L2 (тільки)</td><td>Будь-який, залежно від сегмента</td></tr>
+          <tr><td>Об'єм</td><td class="n">1,5–3 мл</td><td class="n">10–20 мл</td></tr>
+          <tr><td>Початок дії</td><td class="n">2–5 хв</td><td class="n">15–25 хв</td></tr>
+          <tr><td>Керованість</td><td>Одноразова, некерована</td><td>Катетер, титрування</td></tr>
+          <tr><td>Гіпотензія</td><td>Швидка, виражена</td><td>Поступова</td></tr>
+          <tr><td>Пункція ТМО</td><td>Мета процедури</td><td>Ускладнення (PDPH)</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="panel">
+    <h3 class="sub">Симулятор люмбальної пункції</h3>
+    <p class="hint">Чотири етапи. Кожен наступний розблоковується лише після правильного попереднього.</p>
+    <div id="spinalSim" style="margin-top:14px"></div>
+    <button class="btn btn-ghost" id="spReset" style="margin-top:12px;font-size:12px;padding:6px 12px">Скинути</button>
+  </div>
+
+  <div class="panel">
+    <h3 class="sub">Калькулятор максимальних доз місцевих анестетиків</h3>
+    <p class="hint">Розрахунок від фактичної ваги. Абсолютні стелі застосовуються навіть тоді,
+    коли формула на кг дає більше.</p>
+    <div style="display:flex;gap:7px;flex-wrap:wrap;margin:14px 0" id="laBtns"></div>
+    <label class="check" style="max-width:340px">
+      <input type="checkbox" id="laEpi">
+      <div>З адреналіном 1:200 000<div class="cd">Вазоконстрикція сповільнює системну абсорбцію</div></div>
+    </label>
+    <div id="laCard" style="margin-top:12px"></div>
+
+    <div class="note danger" style="margin-top:16px">
+      <b>LAST — протокол.</b> Припинити введення → 100% O₂, дихальні шляхи →
+      <b>Ліпідна емульсія 20%</b>: болюс 1,5 мл/кг за 1 хв, далі інфузія 0,25 мл/кг/хв;
+      за потреби повторити болюс двічі. Максимум 12 мл/кг. Судоми — бензодіазепіни.
+      <b>Пропофол не є заміною ліпідів.</b> Адреналін тільки малими дозами (≤ 1 мкг/кг).
+      Уникати вазопресину, БКК, β-блокаторів, лідокаїну.
+    </div>
+  </div>
+</section>
+
+<!-- ================= DAY 5 ================= -->
+<section id="p5" role="tabpanel" aria-labelledby="t5" class="hidden">
+  <div class="panel">
+    <div class="eyebrow">Модуль 5 · Інтенсивна терапія</div>
+    <h2 class="mod">ABCDE, серцево-легенева реанімація та підсумковий тест</h2>
+    <p class="lede">ABCDE — не список для запам'ятовування, а порядок пріоритетів.
+    Ви не переходите до B, доки не вирішена A. Проблема, знайдена на будь-якому етапі,
+    усувається негайно — до переходу далі.</p>
+  </div>
+
+  <div class="panel">
+    <h3 class="sub">Тренажер ABCDE</h3>
+    <p class="hint">П'ять етапів, по одному сценарію на кожен. Оберіть дію.</p>
+    <div id="abcdeSim" style="margin-top:14px"></div>
+  </div>
+
+  <div class="panel">
+    <h3 class="sub">Симулятор СЛР за алгоритмом ERC</h3>
+    <p class="hint">Ритм визначає гілку алгоритму. Стежте за таймером циклу та лічильником розрядів.</p>
+    <div class="grid2" style="margin:14px 0;align-items:start">
+      <div class="card">
+        <div style="display:flex;justify-content:space-around;text-align:center">
+          <div><div class="mono" style="font-size:9px;color:var(--ink-faint);letter-spacing:.09em">РИТМ</div>
+            <div class="mono" id="cpRhythm" style="font-size:19px;font-weight:700;color:var(--red);padding-top:6px">ФШ</div></div>
+          <div><div class="mono" style="font-size:9px;color:var(--ink-faint);letter-spacing:.09em">ЦИКЛ</div>
+            <div class="mono" id="cpCycle" style="font-size:28px;font-weight:700;color:var(--phos)">1</div></div>
+          <div><div class="mono" style="font-size:9px;color:var(--ink-faint);letter-spacing:.09em">РОЗРЯДИ</div>
+            <div class="mono" id="cpShocks" style="font-size:28px;font-weight:700;color:var(--amber)">0</div></div>
+        </div>
+        <div class="divider" style="margin:12px 0"></div>
+        <div style="font-size:12px;color:var(--ink-dim)">
+          Адреналін: <span class="chip" id="cpEpi">не введено</span>
+          Аміодарон: <span class="chip" id="cpAmio">не введено</span>
+        </div>
+      </div>
+      <div class="log" id="cpLog"><div class="in">Зупинка кровообігу. Оберіть дію.</div></div>
+    </div>
+    <div id="cpActions" style="display:flex;gap:7px;flex-wrap:wrap"></div>
+    <button class="btn btn-ghost" id="cpReset" style="margin-top:12px;font-size:12px;padding:6px 12px">Новий сценарій</button>
+
+    <div class="note" style="margin-top:16px">
+      <b>Якісні компресії:</b> глибина 5–6 см · частота 100–120/хв · повне розправлення грудної клітки ·
+      перерви &lt; 10 с · зміна реаніматора кожні 2 хв · співвідношення 30:2 до захисту дихальних шляхів,
+      далі — безперервні компресії та 10 вдихів/хв.
+    </div>
+  </div>
+
+  <div class="panel">
+    <h3 class="sub">Підсумковий тест</h3>
+    <p class="hint">Десять питань за всіма п'ятьма модулями. Прохідний бал — 7 з 10.</p>
+    <div id="quiz" style="margin-top:16px"></div>
+    <div style="display:flex;gap:9px;align-items:center;margin-top:14px;flex-wrap:wrap">
+      <button class="btn btn-primary" id="quizSubmit">Перевірити відповіді</button>
+      <button class="btn btn-ghost" id="quizReset">Пройти заново</button>
+    </div>
+    <div id="quizResult" class="hidden" style="margin-top:18px;text-align:center;padding:20px;
+      background:var(--panel-2);border:1px solid var(--line);border-radius:8px">
+      <div class="score-big" id="quizScore">0 / 10</div>
+      <div id="quizVerdict" style="margin-top:8px;font-size:14px"></div>
+    </div>
+  </div>
+</section>
+</div>
+
+<!-- ================= MONITOR RAIL ================= -->
+<aside class="rail">
+  <div class="mon">
+    <div class="mon-head">
+      <span>Ліжко 01 · безперервний моніторинг</span>
+      <span id="monState" class="mono" style="color:var(--phos)">СИНУС</span>
+    </div>
+    <canvas id="scope" aria-label="Криві ЕКГ, плетизмограми та капнограми"></canvas>
+    <div class="vitals">
+      <div class="vital v-hr" id="vHR"><div class="lbl"><span>ЧСС</span><span>уд/хв</span></div><div class="num" id="nHR">75</div></div>
+      <div class="vital v-sp" id="vSP"><div class="lbl"><span>SpO₂</span><span>%</span></div><div class="num" id="nSP">98</div></div>
+      <div class="vital v-bp"><div class="lbl"><span>АТ ніад</span><span>мм рт.ст.</span></div><div class="num" id="nBP">120/80</div></div>
+      <div class="vital v-co"><div class="lbl"><span>EtCO₂</span><span>мм рт.ст.</span></div><div class="num" id="nCO">35</div></div>
+    </div>
+    <div class="presets" role="group" aria-label="Клінічні стани">
+      <button class="preset" data-preset="normal" aria-pressed="true">Норма</button>
+      <button class="preset" data-preset="brady" aria-pressed="false">Брадикардія</button>
+      <button class="preset" data-preset="hypoxia" aria-pressed="false">Гіпоксія</button>
+      <button class="preset" data-preset="vf" aria-pressed="false">ФШ</button>
+      <button class="preset" data-preset="asystole" aria-pressed="false">Асистолія</button>
+    </div>
+    <div class="mon-note" id="monNote">Синусовий ритм, адекватна оксигенація та вентиляція. Норма для планової індукції.</div>
+  </div>
+</aside>
+</main>
+
+<footer>
+  Навчальний матеріал · не є клінічним протоколом · звіряйтеся з чинними настановами ERC 2021 / ASA
+</footer>
+
+<script>
+'use strict';
+const $ = s => document.querySelector(s);
+const $$ = s => Array.from(document.querySelectorAll(s));
+const el = (t, c, h) => { const n = document.createElement(t); if (c) n.className = c; if (h != null) n.innerHTML = h; return n; };
+
+
+/* ============ ACCESS / GATING ============ */
+/* ВСТАВТЕ СЮДИ URL вашого Apps Script веб-застосунку (закінчується на /exec) */
+var API = 'https://script.google.com/macros/s/AKfycbya-rmEpIkBHT-JHNWywdJcirvHB-h7Ph4LX7QwHKmHGV_lvYZLb0iCaTa5mbL4fKF4/exec';
+
+var session = { code: null, name: '', unlocked: 1, scores: [null,null,null,null,null], total: 5 };
+
+function storeGet(k){ try { return window.localStorage.getItem(k); } catch(e){ return null; } }
+function storeSet(k,v){ try { window.localStorage.setItem(k,v); } catch(e){} }
+function storeDel(k){ try { window.localStorage.removeItem(k); } catch(e){} }
+
+function urlCode(){
+  var m = window.location.search.match(/[?&]k=([^&]+)/);
+  return m ? decodeURIComponent(m[1]) : null;
+}
+
+function api(params){
+  var qs = Object.keys(params).map(function(k){
+    return encodeURIComponent(k)+'='+encodeURIComponent(params[k]);
+  }).join('&');
+  return fetch(API + '?' + qs, { method:'GET', redirect:'follow' })
+    .then(function(r){ return r.json(); });
+}
+
+function gateMsg(text, kind){
+  var m = $('#gateMsg');
+  m.className = 'gate-msg ' + (kind||'err');
+  m.textContent = text;
+}
+
+function showGate(show){
+  $('#gate').style.display = show ? 'flex' : 'none';
+  document.body.style.overflow = show ? 'hidden' : '';
+}
+
+/* --- gate tab switching --- */
+$('#gtLogin').addEventListener('click', function(){
+  $('#gtLogin').setAttribute('aria-selected','true');
+  $('#gtReg').setAttribute('aria-selected','false');
+  $('#gateLogin').classList.remove('hidden');
+  $('#gateReg').classList.add('hidden');
+  $('#gateMsg').className='gate-msg';
+});
+$('#gtReg').addEventListener('click', function(){
+  $('#gtReg').setAttribute('aria-selected','true');
+  $('#gtLogin').setAttribute('aria-selected','false');
+  $('#gateReg').classList.remove('hidden');
+  $('#gateLogin').classList.add('hidden');
+  $('#gateMsg').className='gate-msg';
+});
+
+/* --- registration --- */
+$('#btnReg').addEventListener('click', function(){
+  var name = $('#inName').value.trim();
+  var group = $('#inGroup').value.trim();
+  if (name.length < 3) { gateMsg('Вкажіть прізвище та ім\'я.'); return; }
+  this.disabled = true; this.textContent = 'Реєструємо…';
+  var btn = this;
+  api({ action:'register', name:name, group:group })
+    .then(function(r){
+      btn.disabled = false; btn.textContent = 'Зареєструватися';
+      if (!r.ok) { gateMsg(r.error || 'Не вдалося зареєструватися.'); return; }
+      session.code = r.code; session.name = r.name;
+      session.unlocked = r.unlocked; session.scores = r.scores || session.scores;
+      storeSet('anest_code', r.code);
+      $('#codeOut').textContent = r.code;
+      $('#gateReg').classList.add('hidden');
+      $('#gateLogin').classList.add('hidden');
+      $('.gate-tabs').classList.add('hidden');
+      $('#gateCode').classList.remove('hidden');
+      gateMsg(r.existed
+        ? 'Ви вже зареєстровані — це ваш попередній код.'
+        : 'Реєстрація успішна. Запишіть код доступу.', 'ok');
+    })
+    .catch(function(){
+      btn.disabled = false; btn.textContent = 'Зареєструватися';
+      gateMsg('Немає зв\'язку з сервером. Перевірте інтернет і спробуйте ще раз.');
+    });
+});
+
+$('#btnEnter').addEventListener('click', function(){
+  applySession();
+  showGate(false);
+});
+
+/* --- login by code --- */
+function doLogin(code, silent){
+  return api({ action:'state', code:code })
+    .then(function(r){
+      if (!r.ok) { if(!silent) gateMsg(r.error || 'Код не знайдено.'); return false; }
+      session.code = r.code; session.name = r.name;
+      session.unlocked = r.unlocked; session.scores = r.scores || session.scores;
+      session.total = r.total || 5;
+      storeSet('anest_code', r.code);
+      applySession();
+      showGate(false);
+      return true;
+    })
+    .catch(function(){
+      if(!silent) gateMsg('Немає зв\'язку з сервером.');
+      return false;
+    });
+}
+
+$('#btnLogin').addEventListener('click', function(){
+  var c = $('#inCode').value.trim();
+  if (!c) { gateMsg('Введіть код доступу.'); return; }
+  this.disabled = true; this.textContent = 'Перевіряємо…';
+  var btn = this;
+  doLogin(c, false).then(function(){ btn.disabled=false; btn.textContent='Увійти'; });
+});
+$('#inCode').addEventListener('keydown', function(e){ if(e.key==='Enter') $('#btnLogin').click(); });
+
+$('#btnLogout').addEventListener('click', function(){
+  storeDel('anest_code');
+  session.code = null;
+  window.location.search = '';
+});
+
+/* --- apply unlock state to UI --- */
+function applySession(){
+  $('#whoName').textContent = session.name || '—';
+  $('#whoCode').textContent = session.code ? '[' + session.code + ']' : '';
+
+  $$('.tab').forEach(function(t){
+    var d = +t.dataset.day;
+    var locked = d > session.unlocked;
+    t.classList.toggle('locked', locked);
+    t.setAttribute('aria-disabled', String(locked));
+  });
+
+  // if current tab became locked, fall back to day 1
+  var cur = $$('.tab').find(function(t){ return t.getAttribute('aria-selected')==='true'; });
+  if (cur && +cur.dataset.day > session.unlocked) $('#t1').click();
+
+  renderLockWalls();
+}
+
+function renderLockWalls(){
+  for (var d = 1; d <= 5; d++){
+    var panel = $('#p' + d);
+    var wall = panel.querySelector('.lockwall');
+    var locked = d > session.unlocked;
+    if (locked && !wall){
+      Array.from(panel.children).forEach(function(c){ c.classList.add('gated-hide'); c.style.display='none'; });
+      var w = el('div','lockwall panel',
+        '<div class="big">🔒</div><h3>День ' + d + ' ще закрито</h3>' +
+        '<p>Модуль відкриється після завершення попереднього дня. ' +
+        'Кожен день курсу стає доступним через 24 години та після складеного тесту попереднього модуля.</p>');
+      panel.appendChild(w);
+    } else if (!locked && wall){
+      wall.remove();
+      Array.from(panel.children).forEach(function(c){
+        if (c.classList.contains('gated-hide')){ c.classList.remove('gated-hide'); c.style.display=''; }
+      });
+    }
+  }
+}
+
+/* --- report progress to backend --- */
+function report(type, day, detail, result, score){
+  if (!session.code || API.indexOf('ВСТАВТЕ') === 0) return Promise.resolve();
+  var p = { action:'progress', code:session.code, type:type, day:day||'', detail:detail||'', result:result||'' };
+  if (score != null) p.score = score;
+  return api(p).then(function(r){
+    if (r && r.ok){
+      session.unlocked = r.unlocked;
+      session.scores = r.scores || session.scores;
+      applySession();
+    }
+  }).catch(function(){});
+}
+
+/* --- boot the gate --- */
+(function bootGate(){
+  if (API.indexOf('ВСТАВТЕ') === 0){
+    // демо-режим: бекенд не налаштовано, усе відкрито
+    session.unlocked = 5; session.name = 'Демо-режим';
+    showGate(false); applySession();
+    return;
+  }
+  var code = urlCode() || storeGet('anest_code');
+  if (code){
+    $('#inCode').value = code;
+    doLogin(code, true).then(function(ok){ if(!ok) showGate(true); });
+  } else {
+    showGate(true);
+  }
+})();
+
+/* ============ PATIENT STATE ============ */
+const patient = { weight: 70, height: 175, sex: 'male' };
+
+function ibw() {
+  const inches = patient.height / 2.54;
+  const base = patient.sex === 'male' ? 50 : 45.5;
+  return Math.max(base, Math.round((base + 2.3 * (inches - 60)) * 10) / 10);
+}
+
+function onPatientChange() {
+  renderVent();
+  renderDrug();
+  renderLA();
+}
+
+$('#gWeight').addEventListener('input', e => {
+  patient.weight = +e.target.value;
+  $('#gWeightV').textContent = patient.weight + ' кг';
+  onPatientChange();
+});
+$('#gHeight').addEventListener('input', e => {
+  const v = +e.target.value;
+  if (v >= 130 && v <= 215) { patient.height = v; onPatientChange(); }
+});
+$('#gSex').addEventListener('change', e => { patient.sex = e.target.value; onPatientChange(); });
+
+/* ============ TABS ============ */
+$('.nwrap').addEventListener('click', e => {
+  const btn = e.target.closest('.tab');
+  if (!btn) return;
+  if (btn.classList.contains('locked')) {
+    gateMsg && null;
+    alert('День ' + btn.dataset.day + ' ще закрито. Модулі відкриваються послідовно.');
+    return;
+  }
+  $$('.tab').forEach(t => t.setAttribute('aria-selected', String(t === btn)));
+  $$('section[role=tabpanel]').forEach(p => p.classList.add('hidden'));
+  $('#p' + btn.dataset.day).classList.remove('hidden');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+});
+$('.nwrap').addEventListener('keydown', e => {
+  if (!['ArrowLeft', 'ArrowRight'].includes(e.key)) return;
+  const tabs = $$('.tab');
+  const i = tabs.indexOf(document.activeElement);
+  if (i < 0) return;
+  const next = tabs[(i + (e.key === 'ArrowRight' ? 1 : tabs.length - 1)) % tabs.length];
+  next.focus(); next.click();
+  e.preventDefault();
+});
+
+/* ============ MONITOR ============ */
+const PRESETS = {
+  normal:   { hr: 75,  spo2: 98, bp: '120/80', co2: 35, label: 'СИНУС',      alarm: false,
+              note: 'Синусовий ритм, адекватна оксигенація та вентиляція. Норма для планової індукції.' },
+  brady:    { hr: 38,  spo2: 96, bp: '88/52',  co2: 33, label: 'БРАДІ',      alarm: true,
+              note: 'Синусова брадикардія з гіпотензією. Причини: ваготонія, опіоїди, високий блок. Атропін 0,5 мг в/в, за потреби — ефедрин.' },
+  hypoxia:  { hr: 118, spo2: 84, bp: '138/88', co2: 52, label: 'ГІПОКСІЯ',   alarm: true,
+              note: 'Десатурація з гіперкапнією та компенсаторною тахікардією. Перевірте прохідність контуру, положення трубки, FiO₂ 100%.' },
+  vf:       { hr: 0,   spo2: 0,  bp: '—',      co2: 8,  label: 'ФШ',         alarm: true,
+              note: 'Фібриляція шлуночків — ритм, що підлягає дефібриляції. Негайно компресії та розряд 150–200 Дж (біфазний).' },
+  asystole: { hr: 0,   spo2: 0,  bp: '—',      co2: 5,  label: 'АСИСТОЛІЯ',  alarm: true,
+              note: 'Асистолія — ритм, що НЕ підлягає дефібриляції. Компресії, адреналін 1 мг негайно, пошук оборотних причин (4Г/4Т).' }
+};
+let monState = 'normal';
+
+function applyPreset(key) {
+  monState = key;
+  const p = PRESETS[key];
+  $('#nHR').textContent = p.hr || '- -';
+  $('#nSP').textContent = p.spo2 || '- -';
+  $('#nBP').textContent = p.bp;
+  $('#nCO').textContent = p.co2;
+  $('#monState').textContent = p.label;
+  $('#monState').style.color = p.alarm ? 'var(--red)' : 'var(--phos)';
+  $('#monNote').textContent = p.note;
+  $('#vHR').classList.toggle('alarm', p.alarm);
+  $('#vSP').classList.toggle('alarm', p.spo2 > 0 && p.spo2 < 90);
+  $$('.preset').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.preset === key)));
+}
+$$('.preset').forEach(b => b.addEventListener('click', () => applyPreset(b.dataset.preset)));
+
+/* --- scope rendering --- */
+const cv = $('#scope');
+const ctx = cv.getContext('2d');
+let W = 0, H = 0, cursor = 0, prev = null;
+
+function sizeCanvas() {
+  const dpr = window.devicePixelRatio || 1;
+  const rect = cv.getBoundingClientRect();
+  W = Math.max(1, Math.round(rect.width));
+  H = 200;
+  cv.width = W * dpr;
+  cv.height = H * dpr;
+  cv.style.height = H + 'px';
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  ctx.fillStyle = '#05070a';
+  ctx.fillRect(0, 0, W, H);
+  cursor = 0; prev = null;
+}
+window.addEventListener('resize', sizeCanvas);
+
+// Three lanes: ECG / pleth / capno
+const LANE = [{ y: 46, col: '#3ddc97' }, { y: 112, col: '#4dd0e1' }, { y: 172, col: '#f0b429' }];
+
+function ecgAt(t, hr) {
+  // t = position within beat, 0..1
+  if (t < 0.10) return -6 * Math.sin(t / 0.10 * Math.PI);           // P
+  if (t < 0.15) return 0;
+  if (t < 0.17) return 5;                                           // Q
+  if (t < 0.20) return -34;                                         // R
+  if (t < 0.23) return 12;                                          // S
+  if (t < 0.32) return 0;
+  if (t < 0.48) return -10 * Math.sin((t - 0.32) / 0.16 * Math.PI); // T
+  return 0;
+}
+function plethAt(t, sat) {
+  const scale = Math.max(0.15, sat / 100);
+  if (t < 0.30) return -26 * Math.sin(t / 0.30 * Math.PI) * scale;
+  if (t < 0.46) return (-9 * Math.sin((t - 0.30) / 0.16 * Math.PI) - 5) * scale;
+  return 0;
+}
+function capnoAt(t, peak) {
+  const amp = peak * 0.55;
+  if (t < 0.08) return 0;
+  if (t < 0.16) return -amp * ((t - 0.08) / 0.08);   // upstroke
+  if (t < 0.55) return -amp * (0.92 + 0.08 * ((t - 0.16) / 0.39)); // plateau
+  if (t < 0.62) return -amp * (1 - (t - 0.55) / 0.07);
+  return 0;
+}
+
+function draw() {
+  const p = PRESETS[monState];
+  const speed = 2;                       // px per frame
+  const pxPerBeat = p.hr > 0 ? (60 / p.hr) * 110 : 0;
+
+  for (let s = 0; s < speed; s++) {
+    // clear leading bar
+    ctx.fillStyle = '#05070a';
+    ctx.fillRect(cursor, 0, 14, H);
+    // faint lane baselines
+    ctx.fillStyle = 'rgba(42,51,61,.45)';
+    LANE.forEach(l => ctx.fillRect(cursor, l.y, 1, 1));
+
+    let vals;
+    if (monState === 'vf') {
+      const n = cursor * 0.3;
+      vals = [
+        LANE[0].y + Math.sin(n) * 13 + Math.sin(n * 2.7) * 8 + Math.cos(n * 5.1) * 4,
+        LANE[1].y + Math.sin(cursor * 0.05) * 2,
+        LANE[2].y - 3
+      ];
+    } else if (monState === 'asystole') {
+      vals = [
+        LANE[0].y + (Math.random() - 0.5) * 1.2,
+        LANE[1].y + (Math.random() - 0.5) * 0.8,
+        LANE[2].y - 2
+      ];
+    } else {
+      const t = (cursor % pxPerBeat) / pxPerBeat;
+      const tp = ((cursor - 16 + pxPerBeat) % pxPerBeat) / pxPerBeat;
+      // capnograph runs on respiratory rate, not heart rate
+      const respPx = 260;
+      const tc = (cursor % respPx) / respPx;
+      vals = [
+        LANE[0].y + ecgAt(t, p.hr),
+        LANE[1].y + plethAt(tp, p.spo2),
+        LANE[2].y + capnoAt(tc, p.co2)
+      ];
+    }
+
+    if (prev) {
+      LANE.forEach((l, i) => {
+        ctx.beginPath();
+        ctx.strokeStyle = l.col;
+        ctx.lineWidth = 1.6;
+        ctx.moveTo(cursor - 1, prev[i]);
+        ctx.lineTo(cursor, vals[i]);
+        ctx.stroke();
+      });
+    }
+    prev = vals;
+    cursor += 1;
+    if (cursor >= W) { cursor = 0; prev = null; }
+  }
+  requestAnimationFrame(draw);
+}
+
+/* ============ DAY 1 — ECG ELECTRODES ============ */
+const ELECTRODES = [
+  { id: 'RA', color: '#ffffff', label: 'RA · права підключична', target: 'subclav-R' },
+  { id: 'LA', color: '#1a1a1a', label: 'LA · ліва підключична',  target: 'subclav-L' },
+  { id: 'RL', color: '#2eb872', label: 'RL · права клубова ость', target: 'iliac-R' },
+  { id: 'LL', color: '#e53935', label: 'LL · ліва клубова ость',  target: 'iliac-L' },
+  { id: 'V',  color: '#8d5524', label: 'V · V4, 5-те міжребер\'я', target: 'v4' }
+];
+const SITES = [
+  { id: 'subclav-R', x: 33, y: 34, tag: 'R1', title: 'Права підключична ділянка' },
+  { id: 'subclav-L', x: 67, y: 34, tag: 'L1', title: 'Ліва підключична ділянка' },
+  { id: 'iliac-R',   x: 32, y: 76, tag: 'R2', title: 'Права клубова ость' },
+  { id: 'iliac-L',   x: 68, y: 76, tag: 'L2', title: 'Ліва клубова ость' },
+  { id: 'v4',        x: 60, y: 56, tag: 'V',  title: 'V4 — 5-те міжребер\'я, середньоключична лінія зліва' }
+];
+let activeEl = null;
+const placed = {};   // siteId -> electrodeId
+
+function renderElectrodes() {
+  const list = $('#elList');
+  list.innerHTML = '';
+  ELECTRODES.forEach(e => {
+    const at = Object.keys(placed).find(k => placed[k] === e.id);
+    const b = el('button', 'el');
+    b.type = 'button';
+    b.setAttribute('aria-pressed', String(activeEl === e.id));
+    b.innerHTML = `<span class="dot" style="background:${e.color}"></span>
+      <span>${e.label}</span>
+      <span class="st">${at ? (at === e.target ? '✓ вірно' : '✗ хибно') : 'не накладено'}</span>`;
+    b.addEventListener('click', () => { activeEl = activeEl === e.id ? null : e.id; renderElectrodes(); });
+    list.appendChild(b);
+  });
+
+  const torso = $('#torso');
+  torso.querySelectorAll('.site').forEach(n => n.remove());
+  SITES.forEach(s => {
+    const held = placed[s.id];
+    const e = held && ELECTRODES.find(x => x.id === held);
+    const b = el('button', 'site' + (held ? ' filled' : ''));
+    b.type = 'button';
+    b.style.left = s.x + '%';
+    b.style.top = s.y + '%';
+    b.title = s.title;
+    b.setAttribute('aria-label', s.title + (held ? ` — накладено ${held}` : ''));
+    b.textContent = held || s.tag;
+    if (e) { b.style.background = e.color; b.style.borderColor = e.color; b.style.color = e.color === '#1a1a1a' ? '#e8edf2' : '#05070a'; }
+    b.addEventListener('click', () => {
+      if (placed[s.id]) { delete placed[s.id]; }
+      else if (activeEl) {
+        Object.keys(placed).forEach(k => { if (placed[k] === activeEl) delete placed[k]; });
+        placed[s.id] = activeEl;
+        activeEl = null;
+      }
+      renderElectrodes();
+    });
+    torso.appendChild(b);
+  });
+
+  const ok = ELECTRODES.filter(e => placed[e.target] === e.id).length;
+  $('#ecgScore').textContent = ok + ' / 5';
+  $('#ecgBar').style.width = (ok / 5 * 100) + '%';
+  if (ok === 5 && !renderElectrodes._done) {
+    renderElectrodes._done = true;
+    report('тренажер: ЕКГ-електроди', 1, 'усі 5 накладено правильно', 'виконано');
+  }
+}
+$('#ecgReset').addEventListener('click', () => {
+  Object.keys(placed).forEach(k => delete placed[k]);
+  activeEl = null; renderElectrodes();
+});
+
+/* ============ DAY 2 — MALLAMPATI ============ */
+const MALLAMPATI = [
+  { n: 'I',   v: 'Видно м\'яке піднебіння, зів, язичок, обидві піднебінні дужки повністю.', r: 'Складна інтубація малоймовірна. Стандартна підготовка.' },
+  { n: 'II',  v: 'Видно м\'яке піднебіння, зів і язичок; дужки частково приховані коренем язика.', r: 'Ризик низький. Стандартна підготовка, провідник напоготові.' },
+  { n: 'III', v: 'Видно м\'яке піднебіння та основу язичка.', r: 'Підвищений ризик. Підготуйте бужі, відеоларингоскоп, надгортанний пристрій.' },
+  { n: 'IV',  v: 'Видно лише тверде піднебіння; м\'яке піднебіння не візуалізується.', r: 'Високий ризик. Розгляньте інтубацію у свідомості під ФОБ, кличте досвідченого колегу заздалегідь.' }
+];
+let mSel = 0;
+function renderMallampati() {
+  const box = $('#mallampatiBtns');
+  box.innerHTML = '';
+  MALLAMPATI.forEach((m, i) => {
+    const b = el('button', 'choice' + (i === mSel ? ' good' : ''), `<b>Клас ${m.n}</b> — ${m.v}`);
+    b.type = 'button';
+    b.addEventListener('click', () => { mSel = i; renderMallampati(); });
+    box.appendChild(b);
+  });
+  const m = MALLAMPATI[mSel];
+  $('#mallampatiInfo').innerHTML = `<h4>Клас ${m.n} — тактика</h4><p>${m.r}</p>
+    <div class="divider" style="margin:12px 0"></div>
+    <p style="font-size:12px;color:var(--ink-faint)">Mallampati оцінюється разом з іншими предикторами.
+    Ізольовано він має помірну чутливість і не є достатньою підставою ані для тривоги, ані для спокою.</p>`;
+}
+
+/* ============ DAY 2 — CHECKLIST ============ */
+const CHECKS = [
+  ['Джерело кисню', 'Тиск у балоні / центральній магістралі, резервний балон повний і закритий'],
+  ['Дихальний контур', 'Цілісність, правильне під\'єднання, відсутність перегинів'],
+  ['Тест на витік', 'Тиск 30 см H₂O утримується ≥ 10 с, витік < 100 мл/хв'],
+  ['Адсорбер CO₂', 'Натронне вапно не змінило колір, гранули не спечені'],
+  ['Клапани та випарник', 'Однонаправлені клапани рухаються, випарник заповнений і зафіксований'],
+  ['Аспіратор', 'Розрідження достатнє, катетер Янкауера під рукою'],
+  ['Мішок Амбу', 'Резервний ручний контур з маскою поруч з апаратом'],
+  ['Моніторинг та тривоги', 'Пульсоксиметр, капнограф, ЕКГ, НІАТ увімкнені, межі тривог виставлені'],
+  ['Обладнання ДШ', 'Клинки, трубки трьох розмірів, провідник, ЛМ, бужі перевірені'],
+  ['Препарати', 'Індукційні та вазоактивні препарати набрані й підписані']
+];
+function renderChecklist() {
+  const box = $('#checklist');
+  box.innerHTML = '';
+  CHECKS.forEach((c, i) => {
+    const lab = el('label', 'check');
+    lab.innerHTML = `<input type="checkbox" data-ck="${i}">
+      <div>${c[0]}<div class="cd">${c[1]}</div></div>`;
+    box.appendChild(lab);
+  });
+  box.addEventListener('change', updateCheckStatus);
+  updateCheckStatus();
+}
+function updateCheckStatus() {
+  const boxes = $$('#checklist input');
+  const done = boxes.filter(b => b.checked).length;
+  const s = $('#checkStatus');
+  s.className = 'note' + (done === CHECKS.length ? '' : ' warn');
+  if (done === CHECKS.length && !updateCheckStatus._done) {
+    updateCheckStatus._done = true;
+    report('чек-лист апарата', 2, 'усі 10 пунктів', 'виконано');
+  }
+  s.innerHTML = done === CHECKS.length
+    ? `<b>Апарат готовий.</b> Усі ${CHECKS.length} пунктів виконано. Можна починати індукцію.`
+    : `<b>Виконано ${done} з ${CHECKS.length}.</b> Індукція не починається до завершення перевірки —
+       навіть у «терміновому» випадку хоча б тест на витік і аспіратор.`;
+}
+
+/* ============ DAY 2 — VENTILATOR ============ */
+function renderVent() {
+  const w = ibw();
+  const vt6 = Math.round(w * 6), vt8 = Math.round(w * 8);
+  $('#vIBW').textContent = w.toFixed(1) + ' кг';
+  $('#vVt6').textContent = vt6 + ' мл';
+  $('#vVt8').textContent = vt8 + ' мл';
+  $('#vMV').textContent = ((vt6 * 12) / 1000).toFixed(1) + ' л/хв';
+}
+
+/* ============ DAY 3 — DRUGS ============ */
+const DRUGS = {
+  propofol: {
+    name: 'Пропофол 1%', cls: 'Гіпнотик', conc: 10, unit: 'мг',
+    lo: 1.5, hi: 2.5, dose: '1,5–2,5 мг/кг',
+    onset: '30–45 с', dur: '5–10 хв',
+    note: 'Вазодилатація та кардіодепресія — очікуйте падіння АТ на 20–30%. У літніх і гіповолемічних знижуйте дозу вдвічі та вводьте повільно.'
+  },
+  fentanyl: {
+    name: 'Фентаніл', cls: 'Опіоїдний анальгетик', conc: 50, unit: 'мкг',
+    lo: 1, hi: 3, dose: '1–3 мкг/кг',
+    onset: '2–3 хв', dur: '30–45 хв',
+    note: 'Пригнічує дихання довше, ніж триває анальгезія. Ригідність грудної клітки при швидкому болюсі у великій дозі.'
+  },
+  ketamine: {
+    name: 'Кетамін', cls: 'Дисоціативний анестетик', conc: 50, unit: 'мг',
+    lo: 1, hi: 2, dose: '1–2 мг/кг',
+    onset: '30–60 с', dur: '10–15 хв',
+    note: 'Зберігає дихання та рефлекси ДШ, симпатоміметичний ефект. Препарат вибору при гіповолемії та бронхоспазмі.'
+  },
+  rocuronium: {
+    name: 'Рокуроній', cls: 'Недеполяризуючий міорелаксант', conc: 10, unit: 'мг',
+    lo: 0.6, hi: 1.2, dose: '0,6 мг/кг · RSI 1,2 мг/кг',
+    onset: '60–90 с (RSI 45–60 с)', dur: '30–45 хв (RSI до 70 хв)',
+    note: 'Реверсія сугамадексом 16 мг/кг можлива негайно. Гемодинамічно нейтральний.'
+  },
+  suxamethonium: {
+    name: 'Сукцинілхолін', cls: 'Деполяризуючий міорелаксант', conc: 20, unit: 'мг',
+    lo: 1, hi: 1.5, dose: '1–1,5 мг/кг',
+    onset: '30–45 с', dur: '5–10 хв',
+    note: 'Протипоказаний при опіках >24 год, денервації, рабдоміолізі, гіперкаліємії, злоякісній гіпертермії в анамнезі.'
+  }
+};
+let drugSel = 'propofol';
+function renderDrugBtns() {
+  const box = $('#drugBtns'); box.innerHTML = '';
+  Object.entries(DRUGS).forEach(([k, d]) => {
+    const b = el('button', 'btn' + (k === drugSel ? ' btn-primary' : ''), d.name);
+    b.type = 'button';
+    b.addEventListener('click', () => { drugSel = k; renderDrugBtns(); renderDrug(); });
+    box.appendChild(b);
+  });
+}
+function renderDrug() {
+  const d = DRUGS[drugSel], w = patient.weight;
+  const loD = Math.round(w * d.lo), hiD = Math.round(w * d.hi);
+  $('#drugCard').innerHTML = `
+    <div class="grid2">
+      <div class="card">
+        <h4>${d.name}</h4>
+        <p style="margin-bottom:10px"><span class="chip">${d.cls}</span> <span class="chip">${d.conc} ${d.unit}/мл</span></p>
+        <table>
+          <tr><td>Доза</td><td class="n">${d.dose}</td></tr>
+          <tr><td>На ${w} кг</td><td class="n">${loD}–${hiD} ${d.unit}</td></tr>
+          <tr><td>Об'єм у шприці</td><td class="n">${(loD / d.conc).toFixed(1)}–${(hiD / d.conc).toFixed(1)} мл</td></tr>
+          <tr><td>Початок дії</td><td class="n">${d.onset}</td></tr>
+          <tr><td>Тривалість</td><td class="n">${d.dur}</td></tr>
+        </table>
+      </div>
+      <div class="card"><h4>Клінічні застереження</h4><p>${d.note}</p></div>
+    </div>`;
+}
+
+/* ============ DAY 3 — LARYNGOSPASM ============ */
+const LS_STEPS = [
+  {
+    q: 'Одразу після екстубації — інспіраторний стридор, парадоксальні рухи грудної клітки, SpO₂ 94% і падає. Перша дія?',
+    a: [
+      { t: '100% кисень, щільна маска, CPAP 10–15 см H₂O', ok: true,  sp: +2, hr: -5,  f: 'Вірно. Позитивний тиск киснем — базовий і найшвидший крок.' },
+      { t: 'Негайно ввести сукцинілхолін', ok: false, sp: -4, hr: +8,  f: 'Передчасно. Спочатку неінвазивні заходи; більшість спазмів на них минають.' },
+      { t: 'Спробувати реінтубацію наосліп', ok: false, sp: -8, hr: +14, f: 'Небезпечно. Зімкнуті зв\'язки травмуються, час втрачається.' }
+    ]
+  },
+  {
+    q: 'SpO₂ падає до 88%, спазм зберігається. Який механічний маневр додати?',
+    a: [
+      { t: 'Висування щелепи + тиск у точці Ларсона', ok: true,  sp: +3, hr: -8,  f: 'Вірно. Точка Ларсона позаду мочки вуха, доповнює jaw thrust, а не замінює його.' },
+      { t: 'Просто закинути голову назад', ok: false, sp: -5, hr: +10, f: 'Недостатньо — не впливає на тонус голосових зв\'язок.' },
+      { t: 'Встановити повітровід Гведела', ok: false, sp: -4, hr: +8,  f: 'На поверхневій анестезії подразнення кореня язика посилює спазм.' }
+    ]
+  },
+  {
+    q: 'Часткове розкриття, але SpO₂ 85%, пацієнт напружений і кашляє. Наступний крок?',
+    a: [
+      { t: 'Пропофол 0,5–1 мг/кг в/в (субгіпнотична доза)', ok: true,  sp: +3, hr: -6,  f: 'Вірно. Пригнічує гортанні рефлекси без глибокої гемодинамічної депресії.' },
+      { t: 'Болюс атропіну', ok: false, sp: -3, hr: +5,  f: 'Атропін лікує брадикардію, але не сам спазм.' },
+      { t: 'Продовжити спостереження', ok: false, sp: -9, hr: +12, f: 'Гіпоксія прогресує. Вичікування тут коштує зупинки кровообігу.' }
+    ]
+  },
+  {
+    q: 'Зв\'язки залишаються зімкнутими, SpO₂ 78%, ЧСС падає до 48. Фармакологічна міорелаксація:',
+    a: [
+      { t: 'Сукцинілхолін 0,5 мг/кг в/в + атропін 0,02 мг/кг', ok: true,  sp: +8, hr: +22, f: 'Вірно. Мала доза розкриває щілину за 30–45 с; атропін обов\'язковий через брадикардію.' },
+      { t: 'Рокуроній 1,2 мг/кг в/в', ok: false, sp: -6, hr: -8,  f: 'Подіє надто повільно за такої гіпоксії, хоча й спрацює зрештою.' },
+      { t: 'Ще пропофол у повній індукційній дозі', ok: false, sp: -8, hr: -14, f: 'На тлі гіпоксії та брадикардії це шлях до асистолії.' }
+    ]
+  }
+];
+let lsIdx = 0, lsSp = 94, lsHr = 110, lsDone = false;
+
+function renderLS() {
+  $('#lsSp').textContent = Math.round(lsSp);
+  $('#lsHr').textContent = Math.round(lsHr);
+  $('#lsSp').style.color = lsSp < 85 ? 'var(--red)' : 'var(--cyan)';
+  $('#lsHr').style.color = (lsHr < 50 || lsHr > 130) ? 'var(--red)' : 'var(--phos)';
+
+  const stage = $('#lsStage');
+  if (lsDone) {
+    const win = lsSp >= 88;
+    stage.innerHTML = `<div class="note ${win ? '' : 'danger'}">
+      <b>${win ? 'Спазм усунено.' : 'Пацієнт декомпенсувався.'}</b>
+      ${win ? 'Вентиляція відновлена, SpO₂ ' + Math.round(lsSp) + '%. Продовжуйте оксигенацію та спостереження — ризик набряку легень від негативного тиску зберігається до 6 годин.'
+            : 'SpO₂ ' + Math.round(lsSp) + '%. У реальності це зупинка кровообігу. Перегляньте журнал: затримка на кожному кроці коштує сатурації.'}
+    </div>`;
+    return;
+  }
+  const s = LS_STEPS[lsIdx];
+  stage.innerHTML = `<div class="card" style="margin-bottom:12px">
+    <h4>Крок ${lsIdx + 1} з ${LS_STEPS.length}</h4><p>${s.q}</p></div>`;
+  s.a.forEach(o => {
+    const b = el('button', 'choice', o.t);
+    b.type = 'button';
+    b.addEventListener('click', () => {
+      lsSp = Math.max(45, Math.min(99, lsSp + o.sp));
+      lsHr = Math.max(30, Math.min(160, lsHr + o.hr));
+      logAdd('#lsLog', (o.ok ? '✓ ' : '✗ ') + o.t + ' — ' + o.f, o.ok ? 'ok' : 'er');
+      report('симулятор: ларингоспазм', 3, 'крок ' + (lsIdx + 1) + ': ' + o.t, o.ok ? 'вірно' : 'помилка');
+      lsIdx++;
+      if (lsIdx >= LS_STEPS.length) lsDone = true;
+      renderLS();
+    });
+    stage.appendChild(b);
+  });
+}
+function logAdd(sel, text, cls) {
+  const box = $(sel);
+  if (box.querySelector('.in')) box.innerHTML = '';
+  box.appendChild(el('div', cls, text));
+  box.scrollTop = box.scrollHeight;
+}
+$('#lsReset').addEventListener('click', () => {
+  lsIdx = 0; lsSp = 94; lsHr = 110; lsDone = false;
+  $('#lsLog').innerHTML = '<div class="in">Журнал дій порожній.</div>';
+  renderLS();
+});
+
+/* ============ DAY 4 — SPINAL SIM ============ */
+const SP_STEPS = [
+  { q: 'Позиціонування пацієнта', o: [
+      { t: 'Сидячи або на боці з максимальним згинанням спини («поза ембріона»)', ok: true, f: 'Вірно. Згинання розкриває міжостисті проміжки.' },
+      { t: 'Лежачи на животі', ok: false, f: 'Не використовується для люмбальної пункції.' },
+      { t: 'На боці з розгинанням спини', ok: false, f: 'Розгинання зближує остисті відростки — доступ закривається.' }] },
+  { q: 'Вибір міжхребцевого проміжку', o: [
+      { t: 'L3–L4 або L4–L5 (лінія Тюф\'є між гребенями клубових кісток)', ok: true, f: 'Вірно. Нижче закінчення спинного мозку (L1–L2 у дорослих).' },
+      { t: 'T12–L1', ok: false, f: 'Ризик прямої травми конуса спинного мозку.' },
+      { t: 'L1–L2', ok: false, f: 'Занадто високо — conus medullaris може сягати цього рівня.' }] },
+  { q: 'Техніка введення голки', o: [
+      { t: 'Строго по середній лінії, зріз паралельно волокнам ТМО, повільно, з відчуттям двох «клацань»', ok: true, f: 'Вірно. Друге клацання — прокол твердої мозкової оболонки.' },
+      { t: 'Швидко, одним рухом до упору', ok: false, f: 'Втрачається тактильний контроль, ризик травми корінців.' },
+      { t: 'Під кутом 45° латерально', ok: false, f: 'Виведе голку в бічну масу, а не в субарахноїдальний простір.' }] },
+  { q: 'Отримано вільний витік прозорого ліквору. Далі:', o: [
+      { t: 'Аспірувати трохи ліквору для підтвердження, ввести анестетик повільно, стежити за АТ', ok: true, f: 'Вірно. Гіпотензія розвивається протягом перших 5–10 хв — вазопресор напоготові.' },
+      { t: 'Ввести весь об\'єм швидким болюсом', ok: false, f: 'Неконтрольоване поширення блоку, ризик високого спінального блоку.' },
+      { t: 'Спочатку ввести повітря для перевірки', ok: false, f: 'Пневмоцефалія та головний біль. Ніколи.' }] }
+];
+let spIdx = 0, spDone = false;
+function renderSpinal() {
+  const box = $('#spinalSim'); box.innerHTML = '';
+  const done = el('div', '', '');
+  for (let i = 0; i < spIdx; i++) {
+    done.appendChild(el('div', 'note', `<b>Етап ${i + 1} пройдено.</b> ${SP_STEPS[i].o.find(x => x.ok).t}`));
+  }
+  box.appendChild(done);
+  if (spDone) {
+    box.appendChild(el('div', 'note', '<b>Блок виконано.</b> Оцініть рівень блокади холодовою пробою через 5 хв. Цільовий рівень для кесаревого розтину — T4, для операцій на нижніх кінцівках — T10.'));
+    return;
+  }
+  const s = SP_STEPS[spIdx];
+  box.appendChild(el('div', 'card', `<h4>Етап ${spIdx + 1} з 4 · ${s.q}</h4>`));
+  const wrap = el('div', '', '');
+  wrap.style.marginTop = '10px';
+  s.o.forEach(o => {
+    const b = el('button', 'choice', o.t);
+    b.type = 'button';
+    b.addEventListener('click', () => {
+      if (o.ok) {
+        spIdx++;
+        if (spIdx >= SP_STEPS.length) { spDone = true; report('симулятор: спінальна', 4, 'усі 4 етапи', 'виконано'); }
+        renderSpinal();
+      }
+      else {
+        b.classList.add('bad');
+        b.innerHTML = o.t + `<div style="margin-top:6px;font-size:12px;color:var(--ink-dim)">${o.f}</div>`;
+        b.disabled = true;
+      }
+    });
+    wrap.appendChild(b);
+  });
+  box.appendChild(wrap);
+}
+$('#spReset').addEventListener('click', () => { spIdx = 0; spDone = false; renderSpinal(); });
+
+/* ============ DAY 4 — LAST CALCULATOR ============ */
+const LA = {
+  lidocaine:   { name: 'Лідокаїн 2%',       plain: 4,   epi: 7,   cap: 300, capEpi: 500, mgml: 20,
+                 sx: 'Металевий присмак, периоральне оніміння, шум у вухах, збудження → судоми → кома.' },
+  bupivacaine: { name: 'Бупівакаїн 0,5%',   plain: 2,   epi: 2.5, cap: 150, capEpi: 175, mgml: 5,
+                 sx: 'Кардіотоксичність може випередити неврологічні симптоми: шлуночкові аритмії, рефрактерна ФШ.' },
+  ropivacaine: { name: 'Ропівакаїн 0,75%',  plain: 3,   epi: 3.5, cap: 225, capEpi: 250, mgml: 7.5,
+                 sx: 'Профіль подібний до бупівакаїну, але кардіотоксичність суттєво нижча.' }
+};
+let laSel = 'lidocaine';
+function renderLABtns() {
+  const box = $('#laBtns'); box.innerHTML = '';
+  Object.entries(LA).forEach(([k, d]) => {
+    const b = el('button', 'btn' + (k === laSel ? ' btn-primary' : ''), d.name);
+    b.type = 'button';
+    b.addEventListener('click', () => { laSel = k; renderLABtns(); renderLA(); });
+    box.appendChild(b);
+  });
+}
+function renderLA() {
+  const d = LA[laSel], epi = $('#laEpi').checked, w = patient.weight;
+  const perKg = epi ? d.epi : d.plain;
+  const cap = epi ? d.capEpi : d.cap;
+  const raw = Math.round(w * perKg);
+  const final = Math.min(raw, cap);
+  const capped = raw > cap;
+  $('#laCard').innerHTML = `
+    <div class="grid2">
+      <div class="card">
+        <h4>${d.name}${epi ? ' + адреналін' : ''}</h4>
+        <table style="margin-top:6px">
+          <tr><td>Ліміт на кг</td><td class="n">${String(perKg).replace('.', ',')} мг/кг</td></tr>
+          <tr><td>Розрахунок на ${w} кг</td><td class="n">${raw} мг</td></tr>
+          <tr><td>Абсолютна стеля</td><td class="n">${cap} мг</td></tr>
+          <tr><td><b>Максимальна доза</b></td><td class="n"><b>${final} мг</b></td></tr>
+          <tr><td>Об'єм розчину</td><td class="n">${(final / d.mgml).toFixed(1)} мл</td></tr>
+        </table>
+        ${capped ? '<p style="margin-top:9px;font-size:12px;color:var(--amber)">Спрацювала абсолютна стеля — формула на кг дала б ' + raw + ' мг.</p>' : ''}
+      </div>
+      <div class="card"><h4>Ознаки токсичності</h4><p>${d.sx}</p>
+        <p style="margin-top:9px;font-size:12px;color:var(--ink-faint)">Аспіраційна проба перед кожні 5 мл,
+        введення дробно, вербальний контакт із пацієнтом протягом усієї ін'єкції.</p></div>
+    </div>`;
+}
+$('#laEpi').addEventListener('change', renderLA);
+
+/* ============ DAY 5 — ABCDE ============ */
+const ABCDE = [
+  { k: 'A', t: 'Airway — дихальні шляхи',
+    s: 'Пацієнт без свідомості після падіння. Чути клекотання, язик западає, рухи грудної клітки є.',
+    o: [
+      { t: 'Санація ротоглотки, висування щелепи зі стабілізацією шиї, повітровід', ok: true, f: 'Вірно. При травмі — jaw thrust без розгинання шиї.' },
+      { t: 'Негайна конікотомія', ok: false, f: 'Інвазивно й передчасно — прості маневри ще не випробувані.' },
+      { t: 'Перейти до оцінки дихання', ok: false, f: 'A не вирішена. Обструкція вбиває швидше за все інше.' }] },
+  { k: 'B', t: 'Breathing — дихання',
+    s: 'ЧД 32/хв, SpO₂ 86% на повітрі, справа дихання не вислуховується, перкуторно — тимпаніт, трахея зміщена вліво.',
+    o: [
+      { t: 'Кисень 15 л/хв + негайна голкова декомпресія у 2-му міжребер\'ї справа', ok: true, f: 'Вірно. Напружений пневмоторакс — клінічний діагноз, рентген не чекають.' },
+      { t: 'Спочатку рентген грудної клітки', ok: false, f: 'Пацієнт помре під час очікування знімка.' },
+      { t: 'Інтубація трахеї', ok: false, f: 'Вентиляція з позитивним тиском різко погіршить напружений пневмоторакс.' }] },
+  { k: 'C', t: 'Circulation — кровообіг',
+    s: 'ЧСС 132, АТ 78/45, капілярне наповнення 4 с, кінцівки холодні, живіт напружений.',
+    o: [
+      { t: 'Два катетери великого діаметру, кристалоїди болюсом, кров за протоколом, пошук джерела', ok: true, f: 'Вірно. Паралельно — контроль джерела кровотечі, а не лише інфузія.' },
+      { t: 'Ввести вазопресор і спостерігати', ok: false, f: 'Вазопресор без волемічного заповнення при кровотечі маскує шок.' },
+      { t: 'Дочекатися результатів аналізів', ok: false, f: 'Геморагічний шок лікується негайно, а не після лабораторії.' }] },
+  { k: 'D', t: 'Disability — неврологічний статус',
+    s: 'GCS 9 (E2 V3 M4), зіниці 3 мм D=S, реакція збережена. Глюкоза не вимірювалась.',
+    o: [
+      { t: 'Виміряти глюкозу крові, оцінити GCS у динаміці, розглянути інтубацію при GCS ≤ 8', ok: true, f: 'Вірно. Гіпоглікемія — найшвидше оборотна причина порушення свідомості.' },
+      { t: 'Ввести манітол емпірично', ok: false, f: 'Без ознак вклинення та нейровізуалізації — необґрунтовано.' },
+      { t: 'Перейти до огляду шкіри', ok: false, f: 'Глюкоза не перевірена — пропущена оборотна причина.' }] },
+  { k: 'E', t: 'Exposure — огляд і середовище',
+    s: 'Пацієнт роздягнений для огляду. Температура тіла 34,8 °C, на спині — рана, що кровоточить.',
+    o: [
+      { t: 'Оглянути повністю (лог-рол), зупинити кровотечу, активно зігріти, накрити', ok: true, f: 'Вірно. Гіпотермія посилює коагулопатію — складова летальної тріади.' },
+      { t: 'Залишити пацієнта відкритим для подальшого огляду', ok: false, f: 'Прогресуюча гіпотермія погіршує згортання та результат.' },
+      { t: 'Огляд спини відкласти', ok: false, f: 'Пропущені пошкодження спини — класична причина недіагностованої кровотечі.' }] }
+];
+let abIdx = 0;
+function renderABCDE() {
+  const box = $('#abcdeSim'); box.innerHTML = '';
+  const nav = el('div', '', '');
+  nav.style.cssText = 'display:flex;gap:6px;margin-bottom:14px;flex-wrap:wrap';
+  ABCDE.forEach((a, i) => {
+    const chip = el('span', 'chip' + (i < abIdx ? ' ok' : ''), a.k);
+    chip.style.cssText += ';padding:5px 11px;font-size:12px;font-weight:700';
+    if (i === abIdx) { chip.style.borderColor = 'var(--phos)'; chip.style.color = 'var(--phos)'; }
+    nav.appendChild(chip);
+  });
+  box.appendChild(nav);
+
+  if (abIdx >= ABCDE.length) {
+    box.appendChild(el('div', 'note', '<b>Первинний огляд завершено.</b> Переходьте до вторинного огляду та повторної оцінки ABCDE — при будь-якому погіршенні починайте знову з A.'));
+    const r = el('button', 'btn btn-ghost', 'Пройти знову');
+    r.style.cssText = 'margin-top:12px;font-size:12px;padding:6px 12px';
+    r.addEventListener('click', () => { abIdx = 0; renderABCDE(); });
+    box.appendChild(r);
+    return;
+  }
+
+  const a = ABCDE[abIdx];
+  box.appendChild(el('div', 'card', `<h4>${a.t}</h4><p>${a.s}</p>`));
+  const wrap = el('div', ''); wrap.style.marginTop = '10px';
+  a.o.forEach(o => {
+    const b = el('button', 'choice', o.t);
+    b.type = 'button';
+    b.addEventListener('click', () => {
+      if (o.ok) {
+        abIdx++;
+        if (abIdx >= ABCDE.length) report('тренажер: ABCDE', 5, 'усі 5 етапів', 'виконано');
+        renderABCDE();
+      }
+      else {
+        b.classList.add('bad');
+        b.innerHTML = o.t + `<div style="margin-top:6px;font-size:12px;color:var(--ink-dim)">${o.f}</div>`;
+        b.disabled = true;
+      }
+    });
+    wrap.appendChild(b);
+  });
+  box.appendChild(wrap);
+}
+
+/* ============ DAY 5 — CPR ============ */
+const cpr = { rhythm: 'VF', cycle: 1, shocks: 0, epi: false, amio: false, over: false, lastWasCompression: false };
+function cprReset() {
+  cpr.rhythm = Math.random() < 0.5 ? 'VF' : 'PEA';
+  cpr.cycle = 1; cpr.shocks = 0; cpr.epi = false; cpr.amio = false; cpr.over = false;
+  $('#cpLog').innerHTML = '<div class="in">Зупинка кровообігу. Оберіть дію.</div>';
+  renderCPR();
+}
+function renderCPR() {
+  $('#cpRhythm').textContent = cpr.rhythm === 'VF' ? 'ФШ / ШТ без пульсу' : 'ЕАБП / асистолія';
+  $('#cpCycle').textContent = cpr.cycle;
+  $('#cpShocks').textContent = cpr.shocks;
+  $('#cpEpi').textContent = cpr.epi ? 'введено' : 'не введено';
+  $('#cpEpi').className = 'chip' + (cpr.epi ? ' ok' : '');
+  $('#cpAmio').textContent = cpr.amio ? 'введено' : 'не введено';
+  $('#cpAmio').className = 'chip' + (cpr.amio ? ' ok' : '');
+
+  const box = $('#cpActions'); box.innerHTML = '';
+  if (cpr.over) return;
+
+  const acts = [
+    { id: 'compress', t: 'Компресії 2 хв' },
+    { id: 'shock',    t: 'Розряд 200 Дж' },
+    { id: 'epi',      t: 'Адреналін 1 мг' },
+    { id: 'amio',     t: 'Аміодарон 300 мг' },
+    { id: 'causes',   t: 'Оборотні причини 4Г/4Т' },
+    { id: 'check',    t: 'Аналіз ритму' }
+  ];
+  acts.forEach(a => {
+    const b = el('button', 'btn', a.t);
+    b.type = 'button';
+    b.addEventListener('click', () => cprAct(a.id));
+    box.appendChild(b);
+  });
+}
+function cprAct(id) {
+  const shockable = cpr.rhythm === 'VF';
+  switch (id) {
+    case 'compress':
+      cpr.cycle++;
+      cpr.lastWasCompression = true;
+      logAdd('#cpLog', '✓ Компресії 100–120/хв, глибина 5–6 см, 2 хв. Зміна реаніматора.', 'ok');
+      if (cpr.shocks >= 3 && cpr.epi && cpr.amio && shockable && Math.random() < 0.6) {
+        cpr.over = true;
+        report('симулятор: СЛР', 5, 'розрядів: ' + cpr.shocks + ', циклів: ' + cpr.cycle, 'ВСК досягнуто');
+        logAdd('#cpLog', '★ ВІДНОВЛЕННЯ СПОНТАННОГО КРОВООБІГУ. Постреанімаційна допомога: SpO₂ 94–98%, нормокапнія, ЕКГ у 12 відведеннях, цільова температура.', 'ok');
+      }
+      break;
+    case 'shock':
+      if (shockable) {
+        cpr.shocks++;
+        logAdd('#cpLog', '✓ Розряд ' + (cpr.shocks === 1 ? '150' : '200') + ' Дж біфазний. Негайно поновити компресії, не перевіряючи пульс.', 'ok');
+      } else {
+        logAdd('#cpLog', '✗ ЕАБП/асистолія НЕ підлягає дефібриляції. Розряд лише перериває перфузію.', 'er');
+      }
+      break;
+    case 'epi':
+      if (cpr.epi) { logAdd('#cpLog', '✗ Адреналін уже введено в цьому циклі. Інтервал — 3–5 хв.', 'er'); break; }
+      cpr.epi = true;
+      logAdd('#cpLog', shockable
+        ? '✓ Адреналін 1 мг в/в після 3-го розряду, далі кожні 3–5 хв.'
+        : '✓ Адреналін 1 мг в/в негайно — при неритмах, що не шокуються, вводиться одразу.', 'ok');
+      break;
+    case 'amio':
+      if (!shockable) { logAdd('#cpLog', '✗ Аміодарон показаний лише при ФШ/ШТ, рефрактерних до розрядів.', 'er'); break; }
+      if (cpr.shocks < 3) { logAdd('#cpLog', '✗ Зарано. Аміодарон 300 мг вводиться після 3-го неефективного розряду.', 'er'); break; }
+      cpr.amio = true;
+      logAdd('#cpLog', '✓ Аміодарон 300 мг в/в болюсно. Повторно 150 мг після 5-го розряду.', 'ok');
+      break;
+    case 'causes':
+      logAdd('#cpLog', '✓ 4Г: гіпоксія, гіповолемія, гіпо-/гіперкаліємія, гіпотермія. 4Т: тромбоз, тампонада, токсини, напружений пневмоторакс.', 'ok');
+      break;
+    case 'check':
+      if (!cpr.lastWasCompression) {
+        logAdd('#cpLog', '✗ Аналіз ритму без попередніх 2 хв компресій. Перерви мають бути мінімальними.', 'er');
+        break;
+      }
+      cpr.lastWasCompression = false;
+      if (shockable && cpr.shocks >= 2 && Math.random() < 0.35) {
+        cpr.rhythm = 'PEA';
+        logAdd('#cpLog', '! Ритм змінився на організований без пульсу — ЕАБП. Перехід на неритм, що не шокується.', 'in');
+      } else {
+        logAdd('#cpLog', '✓ Аналіз ритму ≤ 5 с. Ритм: ' + (shockable ? 'ФШ зберігається' : 'ЕАБП зберігається') + '.', 'ok');
+      }
+      break;
+  }
+  renderCPR();
+}
+$('#cpReset').addEventListener('click', cprReset);
+
+/* ============ DAY 5 — QUIZ ============ */
+const QUIZ = [
+  { q: 'Який показник найшвидше підтверджує правильне положення ендотрахеальної трубки?',
+    o: ['Аускультація легень', 'Капнографія (EtCO₂)', 'Пульсоксиметрія', 'Запотівання трубки'], c: 1,
+    e: 'Стійка капнографічна крива протягом 6 вдихів — золотий стандарт. SpO₂ реагує із затримкою 30–60 с.' },
+  { q: 'Дихальний об\'єм при протективній вентиляції розраховується від:',
+    o: ['Фактичної маси тіла', 'Ідеальної маси тіла (IBW)', 'Індексу маси тіла', 'Площі поверхні тіла'], c: 1,
+    e: 'Розмір легень визначається зростом і статтю, а не фактичною вагою. Vt 6–8 мл/кг IBW.' },
+  { q: 'Максимальна доза лідокаїну з адреналіном у пацієнта вагою 100 кг:',
+    o: ['700 мг', '500 мг', '400 мг', '1000 мг'], c: 1,
+    e: 'Формула дала б 7 мг/кг × 100 = 700 мг, але абсолютна стеля — 500 мг. Стеля завжди має пріоритет.' },
+  { q: 'Перша дія при підозрі на LAST після судом і зупинки кровообігу:',
+    o: ['Пропофол в/в', 'Ліпідна емульсія 20% болюсно 1,5 мл/кг', 'Вазопресин 40 ОД', 'Лідокаїн як антиаритмік'], c: 1,
+    e: 'Ліпідна емульсія — специфічна терапія. Пропофол не є її замінником; вазопресин і лідокаїн протипоказані.' },
+  { q: 'Люмбальна пункція у дорослих виконується не вище:',
+    o: ['T12–L1', 'L1–L2', 'L2–L3', 'L3–L4'], c: 2,
+    e: 'Спинний мозок закінчується на рівні L1–L2. Пункція нижче L2 (найчастіше L3–L4) уникає його травми.' },
+  { q: 'Сукцинілхолін при ларингоспазмі вводиться в дозі:',
+    o: ['1,5 мг/кг', '0,5 мг/кг з атропіном', '2 мг/кг', '0,1 мг/кг'], c: 1,
+    e: 'Мала доза достатня для розкриття голосової щілини. Атропін обов\'язковий через ризик брадикардії.' },
+  { q: 'Який ритм НЕ підлягає дефібриляції?',
+    o: ['Фібриляція шлуночків', 'Шлуночкова тахікардія без пульсу', 'Електрична активність без пульсу', 'Поліморфна ШТ'], c: 2,
+    e: 'ЕАБП та асистолія — неритми, що не шокуються. Лікування: компресії, адреналін негайно, пошук 4Г/4Т.' },
+  { q: 'Адреналін при ФШ вводиться:',
+    o: ['Одразу до першого розряду', 'Після 3-го неефективного розряду', 'Тільки після аміодарону', 'Не вводиться при ФШ'], c: 1,
+    e: 'При ритмах, що шокуються, — після 3-го розряду. При ЕАБП/асистолії — негайно.' },
+  { q: 'Клас Mallampati IV означає:',
+    o: ['Видно язичок і дужки', 'Видно лише тверде піднебіння', 'Видно голосову щілину', 'Видно надгортанник'], c: 1,
+    e: 'Візуалізується лише тверде піднебіння — високий ризик складної інтубації.' },
+  { q: 'Плоска пульсоксиметрична крива при SpO₂ 98% означає:',
+    o: ['Відмінну оксигенацію', 'Показнику не можна довіряти', 'Гіпервентиляцію', 'Норму для наркозу'], c: 1,
+    e: 'Без пульсової хвилі цифра є артефактом. Оцінюйте форму кривої, а не лише число.' }
+];
+function renderQuiz() {
+  const box = $('#quiz'); box.innerHTML = '';
+  QUIZ.forEach((q, i) => {
+    const d = el('div', 'q');
+    d.innerHTML = `<div class="qt">${i + 1}. ${q.q}</div>`;
+    q.o.forEach((o, j) => {
+      const lab = el('label', '');
+      lab.innerHTML = `<input type="radio" name="q${i}" value="${j}"><span>${o}</span>`;
+      d.appendChild(lab);
+    });
+    d.appendChild(el('div', 'exp hidden', q.e));
+    box.appendChild(d);
+  });
+  $('#quizResult').classList.add('hidden');
+}
+$('#quizSubmit').addEventListener('click', () => {
+  let score = 0;
+  $$('#quiz .q').forEach((d, i) => {
+    const picked = d.querySelector('input:checked');
+    d.querySelectorAll('label').forEach((lab, j) => {
+      lab.classList.remove('correct', 'wrong');
+      if (j === QUIZ[i].c) lab.classList.add('correct');
+      else if (picked && +picked.value === j) lab.classList.add('wrong');
+      lab.querySelector('input').disabled = true;
+    });
+    d.querySelector('.exp').classList.remove('hidden');
+    if (picked && +picked.value === QUIZ[i].c) score++;
+  });
+  $('#quizScore').textContent = score + ' / ' + QUIZ.length;
+  const wrongList = [];
+  $$('#quiz .q').forEach((d, i) => {
+    const picked = d.querySelector('input:checked');
+    if (!picked || +picked.value !== QUIZ[i].c) wrongList.push(i + 1);
+  });
+  report('тест', 5, wrongList.length ? 'помилки в питаннях: ' + wrongList.join(', ') : 'без помилок', '', score);
+  const v = $('#quizVerdict');
+  if (score >= 9) v.innerHTML = 'Відмінний результат. Матеріал засвоєно.';
+  else if (score >= 7) v.innerHTML = 'Тест складено. Перегляньте пояснення до помилок.';
+  else v.innerHTML = 'Тест не складено. Поверніться до відповідних модулів і спробуйте знову.';
+  v.style.color = score >= 7 ? 'var(--phos)' : 'var(--amber)';
+  $('#quizResult').classList.remove('hidden');
+  if ($('#quizResult').scrollIntoView) $('#quizResult').scrollIntoView({ behavior: 'smooth', block: 'center' });
+});
+$('#quizReset').addEventListener('click', renderQuiz);
+
+/* ============ BOOT ============ */
+sizeCanvas();
+applyPreset('normal');
+renderElectrodes();
+renderMallampati();
+renderChecklist();
+renderVent();
+renderDrugBtns();
+renderDrug();
+renderLS();
+renderSpinal();
+renderLABtns();
+renderLA();
+renderABCDE();
+cprReset();
+renderQuiz();
+requestAnimationFrame(draw);
+</script>
+</body>
+</html>
