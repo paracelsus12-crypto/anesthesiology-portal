@@ -1,0 +1,2530 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Інтернатура з анестезіології — Тиждень 2</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#0A0E14;
+  --ink-2:#111823;
+  --ink-3:#18212E;
+  --rule:#22303F;
+  --rule-soft:#1A2431;
+  --paper:#E8EDF2;
+  --paper-dim:#8A9BAD;
+  --paper-faint:#576878;
+  --trace:#3DDC91;
+  --pleth:#3AC7E8;
+  --press:#F2A33C;
+  --alarm:#FF5C5C;
+  --violet:#A78BFA;
+  --r:3px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-text-size-adjust:100%}
+body{
+  background:var(--ink);
+  color:var(--paper);
+  font-family:'Inter',system-ui,sans-serif;
+  font-size:14px;
+  line-height:1.5;
+  min-height:100vh;
+  overflow-x:hidden;
+}
+/* millimetre-paper substrate, like an anaesthetic chart */
+body::before{
+  content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
+  background-image:
+    linear-gradient(var(--rule-soft) 1px,transparent 1px),
+    linear-gradient(90deg,var(--rule-soft) 1px,transparent 1px);
+  background-size:56px 56px;
+  opacity:.5;
+  mask-image:radial-gradient(ellipse 90% 70% at 50% 0%,#000 30%,transparent 100%);
+}
+#app{position:relative;z-index:1}
+h1,h2,h3,h4{font-family:'Archivo',sans-serif;letter-spacing:-.02em;line-height:1.15}
+button{font-family:inherit;font-size:inherit;color:inherit;background:none;border:none;cursor:pointer}
+input,select,textarea{font-family:inherit;font-size:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--pleth);outline-offset:2px}
+.mono{font-family:'IBM Plex Mono',monospace;font-variant-numeric:tabular-nums}
+
+/* ---------- Header ---------- */
+.topbar{
+  position:sticky;top:0;z-index:40;
+  background:rgba(10,14,20,.92);
+  backdrop-filter:blur(12px);
+  border-bottom:1px solid var(--rule);
+}
+.topbar-in{
+  max-width:1400px;margin:0 auto;padding:12px 20px;
+  display:flex;align-items:center;gap:20px;flex-wrap:wrap;
+}
+.brand{display:flex;align-items:center;gap:11px;margin-right:auto}
+.brand-mark{
+  width:34px;height:34px;flex:none;border:1px solid var(--rule);
+  border-radius:var(--r);position:relative;overflow:hidden;background:var(--ink-2);
+}
+.brand-mark svg{position:absolute;inset:0;width:100%;height:100%}
+.brand-txt strong{
+  display:block;font-family:'Archivo';font-weight:800;font-size:14px;letter-spacing:-.01em;
+}
+.brand-txt span{
+  display:block;font-size:10px;color:var(--paper-faint);
+  text-transform:uppercase;letter-spacing:.13em;font-weight:600;margin-top:1px;
+}
+.role-switch{display:flex;border:1px solid var(--rule);border-radius:var(--r);overflow:hidden}
+.role-switch button{
+  padding:7px 13px;font-size:11px;font-weight:600;color:var(--paper-dim);
+  text-transform:uppercase;letter-spacing:.07em;transition:.15s;white-space:nowrap;
+}
+.role-switch button + button{border-left:1px solid var(--rule)}
+.role-switch button[aria-pressed="true"]{background:var(--paper);color:var(--ink)}
+.role-switch button:hover:not([aria-pressed="true"]){background:var(--ink-3);color:var(--paper)}
+.whoami{
+  display:flex;align-items:center;gap:9px;padding-left:16px;
+  border-left:1px solid var(--rule);
+}
+.avatar{
+  width:28px;height:28px;border-radius:50%;flex:none;
+  display:grid;place-items:center;font-size:10px;font-weight:700;
+  font-family:'Archivo';background:var(--ink-3);border:1px solid var(--rule);
+}
+.whoami-txt{font-size:11px;line-height:1.35}
+.whoami-txt b{display:block;font-weight:600}
+.whoami-txt span{color:var(--paper-faint)}
+
+/* ---------- Nav ---------- */
+.modnav{border-bottom:1px solid var(--rule);background:var(--ink);overflow-x:auto;scrollbar-width:none}
+.modnav::-webkit-scrollbar{display:none}
+.modnav-in{max-width:1400px;margin:0 auto;padding:0 20px;display:flex;gap:2px}
+.modnav button{
+  padding:11px 15px;font-size:12px;font-weight:600;color:var(--paper-dim);
+  border-bottom:2px solid transparent;white-space:nowrap;transition:.15s;
+  display:flex;align-items:center;gap:7px;
+}
+.modnav button:hover{color:var(--paper)}
+.modnav button[aria-current="page"]{color:var(--paper);border-bottom-color:var(--trace)}
+.modnav .badge{
+  font-size:9.5px;font-weight:700;padding:1px 5px;border-radius:20px;
+  background:var(--alarm);color:#fff;font-family:'IBM Plex Mono';
+}
+.modnav .badge.quiet{background:var(--ink-3);color:var(--paper-dim)}
+
+/* ---------- Layout ---------- */
+main{max-width:1400px;margin:0 auto;padding:24px 20px 72px}
+.pagehead{margin-bottom:22px}
+.eyebrow{
+  font-size:10px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;
+  color:var(--paper-faint);margin-bottom:7px;display:flex;align-items:center;gap:8px;
+}
+.eyebrow::after{content:'';flex:1;height:1px;background:var(--rule)}
+.pagehead h2{font-size:26px;font-weight:800}
+.pagehead p{color:var(--paper-dim);font-size:13px;margin-top:6px;max-width:66ch}
+
+.grid{display:grid;gap:16px}
+.g-2{grid-template-columns:repeat(2,1fr)}
+.g-3{grid-template-columns:repeat(3,1fr)}
+.g-side{grid-template-columns:1fr 330px;align-items:start}
+@media(max-width:1080px){.g-side,.g-3{grid-template-columns:1fr}.g-3>*{min-width:0}}
+@media(max-width:720px){.g-2{grid-template-columns:1fr}}
+
+.card{background:var(--ink-2);border:1px solid var(--rule);border-radius:var(--r)}
+.card-h{
+  padding:13px 16px;border-bottom:1px solid var(--rule);
+  display:flex;align-items:center;gap:10px;flex-wrap:wrap;
+}
+.card-h h3{font-size:13px;font-weight:700;letter-spacing:0}
+.card-h .sub{font-size:11px;color:var(--paper-faint);width:100%;margin-top:-2px}
+.card-b{padding:16px}
+.card-b.tight{padding:0}
+
+/* ---------- Buttons ---------- */
+.btn{
+  padding:8px 15px;border-radius:var(--r);font-size:12px;font-weight:600;
+  border:1px solid var(--rule);transition:.15s;display:inline-flex;
+  align-items:center;gap:7px;justify-content:center;
+}
+.btn:hover{border-color:var(--paper-faint);background:var(--ink-3)}
+.btn-go{background:var(--trace);color:var(--ink);border-color:var(--trace);font-weight:700}
+.btn-go:hover{background:#5FE8A9;border-color:#5FE8A9}
+.btn-alarm{background:var(--alarm);color:#fff;border-color:var(--alarm);font-weight:700}
+.btn-alarm:hover{background:#FF7878;border-color:#FF7878}
+.btn:disabled{opacity:.35;cursor:not-allowed}
+.btn-sm{padding:5px 10px;font-size:11px}
+.btn-block{width:100%}
+
+/* ---------- Bits ---------- */
+.tag{
+  display:inline-flex;align-items:center;gap:5px;padding:3px 8px;border-radius:2px;
+  font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;
+  border:1px solid;font-family:'IBM Plex Mono';
+}
+.t-go{color:var(--trace);border-color:rgba(61,220,145,.35);background:rgba(61,220,145,.08)}
+.t-wait{color:var(--press);border-color:rgba(242,163,60,.35);background:rgba(242,163,60,.08)}
+.t-stop{color:var(--alarm);border-color:rgba(255,92,92,.35);background:rgba(255,92,92,.08)}
+.t-mute{color:var(--paper-faint);border-color:var(--rule);background:var(--ink-3)}
+.t-info{color:var(--pleth);border-color:rgba(58,199,232,.35);background:rgba(58,199,232,.08)}
+
+.stat{padding:14px 16px;border:1px solid var(--rule);border-radius:var(--r);background:var(--ink-2)}
+.stat-l{font-size:10px;text-transform:uppercase;letter-spacing:.12em;color:var(--paper-faint);font-weight:700}
+.stat-v{font-family:'IBM Plex Mono';font-size:27px;font-weight:600;margin-top:5px;letter-spacing:-.02em}
+.stat-n{font-size:11px;color:var(--paper-faint);margin-top:3px}
+
+.meter{height:3px;background:var(--ink-3);border-radius:2px;overflow:hidden;margin-top:9px}
+.meter i{display:block;height:100%;background:var(--trace);transition:width .5s cubic-bezier(.2,.8,.2,1)}
+
+.empty{padding:34px 16px;text-align:center;color:var(--paper-faint);font-size:12px}
+.empty b{display:block;color:var(--paper-dim);font-weight:600;margin-bottom:5px;font-size:13px}
+
+.field{margin-bottom:13px}
+.field label{
+  display:block;font-size:10px;font-weight:700;text-transform:uppercase;
+  letter-spacing:.1em;color:var(--paper-faint);margin-bottom:5px;
+}
+.field input,.field select,.field textarea{
+  width:100%;padding:8px 10px;background:var(--ink);
+  border:1px solid var(--rule);border-radius:var(--r);
+}
+.field input:focus,.field select:focus,.field textarea:focus{border-color:var(--pleth);outline:none}
+.field textarea{resize:vertical;min-height:70px;line-height:1.55}
+.field .hint{font-size:10.5px;color:var(--paper-faint);margin-top:4px}
+
+table{width:100%;border-collapse:collapse;font-size:12px}
+th{
+  text-align:left;padding:9px 14px;font-size:10px;font-weight:700;
+  text-transform:uppercase;letter-spacing:.1em;color:var(--paper-faint);
+  border-bottom:1px solid var(--rule);white-space:nowrap;
+}
+td{padding:11px 14px;border-bottom:1px solid var(--rule-soft);vertical-align:middle}
+tbody tr:last-child td{border-bottom:none}
+tbody tr:hover{background:var(--ink-3)}
+
+.scroll-x{overflow-x:auto;scrollbar-width:thin}
+::-webkit-scrollbar{width:7px;height:7px}
+::-webkit-scrollbar-track{background:var(--ink)}
+::-webkit-scrollbar-thumb{background:var(--rule);border-radius:4px}
+::-webkit-scrollbar-thumb:hover{background:var(--paper-faint)}
+
+/* ---------- Timeline (signature element) ---------- */
+.chart{position:relative;background:var(--ink);border:1px solid var(--rule);border-radius:var(--r);overflow:hidden}
+.chart-scale{
+  display:flex;border-bottom:1px solid var(--rule);
+  font-family:'IBM Plex Mono';font-size:9.5px;color:var(--paper-faint);
+  background:var(--ink-2);
+}
+.chart-scale div{flex:1;padding:5px 0;text-align:center;border-right:1px solid var(--rule-soft)}
+.chart-scale div:last-child{border-right:none}
+.chart-rows{position:relative}
+.crow{display:flex;align-items:stretch;border-bottom:1px solid var(--rule-soft);min-height:46px}
+.crow:last-child{border-bottom:none}
+.crow-l{
+  width:118px;flex:none;padding:9px 12px;border-right:1px solid var(--rule);
+  display:flex;flex-direction:column;justify-content:center;background:var(--ink-2);
+}
+.crow-l b{font-size:11px;font-weight:700;font-family:'Archivo'}
+.crow-l span{font-size:9.5px;color:var(--paper-faint);font-family:'IBM Plex Mono';margin-top:1px}
+.crow-track{flex:1;position:relative;padding:6px 0;min-width:0}
+.blk{
+  position:absolute;top:6px;bottom:6px;border-radius:2px;padding:5px 9px;
+  font-size:10.5px;font-weight:600;overflow:hidden;cursor:pointer;
+  border-left:2px solid;transition:.15s;display:flex;flex-direction:column;justify-content:center;
+}
+.blk:hover{filter:brightness(1.35);z-index:2}
+.blk small{display:block;font-family:'IBM Plex Mono';font-size:9px;opacity:.65;font-weight:400}
+.blk.k-briefing{background:rgba(167,139,250,.14);border-color:var(--violet);color:#C4B5FD}
+.blk.k-practice{background:rgba(61,220,145,.13);border-color:var(--trace);color:#8FF0C2}
+.blk.k-simulation{background:rgba(255,92,92,.13);border-color:var(--alarm);color:#FF9E9E}
+.blk.k-debrief{background:rgba(58,199,232,.13);border-color:var(--pleth);color:#8FDDF2}
+.nowline{position:absolute;top:0;bottom:0;width:1px;background:var(--press);z-index:3;pointer-events:none}
+.nowline::before{
+  content:'ЗАРАЗ';position:absolute;top:-1px;left:3px;font-size:8px;font-weight:700;
+  color:var(--press);font-family:'IBM Plex Mono';letter-spacing:.1em;
+}
+
+/* ---------- Checklist ---------- */
+.chk-sec{border-bottom:1px solid var(--rule)}
+.chk-sec:last-child{border-bottom:none}
+.chk-sec-h{
+  padding:9px 16px;background:var(--ink-3);font-size:10px;font-weight:700;
+  text-transform:uppercase;letter-spacing:.12em;color:var(--paper-dim);
+  display:flex;justify-content:space-between;align-items:center;
+}
+.chk-item{
+  display:flex;gap:11px;padding:11px 16px;border-bottom:1px solid var(--rule-soft);
+  cursor:pointer;transition:.12s;align-items:flex-start;
+}
+.chk-item:last-child{border-bottom:none}
+.chk-item:hover{background:var(--ink-3)}
+.chk-box{
+  width:17px;height:17px;flex:none;border:1px solid var(--rule);border-radius:2px;
+  margin-top:1px;display:grid;place-items:center;transition:.12s;background:var(--ink);
+}
+.chk-item[data-on="1"] .chk-box{background:var(--trace);border-color:var(--trace)}
+.chk-box svg{width:11px;height:11px;stroke:var(--ink);stroke-width:3.5;fill:none;opacity:0}
+.chk-item[data-on="1"] .chk-box svg{opacity:1}
+.chk-txt b{display:block;font-size:12.5px;font-weight:600}
+.chk-item[data-on="1"] .chk-txt b{color:var(--paper-dim)}
+.chk-txt span{display:block;font-size:11px;color:var(--paper-faint);margin-top:2px;line-height:1.45}
+.crit{
+  font-size:8.5px;font-weight:700;color:var(--alarm);font-family:'IBM Plex Mono';
+  letter-spacing:.1em;margin-left:6px;vertical-align:1px;
+}
+.warnbar{
+  padding:11px 16px;background:rgba(242,163,60,.09);border-left:2px solid var(--press);
+  font-size:11.5px;color:#F8CE93;display:flex;gap:9px;align-items:flex-start;line-height:1.5;
+}
+.warnbar svg{width:15px;height:15px;flex:none;margin-top:1px;stroke:var(--press);fill:none;stroke-width:2}
+
+/* ---------- Scenario ---------- */
+.sim-stage{background:var(--ink);border:1px solid var(--rule);border-radius:var(--r);overflow:hidden}
+.sim-vitals{
+  display:grid;grid-template-columns:repeat(4,1fr);
+  border-bottom:1px solid var(--rule);background:#05080C;
+}
+.sv{padding:11px 14px;border-right:1px solid var(--rule-soft)}
+.sv:last-child{border-right:none}
+.sv-l{font-size:9px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;opacity:.65}
+.sv-v{font-family:'IBM Plex Mono';font-size:25px;font-weight:600;line-height:1.1;margin-top:3px}
+.sv.hr{color:var(--trace)} .sv.spo2{color:var(--pleth)}
+.sv.bp{color:var(--press)} .sv.etco2{color:var(--violet)}
+.sv.crit .sv-v{color:var(--alarm);animation:flash 1.1s infinite}
+@keyframes flash{0%,100%{opacity:1}50%{opacity:.4}}
+.sim-clock{
+  height:2px;background:var(--ink-3);position:relative;overflow:hidden;
+}
+.sim-clock i{
+  display:block;height:100%;background:var(--press);
+  transition:width 1s linear;
+}
+.sim-clock.hot i{background:var(--alarm)}
+.sim-body{padding:18px}
+.sim-prompt{font-size:14px;line-height:1.6;margin-bottom:15px}
+.sim-prompt b{color:var(--press)}
+.sim-opt{
+  display:block;width:100%;text-align:left;padding:12px 14px;margin-bottom:8px;
+  background:var(--ink-2);border:1px solid var(--rule);border-radius:var(--r);
+  font-size:12.5px;transition:.15s;line-height:1.5;
+}
+.sim-opt:hover:not(:disabled){border-color:var(--pleth);background:var(--ink-3)}
+.sim-opt .role{
+  display:block;font-size:9px;font-weight:700;letter-spacing:.13em;
+  text-transform:uppercase;color:var(--paper-faint);margin-bottom:4px;font-family:'IBM Plex Mono';
+}
+.sim-opt.picked-ok{border-color:var(--trace);background:rgba(61,220,145,.09)}
+.sim-opt.picked-no{border-color:var(--alarm);background:rgba(255,92,92,.09)}
+.sim-log{
+  border-top:1px solid var(--rule);max-height:180px;overflow-y:auto;
+  font-family:'IBM Plex Mono';font-size:11px;
+}
+.sim-log-i{padding:9px 16px;border-bottom:1px solid var(--rule-soft);display:flex;gap:10px;line-height:1.5}
+.sim-log-i:last-child{border-bottom:none}
+.sim-log-i time{color:var(--paper-faint);flex:none}
+.sim-log-i.ok{color:#8FF0C2} .sim-log-i.no{color:#FF9E9E} .sim-log-i.to{color:var(--press)}
+
+/* ---------- Verify queue ---------- */
+.vq{border-bottom:1px solid var(--rule-soft);padding:13px 16px;display:flex;gap:13px;align-items:flex-start}
+.vq:last-child{border-bottom:none}
+.vq:hover{background:var(--ink-3)}
+.vq-main{flex:1;min-width:0}
+.vq-main b{font-size:12.5px;font-weight:600;display:block}
+.vq-meta{font-size:10.5px;color:var(--paper-faint);margin-top:3px;font-family:'IBM Plex Mono'}
+.vq-act{display:flex;gap:6px;flex:none}
+
+/* ---------- Vitals sparkline ---------- */
+.spark{width:100%;height:96px;display:block}
+
+.toast{
+  position:fixed;bottom:20px;left:50%;transform:translateX(-50%) translateY(90px);
+  background:var(--ink-3);border:1px solid var(--rule);border-radius:var(--r);
+  padding:11px 18px;font-size:12.5px;font-weight:600;z-index:90;
+  transition:transform .3s cubic-bezier(.2,.8,.2,1);box-shadow:0 8px 28px rgba(0,0,0,.6);
+  display:flex;align-items:center;gap:9px;max-width:calc(100vw - 32px);
+}
+.toast.on{transform:translateX(-50%) translateY(0)}
+.toast::before{content:'';width:5px;height:5px;border-radius:50%;background:var(--trace);flex:none}
+.toast.warn::before{background:var(--press)}
+.toast.bad::before{background:var(--alarm)}
+
+@media(max-width:640px){
+  .topbar-in{padding:10px 14px;gap:12px}
+  .whoami{padding-left:0;border-left:none}
+  main{padding:18px 14px 60px}
+  .pagehead h2{font-size:21px}
+  .crow-l{width:88px;padding:7px 9px}
+  .sim-vitals{grid-template-columns:repeat(2,1fr)}
+  .sv{border-bottom:1px solid var(--rule-soft)}
+  .stat-v{font-size:23px}
+}
+@media(prefers-reduced-motion:reduce){
+  *{animation-duration:.01ms!important;transition-duration:.01ms!important}
+}
+
+/* ---------- ACCESS GATE ---------- */
+#gate{position:fixed;inset:0;z-index:400;background:var(--ink,#0f1419);
+  display:flex;align-items:center;justify-content:center;padding:24px;overflow-y:auto}
+.gate-card{width:100%;max-width:430px;background:var(--panel,#171d24);
+  border:1px solid var(--line,#2a333d);border-radius:14px;padding:30px}
+.gate-head{display:flex;align-items:center;gap:12px;margin-bottom:20px}
+.gate-head svg{width:34px;height:34px;flex-shrink:0}
+.gate-head strong{display:block;font-size:16px;line-height:1.2}
+.gate-head span{font-size:11.5px;color:var(--paper-dim,#8d9aa8)}
+.gate-tabs{display:flex;gap:4px;margin-bottom:20px;border-bottom:1px solid var(--line,#2a333d)}
+.gate-tabs button{flex:1;background:none;border:none;border-bottom:2px solid transparent;
+  padding:10px;color:var(--paper-dim,#8d9aa8);font:inherit;font-size:13px;font-weight:600;cursor:pointer}
+.gate-tabs button[aria-selected=true]{color:var(--trace,#3DDC91);border-bottom-color:var(--trace,#3DDC91)}
+.gate-field{margin-bottom:13px}
+.gate-field label{display:block;font-size:10.5px;text-transform:uppercase;letter-spacing:.09em;
+  color:var(--paper-dim,#8d9aa8);font-weight:700;margin-bottom:5px}
+.gate-field input{width:100%;background:var(--ink,#0f1419);border:1px solid var(--line,#2a333d);
+  color:var(--paper,#e8edf2);border-radius:7px;padding:10px 12px;font:inherit;font-size:14px}
+.gate-field input:focus{outline:2px solid var(--trace,#3DDC91);outline-offset:1px}
+.gate-btn{width:100%;background:var(--trace,#3DDC91);color:#0b0f14;border:none;border-radius:7px;
+  padding:12px;font:inherit;font-size:14px;font-weight:700;cursor:pointer}
+.gate-btn:disabled{opacity:.6;cursor:default}
+.gate-msg{font-size:12.5px;padding:10px 12px;border-radius:7px;margin-top:13px;display:none;line-height:1.5}
+.gate-msg.err{display:block;background:rgba(239,83,80,.12);border:1px solid rgba(239,83,80,.4);color:#ff8a85}
+.gate-msg.ok{display:block;background:rgba(61,220,145,.12);border:1px solid rgba(61,220,145,.4);color:var(--trace,#3DDC91)}
+.code-out{font-family:ui-monospace,monospace;font-size:26px;font-weight:700;color:var(--trace,#3DDC91);
+  text-align:center;padding:16px;background:var(--ink,#0f1419);border:1px dashed var(--trace,#3DDC91);
+  border-radius:8px;letter-spacing:.08em;margin:14px 0}
+.day-locked{opacity:.45}
+.lockwall{text-align:center;padding:56px 24px}
+.lockwall .ico{font-size:38px;margin-bottom:12px;opacity:.5}
+.lockwall h3{margin:0 0 8px;font-size:17px}
+.lockwall p{color:var(--paper-dim,#8d9aa8);font-size:13px;max-width:46ch;margin:0 auto;line-height:1.6}
+
+</style>
+</head>
+<body>
+<div id="gate">
+  <div class="gate-card">
+    <div class="gate-head">
+      <svg viewBox="0 0 34 34" preserveAspectRatio="none" aria-hidden="true">
+        <path d="M0 22 H7 L9 22 L11 9 L13 28 L15 18 L17 22 H24 L26 14 L28 22 H34"
+              fill="none" stroke="#3DDC91" stroke-width="1.6"
+              stroke-linejoin="round" stroke-linecap="round"/>
+      </svg>
+      <div>
+        <strong>Інтернатура · Анестезіологія</strong>
+        <span>Тиждень 2 — практична робота в операційній</span>
+      </div>
+    </div>
+
+    <div class="gate-tabs" role="tablist">
+      <button id="gtLogin" role="tab" aria-selected="true" type="button">Вхід за кодом</button>
+      <button id="gtReg" role="tab" aria-selected="false" type="button">Перша реєстрація</button>
+    </div>
+
+    <div id="gateLogin">
+      <div class="gate-field">
+        <label for="inCode">Код доступу</label>
+        <input id="inCode" type="text" placeholder="OR-AB1234" autocomplete="off" spellcheck="false">
+      </div>
+      <button class="gate-btn" id="btnLogin" type="button">Увійти</button>
+    </div>
+
+    <div id="gateReg" style="display:none">
+      <div class="gate-field">
+        <label for="inName">Прізвище та ім'я</label>
+        <input id="inName" type="text" placeholder="Введіть ПІБ" autocomplete="off">
+      </div>
+      <div class="gate-field">
+        <label for="inGroup">Група / база стажування</label>
+        <input id="inGroup" type="text" placeholder="Інтернатура, 1-й рік" autocomplete="off">
+      </div>
+      <button class="gate-btn" id="btnReg" type="button">Зареєструватися</button>
+      <p style="font-size:11.5px;color:var(--paper-dim);margin:13px 0 0;line-height:1.5">
+        Після реєстрації ви отримаєте код доступу. Запишіть його — він знадобиться
+        при вході з іншого пристрою.</p>
+    </div>
+
+    <div id="gateMsg" class="gate-msg"></div>
+
+    <div id="gateCode" style="display:none">
+      <div class="code-out" id="codeOut">—</div>
+      <button class="gate-btn" id="btnEnter" type="button">Почати навчання</button>
+    </div>
+  </div>
+</div>
+<div id="app"></div>
+<div class="toast" id="toast"></div>
+<script>
+/* =====================================================================
+   Портал інтернатури з анестезіології — Тиждень 2
+   Прототип MVP. Стан у пам'яті імітує відповіді REST API (див. api-spec.md).
+   ===================================================================== */
+
+// ---------- Довідники ----------
+
+const USERS = {
+  i1: { id:'i1', name:'Інтерн', role:'intern',  init:'І1', room:'ОР-3' },
+  i2: { id:'i2', name:'Інтерн 2', role:'intern',  init:'І2', room:'ОР-3' },
+  i3: { id:'i3', name:'Інтерн 3', role:'intern',  init:'І3', room:'ОР-1' },
+  i4: { id:'i4', name:'Інтерн 4', role:'intern',  init:'І4', room:'ОР-1' },
+  m1: { id:'m1', name:'Черговий анестезіолог', role:'mentor',  init:'ЧА' },
+  a1: { id:'a1', name:'Адміністратор', role:'admin',   init:'АД' }
+};
+
+const WEEK = {
+  number: 2,
+  title: 'Практична анестезіологія в операційній',
+  days: [
+    { n:1, title:'Бойове хрещення', focus:'Підготовка робочого місця та передопераційний огляд' },
+    { n:2, title:'Дихальні шляхи',  focus:'Преоксигенація, маскова вентиляція, інтубація трахеї' },
+    { n:3, title:'Ведення наркозу', focus:'Анестезіологічна карта, моніторинг, фармакологія' },
+    { n:4, title:'Пробудження та ППНП', focus:'Екстубація, шкали болю, критерії переведення' },
+    { n:5, title:'Кризові стани',   focus:'Table-top симуляції невідкладних станів' }
+  ]
+};
+
+// Блоки дня: [початок у хвилинах від 07:00, тривалість, вид, назва, деталь]
+const DAY_BLOCKS = {
+  1:[[30,30,'briefing','Ранковий брифінг','Протоколи безпеки, розподіл по ОР'],
+     [60,180,'practice','Підготовка робочого місця','Апарат, медикаменти, дихальні шляхи'],
+     [240,120,'practice','Передопераційний огляд','Анамнез, Mallampati, згода'],
+     [360,60,'debrief','Дебрифінг дня','Розбір пропущених пунктів чек-листа']],
+  2:[[30,30,'briefing','Ранковий брифінг','План інтубацій на день'],
+     [60,240,'practice','Дихальні шляхи під наглядом','Маска, LMA, ETT'],
+     [300,60,'practice','Складні ДШ','Відеоларингоскоп, буж'],
+     [360,90,'debrief','Дебрифінг дня','Cormack–Lehane, аналіз невдач']],
+  3:[[30,30,'briefing','Ранковий брифінг','Фармакологія дня'],
+     [60,300,'practice','Ведення наркозу','Анестезіологічна карта, тренди'],
+     [360,60,'debrief','Дебрифінг дня','Розбір гемодинамічних епізодів']],
+  4:[[30,30,'briefing','Ранковий брифінг','Критерії екстубації'],
+     [60,180,'practice','Пробудження та екстубація','ППНП, шкали ВАШ/НРШ'],
+     [240,120,'practice','Палата пробудження','Aldrete, критерії переведення'],
+     [360,60,'debrief','Дебрифінг дня','Періопераційний біль']],
+  5:[[30,30,'briefing','Ранковий брифінг','Ролі в реанімаційній команді'],
+     [60,240,'simulation','Table-top симуляції','Анафілаксія, ЗГ, CICO, зупинка серця'],
+     [300,150,'debrief','Підсумковий дебрифінг тижня','360-оцінювання, саморефлексія']]
+};
+
+const PROCEDURES = [
+  { id:1, code:'MONITOR_SETUP', name:'Позиціонування та накладання моніторів', cat:'Моніторинг', target:8 },
+  { id:2, code:'PREOXY',        name:'Преоксигенація',                        cat:'Дихальні шляхи', target:8 },
+  { id:3, code:'MASK_VENT',     name:'Маскова вентиляція',                    cat:'Дихальні шляхи', target:6 },
+  { id:4, code:'ETT',           name:'Інтубація трахеї',                      cat:'Дихальні шляхи', target:5 },
+  { id:5, code:'LMA',           name:'Введення ларингеальної маски',          cat:'Дихальні шляхи', target:3 },
+  { id:6, code:'SPINAL_ASSIST', name:'Асистування при спінальній анестезії',  cat:'Регіонарна', target:3 },
+  { id:7, code:'EPIDURAL_ASSIST',name:'Асистування при епідуральній анестезії',cat:'Регіонарна', target:2 },
+  { id:8, code:'IV_ACCESS',     name:'Периферичний венозний доступ',          cat:'Судинний доступ', target:6 }
+];
+
+const SUPERVISION = {
+  observed:'Спостереження', assisted:'Асистування',
+  supervised:'Самостійно під наглядом', independent:'Самостійно'
+};
+const OUTCOME = {
+  success:'Успішно', success_with_difficulty:'Успішно, з труднощами',
+  failed_mentor_takeover:'Невдало, втручання керівника'
+};
+
+// ---------- Чек-листи ----------
+
+const CHECKLISTS = {
+  workstation_prep: {
+    title:'Підготовка робочого місця',
+    subtitle:'День 1 — «Бойове хрещення»',
+    warn:'Важлива стерильність, організація та відповідальність за кожну дрібницю!',
+    sections:[
+      { name:'Наркозний апарат', items:[
+        { id:'w1', label:'Подача кисню: центральна магістраль 4 бар', hint:'Резервний балон повний і доступний', crit:true },
+        { id:'w2', label:'Тест герметичності контуру під тиском 30 см H₂O', hint:'Клапан APL закритий, тиск тримається', crit:true },
+        { id:'w3', label:'Адсорбент CO₂ не вичерпаний', hint:'Натронне вапно без фіолетового забарвлення' },
+        { id:'w4', label:'Випарник заправлений і зафіксований' },
+        { id:'w5', label:'Аварійна подача O₂ (flush) працює', crit:true }
+      ]},
+      { name:'Медикаменти: набір і маркування', items:[
+        { id:'w6', label:'Гіпнотики набрані й підписані', hint:'Пропофол / кетамін — шприц з назвою, дозою, часом' },
+        { id:'w7', label:'Міорелаксанти набрані й підписані' },
+        { id:'w8', label:'Опіоїди набрані, облік ведеться', hint:'Журнал обліку наркотичних засобів заповнено' },
+        { id:'w9', label:'Вазопресори розведені', hint:'Ефедрин / фенілефрин у робочій концентрації' },
+        { id:'w10',label:'Набір невідкладної допомоги', hint:'Адреналін, атропін, суксаметоній під рукою', crit:true }
+      ]},
+      { name:'Дихальні шляхи', items:[
+        { id:'w11',label:'Ларингоскоп: два клинки, світло перевірене', crit:true },
+        { id:'w12',label:'Трубки трьох розмірів, манжети перевірені' },
+        { id:'w13',label:'Маски, повітроводи Гведела, LMA резервна' },
+        { id:'w14',label:'Провідник і буж на робочому столі' },
+        { id:'w15',label:'Аспіратор увімкнений, канюля Янкауера', crit:true }
+      ]},
+      { name:'Моніторинг', items:[
+        { id:'w16',label:'ЕКГ: 5 електродів, стабільна крива' },
+        { id:'w17',label:'Пульсоксиметрія: сигнал стабільний' },
+        { id:'w18',label:'НІАТ: манжета за розміром, інтервал заданий' },
+        { id:'w19',label:'Капнографія перевірена', crit:true },
+        { id:'w20',label:'Межі тривог налаштовані під пацієнта' }
+      ]},
+      { name:'Інфузія', items:[
+        { id:'w21',label:'Венозний доступ: катетер прохідний, зафіксований' },
+        { id:'w22',label:'Система заповнена, без повітря' },
+        { id:'w23',label:'Підігрівач розчинів готовий' }
+      ]}
+    ]
+  },
+  preop_assessment: {
+    title:'Передопераційний огляд',
+    subtitle:'День 1 — цифровий бланк',
+    sections:[
+      { name:'Анамнез', items:[
+        { id:'p1', label:'Алергологічний анамнез зібрано', crit:true },
+        { id:'p2', label:'Супутні патології задокументовані' },
+        { id:'p3', label:'Попередні анестезії та ускладнення' },
+        { id:'p4', label:'Постійна медикаментозна терапія' },
+        { id:'p5', label:'Час останнього прийому їжі та рідини', crit:true }
+      ]},
+      { name:'Фізикальний огляд', items:[
+        { id:'p6', label:'Оцінка за Mallampati виконана', crit:true },
+        { id:'p7', label:'Рухливість шиї та відкривання рота' },
+        { id:'p8', label:'Стан ССС: аускультація, АТ, ЧСС' },
+        { id:'p9', label:'Дихальна система: аускультація, SpO₂' }
+      ]},
+      { name:'Дані обстежень', items:[
+        { id:'p10',label:'Загальний аналіз крові переглянуто' },
+        { id:'p11',label:'Коагулограма переглянута', hint:'Критично перед регіонарною анестезією' },
+        { id:'p12',label:'Електроліти та креатинін' },
+        { id:'p13',label:'ЕКГ та інструментальні дані' }
+      ]},
+      { name:'Згода', items:[
+        { id:'p14',label:'Інформована згода на анестезію отримана', hint:'Ризики обговорені, підпис пацієнта наявний', crit:true }
+      ]}
+    ]
+  },
+  pacu_discharge: {
+    title:'Критерії переведення з ППНП',
+    subtitle:'День 4 — палата пробудження',
+    sections:[
+      { name:'Шкала Aldrete', items:[
+        { id:'d1', label:'Активність: рухає всіма кінцівками' },
+        { id:'d2', label:'Дихання: вільне, кашльовий поштовх ефективний', crit:true },
+        { id:'d3', label:'Гемодинаміка: АТ ±20% від вихідного', crit:true },
+        { id:'d4', label:'Свідомість: притомний, орієнтований' },
+        { id:'d5', label:'SpO₂ >92% на атмосферному повітрі', crit:true }
+      ]},
+      { name:'Симптоми', items:[
+        { id:'d6', label:'Біль контрольований: НРШ ≤ 3', crit:true },
+        { id:'d7', label:'Нудота та блювання відсутні' },
+        { id:'d8', label:'Нормотермія відновлена' },
+        { id:'d9', label:'Пов\'язка суха, дренажі функціонують' }
+      ]}
+    ]
+  }
+};
+
+// ---------- Сценарії ----------
+
+const SCENARIOS = {
+  ANAPHYLAXIS: {
+    code:'ANAPHYLAXIS', title:'Періопераційна анафілаксія', ref:'AAGBI / NAP6',
+    brief:'Жінка 42 роки, лапароскопічна холецистектомія. Через 4 хв після індукції та введення цефазоліну — падіння тиску, зростання тиску в дихальних шляхах.',
+    start:'n1',
+    nodes:{
+      n1:{ vitals:{hr:132,bp:'62/38',spo2:91,etco2:22}, crit:['bp','spo2'], limit:25,
+        prompt:'Різка гіпотензія, тахікардія, тиск на вдиху виріс до 38 см H₂O, на грудях — плямиста висипка. <b>Ваша перша дія?</b>',
+        opts:[
+          { l:'Оголосити анафілаксію, зупинити введення всіх препаратів, викликати допомогу', role:'лідер команди', ok:true, s:20, nx:'n2',
+            fb:'Вірно. Розпізнавання та припинення дії тригера — нульовий крок протоколу.' },
+          { l:'Збільшити концентрацію севофлюрану для поглиблення наркозу', role:'апарат', ok:false, s:-15, nx:'n2',
+            fb:'Хибно. Інгаляційні анестетики поглиблюють вазодилатацію та посилюють гіпотензію.' },
+          { l:'Ввести болюс кристалоїдів і спостерігати 5 хвилин', role:'інфузія', ok:false, s:-10, nx:'n2',
+            fb:'Рідина потрібна, але як монотерапія без адреналіну — втрачений час.' }
+        ]},
+      n2:{ vitals:{hr:141,bp:'54/30',spo2:87,etco2:19}, crit:['bp','spo2','hr'], limit:20,
+        prompt:'Стан погіршується. Діагноз анафілаксії встановлено. <b>Препарат першої лінії та шлях введення?</b>',
+        opts:[
+          { l:'Адреналін 50 мкг в/в болюсно, повторювати за потреби', role:'медикаменти', ok:true, s:25, nx:'n3',
+            fb:'Вірно. При наявному в/в доступі та моніторингу — титровані болюси по 50 мкг.' },
+          { l:'Гідрокортизон 200 мг в/в', role:'медикаменти', ok:false, s:-15, nx:'n3',
+            fb:'Стероїди — препарати другої лінії. Вони не рятують від дистрибутивного шоку зараз.' },
+          { l:'Дифенгідрамін 50 мг в/в', role:'медикаменти', ok:false, s:-15, nx:'n3',
+            fb:'Антигістамінні не впливають на гемодинамічний колапс.' }
+        ]},
+      n3:{ vitals:{hr:118,bp:'78/46',spo2:93,etco2:28}, crit:['bp'], limit:30,
+        prompt:'Після адреналіну тиск частково відновився. <b>Що робите паралельно?</b>',
+        opts:[
+          { l:'Швидка інфузія 20 мл/кг кристалоїдів, ноги вище рівня серця, FiO₂ 100%', role:'інфузія', ok:true, s:20, nx:'n4',
+            fb:'Вірно. При анафілаксії до 35% плазми виходить у міжклітинний простір за 10 хв.' },
+          { l:'Обмежити інфузію через ризик набряку легень', role:'інфузія', ok:false, s:-15, nx:'n4',
+            fb:'Хибно. Агресивна волемічна підтримка — обов\'язковий компонент.' },
+          { l:'Розпочати інфузію норадреналіну замість адреналіну', role:'медикаменти', ok:false, s:-5, nx:'n4',
+            fb:'Норадреналін — резерв при рефрактерності. Спершу адреналін і об\'єм.' }
+        ]},
+      n4:{ vitals:{hr:98,bp:'104/62',spo2:97,etco2:34}, crit:[], limit:35,
+        prompt:'Стан стабілізується. Операцію припинено. <b>Що обов\'язково зробити перед переведенням у ВІТ?</b>',
+        opts:[
+          { l:'Взяти кров на триптазу: негайно, через 1–2 год і через 24 год', role:'документація', ok:true, s:20, nx:null,
+            fb:'Вірно. Динаміка триптази підтверджує діагноз; без неї алергообстеження втрачає цінність.' },
+          { l:'Одразу перевести у ВІТ, аналізи потім', role:'документація', ok:false, s:-10, nx:null,
+            fb:'Вікно для першого забору триптази — перші 30 хвилин. Його не повернути.' },
+          { l:'Записати ймовірний алерген у карту й на цьому завершити', role:'документація', ok:false, s:-10, nx:null,
+            fb:'Недостатньо. Потрібен лабораторний доказ і направлення до алерголога.' }
+        ]},
+      end:{ text:'Пацієнтка стабілізована, переведена у ВІТ на спонтанному диханні. Зразки триптази взяті за протоколом.' }
+    }
+  },
+  MH: {
+    code:'MH', title:'Злоякісна гіпертермія', ref:'EMHG / MHAUS',
+    brief:'Чоловік 24 роки, репозиція перелому. Севофлюран + суксаметоній. На 20-й хвилині наркозу — незрозуміле зростання EtCO₂.',
+    start:'n1',
+    nodes:{
+      n1:{ vitals:{hr:128,bp:'138/84',spo2:96,etco2:68}, crit:['etco2'], limit:25,
+        prompt:'EtCO₂ 68 мм рт.ст. попри збільшення хвилинної вентиляції, ригідність жувальних м\'язів, тахікардія. <b>Перший крок?</b>',
+        opts:[
+          { l:'Припинити подачу летких анестетиків та суксаметонію, викликати допомогу, покликати MH-набір', role:'лідер команди', ok:true, s:25, nx:'n2',
+            fb:'Вірно. Усунення тригера і мобілізація ресурсів — одночасно, не послідовно.' },
+          { l:'Збільшити хвилинну вентиляцію та продовжити операцію', role:'апарат', ok:false, s:-20, nx:'n2',
+            fb:'Гіперкапнія тут метаболічна, не вентиляційна. Ви втрачаєте критичні хвилини.' },
+          { l:'Ввести додаткову дозу міорелаксанту для зняття ригідності', role:'медикаменти', ok:false, s:-20, nx:'n2',
+            fb:'Ригідність при ЗГ не знімається недеполяризуючими релаксантами.' }
+        ]},
+      n2:{ vitals:{hr:146,bp:'96/54',spo2:93,etco2:79}, crit:['etco2','hr'], limit:20,
+        prompt:'Температура 39.4°C і зростає. <b>Специфічна терапія?</b>',
+        opts:[
+          { l:'Дантролен 2.5 мг/кг в/в болюсно, повторювати до ефекту', role:'медикаменти', ok:true, s:30, nx:'n3',
+            fb:'Вірно. Єдиний специфічний антидот. Затримка кожні 30 хв подвоює летальність.' },
+          { l:'Фізичне охолодження і чекати ефекту', role:'догляд', ok:false, s:-20, nx:'n3',
+            fb:'Охолодження обов\'язкове, але без дантролену гіперметаболізм не зупинити.' },
+          { l:'Бікарбонат натрію для корекції ацидозу', role:'медикаменти', ok:false, s:-10, nx:'n3',
+            fb:'Корекція ацидозу — підтримка, а не лікування причини.' }
+        ]},
+      n3:{ vitals:{hr:132,bp:'104/60',spo2:95,etco2:58}, crit:['etco2'], limit:30,
+        prompt:'Дантролен введено, EtCO₂ повільно знижується. <b>Що контролюєте далі?</b>',
+        opts:[
+          { l:'Калій, КЛС, КФК, міоглобін сечі; форсований діурез, охолодження до 38.5°C', role:'лабораторія', ok:true, s:20, nx:null,
+            fb:'Вірно. Гіперкаліємія та рабдоміоліз — головні причини пізньої смерті при ЗГ.' },
+          { l:'Обмежитися контролем температури', role:'догляд', ok:false, s:-15, nx:null,
+            fb:'Недостатньо. Гіперкаліємія здатна викликати зупинку серця вже після нормалізації температури.' },
+          { l:'Перевести на спонтанне дихання і будити пацієнта', role:'апарат', ok:false, s:-15, nx:null,
+            fb:'Передчасно. Пацієнт потребує ШВЛ і моніторингу у ВІТ мінімум 24 години.' }
+        ]},
+      end:{ text:'Криз куповано. Пацієнт у ВІТ на ШВЛ, дантролен продовжено, діурез форсований. Родину скеровано на генетичне обстеження.' }
+    }
+  },
+  CICO: {
+    code:'CICO', title:'Не можу інтубувати, не можу вентилювати', ref:'DAS 2015',
+    brief:'Чоловік 58 років, ІМТ 38, екстрена апендектомія. Після індукції — невдала інтубація з першої спроби.',
+    start:'n1',
+    nodes:{
+      n1:{ vitals:{hr:104,bp:'142/88',spo2:94,etco2:0}, crit:[], limit:25,
+        prompt:'Перша спроба інтубації невдала, Cormack–Lehane 3b. SpO₂ 94% і повільно знижується. <b>План B?</b>',
+        opts:[
+          { l:'Припинити спроби, вентилювати маскою двома руками, покликати допомогу', role:'дихальні шляхи', ok:true, s:20, nx:'n2',
+            fb:'Вірно. Оксигенація — пріоритет над інтубацією. Максимум три спроби на всю команду.' },
+          { l:'Одразу повторити ларингоскопію тим самим клинком', role:'дихальні шляхи', ok:false, s:-15, nx:'n2',
+            fb:'Повтор без зміни техніки лише травмує ДШ і посилює набряк.' },
+          { l:'Виконати конікотомію негайно', role:'дихальні шляхи', ok:false, s:-15, nx:'n2',
+            fb:'Передчасно. SpO₂ 94%, ще є час на менш інвазивні кроки.' }
+        ]},
+      n2:{ vitals:{hr:118,bp:'150/92',spo2:88,etco2:0}, crit:['spo2'], limit:20,
+        prompt:'Маскова вентиляція неефективна навіть удвох. SpO₂ 88%. <b>Наступний крок за DAS?</b>',
+        opts:[
+          { l:'Встановити надгортанний повітровід другого покоління (i-gel / LMA ProSeal)', role:'дихальні шляхи', ok:true, s:25, nx:'n3',
+            fb:'Вірно. План C: НГП рятує оксигенацію у більшості випадків невдалої масочної вентиляції.' },
+          { l:'Продовжити спроби маскою з повітроводом Гведела', role:'дихальні шляхи', ok:false, s:-15, nx:'n3',
+            fb:'Час вичерпано. Треба переходити до наступного кроку алгоритму.' },
+          { l:'Ввести ще одну дозу міорелаксанту', role:'медикаменти', ok:false, s:-10, nx:'n3',
+            fb:'Релаксація допомагає, але не замінює зміну девайса при SpO₂ 88%.' }
+        ]},
+      n3:{ vitals:{hr:134,bp:'88/52',spo2:71,etco2:0}, crit:['spo2','bp'], limit:15,
+        prompt:'НГП встановлено, вентиляція неможлива. SpO₂ 71% і падає. <b>Це стан CICO. Дія?</b>',
+        opts:[
+          { l:'Оголосити CICO, виконати скальпельну крикотиреоїдотомію', role:'лідер команди', ok:true, s:30, nx:null,
+            fb:'Вірно. Скальпель–буж–трубка. Затримка тут вимірюється хвилинами до гіпоксичного ураження мозку.' },
+          { l:'Ще одна спроба інтубації відеоларингоскопом', role:'дихальні шляхи', ok:false, s:-25, nx:null,
+            fb:'Ліміт спроб вичерпано. При SpO₂ 71% це фатальна затримка.' },
+          { l:'Пункційна крикотиреоїдотомія голкою 14G', role:'дихальні шляхи', ok:false, s:-10, nx:null,
+            fb:'DAS 2015 віддає перевагу скальпельній техніці: вища частота успіху в дорослих.' }
+        ]},
+      end:{ text:'Хірургічний доступ до ДШ забезпечений за 45 секунд. SpO₂ відновилася до 96%. Операцію відкладено, пацієнт у ВІТ.' }
+    }
+  },
+  CARDIAC_ARREST:{
+    code:'CARDIAC_ARREST', title:'Зупинка серця в операційній', ref:'ERC 2021',
+    brief:'Жінка 67 років, протезування кульшового суглоба. Під час цементування — раптове падіння EtCO₂ і зникнення пульсової хвилі.',
+    start:'n1',
+    nodes:{
+      n1:{ vitals:{hr:0,bp:'0/0',spo2:0,etco2:8}, crit:['hr','bp','spo2','etco2'], limit:15,
+        prompt:'Пульсова хвиля зникла, EtCO₂ впав до 8 мм рт.ст., на моніторі — фібриляція шлуночків. <b>Перша дія?</b>',
+        opts:[
+          { l:'Оголосити зупинку, розпочати компресії, викликати реанімаційну бригаду й дефібрилятор', role:'лідер команди', ok:true, s:25, nx:'n2',
+            fb:'Вірно. Компресії починаються негайно, паралельно з підготовкою дефібрилятора.' },
+          { l:'Перевірити пульс на сонній артерії протягом 30 секунд', role:'огляд', ok:false, s:-15, nx:'n2',
+            fb:'Пальпація пульсу не має тривати понад 10 секунд. Падіння EtCO₂ вже є доказом.' },
+          { l:'Ввести адреналін 1 мг в/в', role:'медикаменти', ok:false, s:-10, nx:'n2',
+            fb:'При шоковому ритмі спершу дефібриляція, потім адреналін після третього розряду.' }
+        ]},
+      n2:{ vitals:{hr:0,bp:'0/0',spo2:0,etco2:14}, crit:['hr','bp','spo2'], limit:20,
+        prompt:'Компресії тривають, дефібрилятор підключений, ритм — ФШ. <b>Дія?</b>',
+        opts:[
+          { l:'Розряд 200 Дж двофазний, одразу відновити компресії на 2 хв без перевірки пульсу', role:'дефібриляція', ok:true, s:25, nx:'n3',
+            fb:'Вірно. Пауза після розряду має бути мінімальною — кожна секунда знижує коронарну перфузію.' },
+          { l:'Розряд, потім 10 секунд оцінити ритм на моніторі', role:'дефібриляція', ok:false, s:-15, nx:'n3',
+            fb:'Пауза не виправдана. Ритм оцінюють через 2 хвилини компресій.' },
+          { l:'Три послідовні розряди підряд', role:'дефібриляція', ok:false, s:-15, nx:'n3',
+            fb:'Стратегія трьох розрядів застосовна лише за свідка на моніторі в катетерній лабораторії.' }
+        ]},
+      n3:{ vitals:{hr:0,bp:'0/0',spo2:0,etco2:21}, crit:['hr','bp'], limit:25,
+        prompt:'Після третього розряду ФШ зберігається. <b>Медикаментозна підтримка?</b>',
+        opts:[
+          { l:'Адреналін 1 мг в/в та аміодарон 300 мг в/в', role:'медикаменти', ok:true, s:20, nx:'n4',
+            fb:'Вірно. Обидва препарати показані після третього неефективного розряду при ФШ.' },
+          { l:'Лише адреналін 1 мг кожні 3 хвилини', role:'медикаменти', ok:false, s:-10, nx:'n4',
+            fb:'При рефрактерній ФШ аміодарон обов\'язковий.' },
+          { l:'Бікарбонат натрію 100 мл 4%', role:'медикаменти', ok:false, s:-15, nx:'n4',
+            fb:'Не показаний рутинно; лише при гіперкаліємії чи передозуванні трициклічними.' }
+        ]},
+      n4:{ vitals:{hr:0,bp:'0/0',spo2:0,etco2:24}, crit:['hr','bp'], limit:30,
+        prompt:'Реанімація триває. <b>Яку оборотну причину слід підозрювати першою в цьому контексті?</b>',
+        opts:[
+          { l:'Емболія цементом / легенева емболія — «синдром імплантації кісткового цементу»', role:'діагностика', ok:true, s:20, nx:null,
+            fb:'Вірно. Зупинка під час цементування — класична картина. Розглянути тромболізис і подовжену реанімацію.' },
+          { l:'Гіповолемія від крововтрати', role:'діагностика', ok:false, s:-5, nx:null,
+            fb:'Можлива, але момент цементування вказує передусім на емболію.' },
+          { l:'Напружений пневмоторакс', role:'діагностика', ok:false, s:-10, nx:null,
+            fb:'Малоймовірний при цій операції та без ознак з боку вентиляції.' }
+        ]},
+      end:{ text:'Після 18 хвилин реанімації відновлено спонтанний кровообіг. Пацієнтка у ВІТ, розпочато цільове ведення температури.' }
+    }
+  },
+  HEMORRHAGE:{
+    code:'HEMORRHAGE', title:'Масивна крововтрата', ref:'ATLS / EU Trauma 2023',
+    brief:'Чоловік 35 років, розрив селезінки після ДТП. Під час лапаротомії — тиск падає, у рані активна кровотеча.',
+    start:'n1',
+    nodes:{
+      n1:{ vitals:{hr:138,bp:'72/40',spo2:95,etco2:26}, crit:['bp','hr'], limit:25,
+        prompt:'Крововтрата ~1500 мл за 10 хвилин, триває. <b>Перший організаційний крок?</b>',
+        opts:[
+          { l:'Активувати протокол масивної трансфузії, повідомити банк крові', role:'лідер команди', ok:true, s:25, nx:'n2',
+            fb:'Вірно. Протокол розгортається завчасно — компоненти крові готуються не миттєво.' },
+          { l:'Замовити 2 дози еритромаси і чекати', role:'лідер команди', ok:false, s:-15, nx:'n2',
+            fb:'Недостатньо за темпом крововтрати. Потрібен повний протокол.' },
+          { l:'Збільшити швидкість кристалоїдів до 2 літрів', role:'інфузія', ok:false, s:-15, nx:'n2',
+            fb:'Агресивна кристалоїдна ресусцитація посилює коагулопатію розведення.' }
+        ]},
+      n2:{ vitals:{hr:146,bp:'64/34',spo2:93,etco2:22}, crit:['bp','hr'], limit:20,
+        prompt:'Протокол активовано. <b>Співвідношення компонентів і додаткова терапія?</b>',
+        opts:[
+          { l:'Еритромаса : СЗП : тромбоконцентрат 1:1:1, транексамова кислота 1 г', role:'трансфузія', ok:true, s:25, nx:'n3',
+            fb:'Вірно. Збалансоване співвідношення плюс антифібринолітик у перші 3 години.' },
+          { l:'Лише еритромаса до Hb 100 г/л', role:'трансфузія', ok:false, s:-20, nx:'n3',
+            fb:'Ізольована еритромаса поглиблює коагулопатію.' },
+          { l:'СЗП після отримання результатів коагулограми', role:'трансфузія', ok:false, s:-15, nx:'n3',
+            fb:'Очікування лабораторії при активній кровотечі неприпустиме.' }
+        ]},
+      n3:{ vitals:{hr:122,bp:'88/52',spo2:96,etco2:31}, crit:['bp'], limit:30,
+        prompt:'Кровотечу хірургічно зупинено. Температура 34.8°C, pH 7.21. <b>Пріоритет?</b>',
+        opts:[
+          { l:'Активне зігрівання, корекція іонізованого кальцію, контроль ацидозу', role:'догляд', ok:true, s:20, nx:null,
+            fb:'Вірно. Летальна тріада: гіпотермія, ацидоз, коагулопатія. Цитрат компонентів зв\'язує кальцій.' },
+          { l:'Екстубувати пацієнта, оскільки кровотеча зупинена', role:'апарат', ok:false, s:-20, nx:null,
+            fb:'Небезпечно. Гіпотермія й ацидоз потребують продовженої ШВЛ у ВІТ.' },
+          { l:'Форсований діурез для виведення продуктів гемолізу', role:'догляд', ok:false, s:-10, nx:null,
+            fb:'Передчасно на тлі щойно скорегованої гіповолемії.' }
+        ]},
+      end:{ text:'Гемодинаміка стабілізована, зігрівання триває. Пацієнт переведений у ВІТ з контролем коагулограми кожні 4 години.' }
+    }
+  }
+};
+
+// ---------- Стан застосунку ----------
+
+const S = {
+  role: 'intern',
+  me: 'i1',
+  view: 'dash',
+  day: 1,
+
+  // Чек-листи: {internId: {templateKey: {items:{id:bool}, status, comment}}}
+  checklists: {},
+
+  // Журнал процедур
+  logs: [
+    { id:'L1', intern:'i1', proc:1, at:'2026-07-13T09:12', sup:'supervised', out:'success', attempts:1, code:'PT-0114', status:'verified', note:'' },
+    { id:'L2', intern:'i1', proc:2, at:'2026-07-13T09:40', sup:'supervised', out:'success', attempts:1, code:'PT-0114', status:'verified', note:'' },
+    { id:'L3', intern:'i1', proc:3, at:'2026-07-14T08:55', sup:'assisted', out:'success_with_difficulty', attempts:2, code:'PT-0121', status:'verified', note:'Знадобився повітровід Гведела, ІМТ 34.' },
+    { id:'L4', intern:'i1', proc:4, at:'2026-07-14T09:20', sup:'supervised', out:'failed_mentor_takeover', attempts:2, code:'PT-0121', status:'verified', note:'Cormack–Lehane 3a, інтубацію виконав керівник з бужем.' },
+    { id:'L5', intern:'i1', proc:4, at:'2026-07-15T08:47', sup:'supervised', out:'success', attempts:1, code:'PT-0130', status:'verified', note:'CL 2a, тиск на перстневидний хрящ допоміг.' },
+    { id:'L6', intern:'i1', proc:8, at:'2026-07-15T08:20', sup:'independent', out:'success', attempts:1, code:'PT-0130', status:'verified', note:'' },
+    { id:'L7', intern:'i1', proc:4, at:'2026-07-17T09:05', sup:'supervised', out:'success', attempts:1, code:'PT-0142', status:'submitted', note:'CL 1, без ускладнень.' },
+    { id:'L8', intern:'i1', proc:5, at:'2026-07-17T11:30', sup:'supervised', out:'success', attempts:1, code:'PT-0143', status:'submitted', note:'i-gel №4.' },
+    { id:'L9', intern:'i2', proc:4, at:'2026-07-17T10:15', sup:'assisted', out:'success', attempts:1, code:'PT-0145', status:'submitted', note:'' },
+    { id:'L10',intern:'i3', proc:6, at:'2026-07-17T08:40', sup:'assisted', out:'success', attempts:1, code:'PT-0147', status:'submitted', note:'Рівень блоку T6.' }
+  ],
+
+  // Анестезіологічна карта
+  record: {
+    code:'PT-0142', surgery:'Лапароскопічна холецистектомія', type:'Загальна ендотрахеальна',
+    start:'08:40',
+    vitals:[
+      {t:'08:40',hr:78,sbp:132,dbp:80,spo2:99,etco2:0},
+      {t:'08:45',hr:92,sbp:104,dbp:62,spo2:100,etco2:36},
+      {t:'08:50',hr:88,sbp:112,dbp:68,spo2:100,etco2:35},
+      {t:'09:00',hr:74,sbp:118,dbp:72,spo2:99,etco2:34},
+      {t:'09:15',hr:70,sbp:110,dbp:66,spo2:99,etco2:35},
+      {t:'09:30',hr:82,sbp:126,dbp:78,spo2:98,etco2:38},
+      {t:'09:45',hr:76,sbp:116,dbp:70,spo2:99,etco2:36},
+      {t:'10:00',hr:72,sbp:114,dbp:68,spo2:99,etco2:35}
+    ],
+    drugs:[
+      {t:'08:42',n:'Фентаніл',d:'100 мкг',r:'в/в болюс'},
+      {t:'08:43',n:'Пропофол',d:'160 мг',r:'в/в болюс'},
+      {t:'08:44',n:'Рокуроній',d:'50 мг',r:'в/в болюс'},
+      {t:'09:10',n:'Фентаніл',d:'50 мкг',r:'в/в болюс'},
+      {t:'09:35',n:'Ондансетрон',d:'4 мг',r:'в/в болюс'}
+    ]
+  },
+
+  // ППНП
+  pacu:{ vas:null, nrs:null, aldrete:{activity:2,respiration:2,circulation:2,consciousness:2,spo2:2} },
+
+  // Симуляція
+  sim:{ code:null, node:null, score:0, log:[], timer:null, left:0, done:false, steps:0, correct:0 },
+
+  // Дебрифінг
+  debrief:[
+    { who:'m1', at:'17:20', kind:'note', body:'Розібрали два епізоди десатурації при індукції. Обидва пов\'язані з недостатньою преоксигенацією — менше 3 хвилин.' },
+    { who:'i1', at:'17:24', kind:'question', body:'Як зрозуміти, що преоксигенація достатня, якщо немає газоаналізатора на видиху?' },
+    { who:'m1', at:'17:28', kind:'note', body:'Орієнтир — EtO₂ понад 90%. Без газоаналізатора: 8 глибоких вдихів за 60 секунд щільною маскою або 3 хвилини спокійного дихання.' },
+    { who:'m1', at:'17:31', kind:'action_item', body:'До завтра: повторити алгоритм DAS 2015, план A–D. Перевірю на ранковому брифінгу.' }
+  ],
+
+  evaluation:{ achievements:'', difficulties:'', rating:null, feedback:'', comp:{}, recs:'' },
+  scenarioResults:{}
+};
+
+// Заповнити чек-листи стартовими даними
+function seedChecklists(){
+  S.checklists = {
+    i1:{
+      workstation_prep:{ items:{w1:1,w2:1,w3:1,w4:1,w5:1,w6:1,w7:1,w8:1,w9:1,w10:1,w11:1,w12:1,w13:1,w14:0,w15:1,w16:1,w17:1,w18:1,w19:1,w20:0,w21:1,w22:1,w23:0}, status:'draft', comment:'' },
+      preop_assessment:{ items:{}, status:'draft', comment:'' },
+      pacu_discharge:{ items:{}, status:'draft', comment:'' }
+    },
+    i2:{ workstation_prep:{ items:allOn('workstation_prep'), status:'submitted', comment:'' },
+         preop_assessment:{ items:{}, status:'draft', comment:'' },
+         pacu_discharge:{ items:{}, status:'draft', comment:'' } },
+    i3:{ workstation_prep:{ items:allOn('workstation_prep'), status:'verified', comment:'Бездоганно. Маркування шприців — зразкове.' },
+         preop_assessment:{ items:allOn('preop_assessment'), status:'submitted', comment:'' },
+         pacu_discharge:{ items:{}, status:'draft', comment:'' } },
+    i4:{ workstation_prep:{ items:{}, status:'draft', comment:'' },
+         preop_assessment:{ items:{}, status:'draft', comment:'' },
+         pacu_discharge:{ items:{}, status:'draft', comment:'' } }
+  };
+}
+function allOn(key){
+  const o={}; CHECKLISTS[key].sections.forEach(s=>s.items.forEach(i=>o[i.id]=1)); return o;
+}
+seedChecklists();
+
+// ---------- Утиліти ----------
+
+const $ = s => document.querySelector(s);
+const el = id => document.getElementById(id);
+const esc = s => String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const me = () => USERS[S.me];
+
+function toast(msg,kind=''){
+  const t = el('toast');
+  t.className = 'toast on ' + kind;
+  t.textContent = msg;
+  clearTimeout(t._t);
+  t._t = setTimeout(()=>{ t.className='toast '+kind; }, 2600);
+}
+
+function chkState(internId, key){
+  return S.checklists[internId]?.[key] || { items:{}, status:'draft', comment:'' };
+}
+function chkStats(internId, key){
+  const tpl = CHECKLISTS[key], st = chkState(internId,key);
+  let total=0, done=0, critMissing=[];
+  tpl.sections.forEach(sec=>sec.items.forEach(it=>{
+    total++;
+    if(st.items[it.id]) done++;
+    else if(it.crit) critMissing.push(it.label);
+  }));
+  return { total, done, critMissing, pct: total? Math.round(done/total*100):0, status:st.status };
+}
+function procStats(internId){
+  return PROCEDURES.map(p=>{
+    const mine = S.logs.filter(l=>l.intern===internId && l.proc===p.id);
+    const ver = mine.filter(l=>l.status==='verified').length;
+    const pend = mine.filter(l=>l.status==='submitted').length;
+    const succ = mine.filter(l=>l.out==='success').length;
+    return { ...p, ver, pend, total:mine.length,
+             rate: mine.length? Math.round(succ/mine.length*100):null };
+  });
+}
+function pendingCount(){
+  const logs = S.logs.filter(l=>l.status==='submitted').length;
+  let chk=0;
+  Object.keys(S.checklists).forEach(iid=>{
+    Object.keys(CHECKLISTS).forEach(k=>{ if(chkState(iid,k).status==='submitted') chk++; });
+  });
+  return logs+chk;
+}
+
+/* =====================================================================
+   Views / рендеринг
+   ===================================================================== */
+
+const NAV = {
+  intern:[
+    ['dash','Сьогодні'],['schedule','Розклад'],['checklists','Чек-листи'],
+    ['procedures','Журнал процедур'],['record','Карта наркозу'],['pacu','ППНП'],
+    ['sim','Симуляції'],['debrief','Дебрифінг'],['eval','Підсумок тижня']
+  ]
+};
+
+function icon(name){
+  const p = {
+    check:'M2 7l4 4 8-8',
+    warn:'M8 2L1 14h14L8 2zM8 6v4M8 12v.5',
+    clock:'M8 4v4l3 2M14 8A6 6 0 112 8a6 6 0 0112 0z'
+  }[name];
+  return `<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="${p}"/></svg>`;
+}
+
+// ---------------- Shell ----------------
+
+
+// ================= ACCESS / GATING =================
+/* ВСТАВТЕ СЮДИ URL вашого Apps Script веб-застосунку (закінчується на /exec) */
+var API = 'https://script.google.com/macros/s/AKfycbznqqXfcfyRURrpsTd_d3u9IOOUcPpYnqB0DFivJtMIp_4y1PTf5roOxqH6JALDymE/exec';
+
+var session = { code:null, name:'', group:'', unlocked:1, scores:[null,null,null,null,null], total:5 };
+var DEMO = API.indexOf('ВСТАВТЕ') === 0;
+
+function sGet(k){ try { return localStorage.getItem(k); } catch(e){ return null; } }
+function sSet(k,v){ try { localStorage.setItem(k,v); } catch(e){} }
+function sDel(k){ try { localStorage.removeItem(k); } catch(e){} }
+
+function urlCode(){
+  var m = window.location.search.match(/[?&]k=([^&]+)/);
+  return m ? decodeURIComponent(m[1]) : null;
+}
+
+function apiCall(params){
+  var qs = Object.keys(params).map(function(k){
+    return encodeURIComponent(k)+'='+encodeURIComponent(params[k]);
+  }).join('&');
+  return fetch(API+'?'+qs, { method:'GET', redirect:'follow' })
+         .then(function(r){ return r.json(); });
+}
+
+function gateMsg(text, kind){
+  var m = document.getElementById('gateMsg');
+  m.className = 'gate-msg ' + (kind || 'err');
+  m.textContent = text;
+}
+
+function showGate(show){
+  document.getElementById('gate').style.display = show ? 'flex' : 'none';
+  document.body.style.overflow = show ? 'hidden' : '';
+}
+
+function pickDay(n){
+  if (n > session.unlocked){
+    toast('День ' + n + ' ще закрито. Дні відкриваються послідовно.', 'bad');
+    return;
+  }
+  S.day = n;
+  render();
+}
+
+function report(type, day, detail, result, score){
+  if (DEMO || !session.code) return Promise.resolve();
+  var p = { action:'progress', code:session.code, type:type, day:day||'',
+            detail:detail||'', result:result||'' };
+  if (score != null) p.score = score;
+  return apiCall(p).then(function(r){
+    if (r && r.ok){
+      session.unlocked = r.unlocked;
+      session.scores = r.scores || session.scores;
+    }
+  }).catch(function(){});
+}
+
+function doLogin(code, silent){
+  return apiCall({ action:'state', code:code }).then(function(r){
+    if (!r.ok){ if(!silent) gateMsg(r.error || 'Код не знайдено.'); return false; }
+    session.code = r.code; session.name = r.name; session.group = r.group || '';
+    session.unlocked = r.unlocked; session.scores = r.scores || session.scores;
+    session.total = r.total || 5;
+    sSet('or_code', r.code);
+    if (S.day > session.unlocked) S.day = session.unlocked;
+    showGate(false); render();
+    return true;
+  }).catch(function(){
+    if(!silent) gateMsg('Немає зв\'язку з сервером. Перевірте інтернет.');
+    return false;
+  });
+}
+
+function logoutGate(){
+  sDel('or_code');
+  session.code = null;
+  window.location.search = '';
+}
+
+function bindGate(){
+  document.getElementById('gtLogin').onclick = function(){
+    this.setAttribute('aria-selected','true');
+    document.getElementById('gtReg').setAttribute('aria-selected','false');
+    document.getElementById('gateLogin').style.display = '';
+    document.getElementById('gateReg').style.display = 'none';
+    document.getElementById('gateMsg').className = 'gate-msg';
+  };
+  document.getElementById('gtReg').onclick = function(){
+    this.setAttribute('aria-selected','true');
+    document.getElementById('gtLogin').setAttribute('aria-selected','false');
+    document.getElementById('gateReg').style.display = '';
+    document.getElementById('gateLogin').style.display = 'none';
+    document.getElementById('gateMsg').className = 'gate-msg';
+  };
+
+  document.getElementById('btnReg').onclick = function(){
+    var name = document.getElementById('inName').value.trim();
+    var group = document.getElementById('inGroup').value.trim();
+    if (name.length < 3){ gateMsg('Вкажіть прізвище та ім\'я.'); return; }
+    var btn = this; btn.disabled = true; btn.textContent = 'Реєструємо…';
+    apiCall({ action:'register', name:name, group:group }).then(function(r){
+      btn.disabled = false; btn.textContent = 'Зареєструватися';
+      if (!r.ok){ gateMsg(r.error || 'Не вдалося зареєструватися.'); return; }
+      session.code = r.code; session.name = r.name;
+      session.unlocked = r.unlocked; session.scores = r.scores || session.scores;
+      sSet('or_code', r.code);
+      document.getElementById('codeOut').textContent = r.code;
+      document.getElementById('gateReg').style.display = 'none';
+      document.getElementById('gateLogin').style.display = 'none';
+      document.querySelector('.gate-tabs').style.display = 'none';
+      document.getElementById('gateCode').style.display = '';
+      gateMsg(r.existed ? 'Ви вже зареєстровані — це ваш попередній код.'
+                        : 'Реєстрація успішна. Запишіть код доступу.', 'ok');
+    }).catch(function(){
+      btn.disabled = false; btn.textContent = 'Зареєструватися';
+      gateMsg('Немає зв\'язку з сервером. Перевірте інтернет.');
+    });
+  };
+
+  document.getElementById('btnEnter').onclick = function(){
+    if (S.day > session.unlocked) S.day = session.unlocked;
+    showGate(false); render();
+  };
+
+  document.getElementById('btnLogin').onclick = function(){
+    var c = document.getElementById('inCode').value.trim();
+    if (!c){ gateMsg('Введіть код доступу.'); return; }
+    var btn = this; btn.disabled = true; btn.textContent = 'Перевіряємо…';
+    doLogin(c, false).then(function(){ btn.disabled = false; btn.textContent = 'Увійти'; });
+  };
+  document.getElementById('inCode').addEventListener('keydown', function(e){
+    if (e.key === 'Enter') document.getElementById('btnLogin').click();
+  });
+}
+
+function bootGate(){
+  bindGate();
+  if (DEMO){
+    session.unlocked = 5; session.name = 'Демо-режим';
+    showGate(false); render();
+    return;
+  }
+  var code = urlCode() || sGet('or_code');
+  if (code){
+    document.getElementById('inCode').value = code;
+    doLogin(code, true).then(function(ok){ if (!ok) showGate(true); });
+  } else {
+    showGate(true);
+  }
+}
+
+
+// Модуль стає доступним не раніше відповідного дня навчання
+const MODULE_DAY = {
+  dash:1, schedule:1, checklists:1,
+  procedures:2, record:3, pacu:4, sim:5, debrief:1, eval:5
+};
+function moduleLocked(k){ return (MODULE_DAY[k] || 1) > session.unlocked; }
+
+function render(){
+  const nav = NAV[S.role];
+  if(!nav.some(n=>n[0]===S.view)) S.view = nav[0][0];
+  if(S.day > session.unlocked) S.day = Math.max(1, session.unlocked);
+  const pend = pendingCount();
+
+  el('app').innerHTML = `
+  <header class="topbar"><div class="topbar-in">
+    <div class="brand">
+      <div class="brand-mark">
+        <svg viewBox="0 0 34 34" preserveAspectRatio="none">
+          <path d="M0 22 H7 L9 22 L11 9 L13 28 L15 18 L17 22 H24 L26 14 L28 22 H34"
+                fill="none" stroke="#3DDC91" stroke-width="1.6"
+                stroke-linejoin="round" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <div class="brand-txt">
+        <strong>Інтернатура · Анестезіологія</strong>
+        <span>Тиждень ${WEEK.number} — ${esc(WEEK.title)}</span>
+      </div>
+    </div>
+
+    <div class="whoami">
+      <div class="avatar">${session.code ? 'ІН' : '—'}</div>
+      <div class="whoami-txt">
+        <b>${esc(session.name || 'Інтерн')}</b>
+        <span>${session.code ? session.code : 'Інтерн 1-го року'}</span>
+      </div>
+      <button class="btn btn-sm" style="margin-left:10px" onclick="logoutGate()">Вийти</button>
+    </div>
+  </div></header>
+
+  <nav class="modnav"><div class="modnav-in">
+    ${nav.map(([k,label])=>{
+      const badge = (k==='verify'&&pend) ? `<span class="badge">${pend}</span>` : '';
+      const lk = moduleLocked(k);
+      return `<button ${S.view===k?'aria-current="page"':''}${lk?' class="day-locked" title="Відкриється у День '+MODULE_DAY[k]+'"':''} onclick="go('${k}')">${esc(label)}${lk?' 🔒':''}${badge}</button>`;
+    }).join('')}
+  </div></nav>
+
+  <main>${moduleLocked(S.view)
+    ? `<div class="lockwall"><div class="ico">🔒</div>
+        <h3>Модуль ще закрито</h3>
+        <p>Цей розділ стає доступним у День ${MODULE_DAY[S.view]||1}.
+        Дні відкриваються послідовно, по одному на добу. Пройдені дні залишаються відкритими.</p></div>`
+    : (VIEWS[S.view] ? VIEWS[S.view]() : '')}</main>`;
+
+  if(S.view==='record') drawSparks();
+  if(S.view==='analytics') drawAnalytics();
+}
+
+function setRole(){ /* ролі вимкнено: портал працює лише в режимі інтерна */ }
+function go(v){
+  if(moduleLocked(v)){
+    toast('Модуль відкриється у День ' + (MODULE_DAY[v]||1) + '.', 'bad');
+    return;
+  }
+  S.view=v; if(v!=='sim') stopSim(); render(); window.scrollTo(0,0);
+}
+
+// ---------------- Timeline ----------------
+
+function timeline(dayN){
+  const blocks = DAY_BLOCKS[dayN] || [];
+  const SPAN = 480; // 07:00 → 15:00
+  const hours = ['07','08','09','10','11','12','13','14'];
+  const kinds = {briefing:'Брифінг',practice:'Практика',simulation:'Симуляція',debrief:'Дебрифінг'};
+  const rows = ['briefing','practice','simulation','debrief'].filter(k=>blocks.some(b=>b[2]===k));
+
+  return `<div class="chart">
+    <div class="chart-scale">
+      <div style="flex:0 0 118px;text-align:left;padding-left:12px">Блок</div>
+      ${hours.map(h=>`<div>${h}:00</div>`).join('')}
+    </div>
+    <div class="chart-rows">
+      ${rows.map(k=>{
+        const bs = blocks.filter(b=>b[2]===k);
+        const mins = bs.reduce((a,b)=>a+b[1],0);
+        return `<div class="crow">
+          <div class="crow-l"><b>${kinds[k]}</b><span>${mins} хв</span></div>
+          <div class="crow-track">
+            ${bs.map(([st,dur,kind,title,detail])=>{
+              const L=(st/SPAN*100).toFixed(2), W=(dur/SPAN*100).toFixed(2);
+              return `<div class="blk k-${kind}" style="left:${L}%;width:${W}%"
+                        title="${esc(title)} — ${esc(detail)}">
+                        ${esc(title)}<small>${dur} хв</small></div>`;
+            }).join('')}
+          </div>
+        </div>`;
+      }).join('')}
+    </div>
+  </div>`;
+}
+
+// ---------------- Views ----------------
+
+const VIEWS = {};
+
+// ===== Дашборд =====
+VIEWS.dash = () => {
+  if(S.role==='admin') return adminDash();
+  if(S.role==='mentor') return mentorDash();
+  return internDash();
+};
+
+function internDash(){
+  const ws = chkStats(S.me,'workstation_prep');
+  const ps = procStats(S.me);
+  const doneProc = ps.reduce((a,p)=>a+p.ver,0);
+  const targetProc = ps.reduce((a,p)=>a+p.target,0);
+  const pend = S.logs.filter(l=>l.intern===S.me && l.status==='submitted').length;
+  const simDone = Object.keys(S.scenarioResults).length;
+
+  return `
+  <div class="pagehead">
+    <div class="eyebrow">День ${S.day} · ${esc(WEEK.days[S.day-1].title)}</div>
+    <h2>${esc(WEEK.days[S.day-1].title)}</h2>
+    <p>${esc(WEEK.days[S.day-1].focus)}. Операційна ${me().room}.</p>
+  </div>
+
+  <div class="grid g-side">
+    <div class="grid" style="gap:16px">
+
+      <div class="grid g-3">
+        <div class="stat">
+          <div class="stat-l">Чек-лист робочого місця</div>
+          <div class="stat-v">${ws.done}<span style="font-size:15px;color:var(--paper-faint)">/${ws.total}</span></div>
+          <div class="meter"><i style="width:${ws.pct}%"></i></div>
+          <div class="stat-n">${ws.critMissing.length? `Критичних не позначено: ${ws.critMissing.length}` : 'Критичні пункти закриті'}</div>
+        </div>
+        <div class="stat">
+          <div class="stat-l">Процедури: підтверджено</div>
+          <div class="stat-v">${doneProc}<span style="font-size:15px;color:var(--paper-faint)">/${targetProc}</span></div>
+          <div class="meter"><i style="width:${Math.round(doneProc/targetProc*100)}%"></i></div>
+          <div class="stat-n">${pend? `${pend} очікує верифікації`:'Черги немає'}</div>
+        </div>
+        <div class="stat">
+          <div class="stat-l">Кризові симуляції</div>
+          <div class="stat-v">${simDone}<span style="font-size:15px;color:var(--paper-faint)">/${Object.keys(SCENARIOS).length}</span></div>
+          <div class="meter"><i style="width:${Math.round(simDone/Object.keys(SCENARIOS).length*100)}%"></i></div>
+          <div class="stat-n">День 5 — обов'язковий блок</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-h">
+          <h3>Розклад дня</h3>
+          <div style="margin-left:auto;display:flex;gap:4px">
+            ${WEEK.days.map(d=>{
+              const lk = d.n > session.unlocked;
+              return `<button class="btn btn-sm${lk?' day-locked':''}" title="${lk?'Ще закрито':esc(d.title)}"
+              style="${S.day===d.n?'background:var(--paper);color:var(--ink);border-color:var(--paper)':''}"
+              onclick="pickDay(${d.n})">Д${d.n}${lk?' 🔒':''}</button>`;
+            }).join('')}
+          </div>
+        </div>
+        <div class="card-b">${timeline(S.day)}</div>
+      </div>
+
+      <div class="card">
+        <div class="card-h"><h3>Ранковий брифінг</h3><span class="tag t-info">Опубліковано 07:30</span></div>
+        <div class="card-b">
+          <div style="font-size:12.5px;line-height:1.65;color:var(--paper-dim)">
+            <p style="margin-bottom:9px"><b style="color:var(--paper)">Протокол безпеки на сьогодні.</b>
+            Перед кожною індукцією — вголос підтвердити: наявність аспіратора, перевірений ларингоскоп,
+            набраний суксаметоній, план B при невдалій інтубації.</p>
+            <p style="margin-bottom:9px"><b style="color:var(--paper)">Розподіл.</b>
+            ${esc(USERS.i1.name)} та ${esc(USERS.i2.name)} — ОР-3, планові лапароскопії.
+            ${esc(USERS.i3.name)} та ${esc(USERS.i4.name)} — ОР-1, ортопедія.</p>
+            <p><b style="color:var(--paper)">Акцент тижня.</b> Cormack–Lehane фіксувати в журналі
+            для кожної спроби інтубації, навіть невдалої. Особливо — для невдалої.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="grid" style="gap:16px">
+      <div class="card">
+        <div class="card-h"><h3>Що зробити сьогодні</h3></div>
+        <div class="card-b tight">
+          ${task('Закрити чек-лист робочого місця', ws.pct===100?'done':'todo','checklists')}
+          ${task('Внести передопераційний огляд', chkStats(S.me,'preop_assessment').done?'part':'todo','checklists')}
+          ${task('Залогувати процедури дня', pend?'part':'todo','procedures')}
+          ${task('Заповнити карту наркозу', 'part','record')}
+          ${task('Саморефлексія у дебрифінгу','todo','debrief')}
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-h"><h3>Останній фідбек</h3><span class="sub">${esc(USERS.m1.name)} · вчора, 17:31</span></div>
+        <div class="card-b" style="font-size:12px;line-height:1.6;color:var(--paper-dim)">
+          «Прогрес з інтубацією помітний: остання спроба з першого разу, CL 2a.
+          Наступний фокус — преоксигенація. Три хвилини це три хвилини, не одна.»
+          <div style="margin-top:11px;padding-top:11px;border-top:1px solid var(--rule-soft)">
+            <span class="tag t-wait">Завдання</span>
+            <div style="margin-top:7px;font-size:11.5px">Повторити алгоритм DAS 2015, план A–D.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>`;
+}
+
+function task(label,state,view){
+  const map = {done:['t-go','Готово'],part:['t-wait','В роботі'],todo:['t-mute','Не почато']};
+  const [cls,txt] = map[state];
+  return `<div class="vq" style="cursor:pointer" onclick="go('${view}')">
+    <div class="vq-main"><b>${esc(label)}</b></div>
+    <span class="tag ${cls}">${txt}</span>
+  </div>`;
+}
+
+function mentorDash(){
+  const interns = ['i1','i2','i3','i4'];
+  const pend = pendingCount();
+  return `
+  <div class="pagehead">
+    <div class="eyebrow">День ${S.day} · ${esc(WEEK.days[S.day-1].title)}</div>
+    <h2>Робочий день ментора</h2>
+    <p>Під наглядом ${interns.length} інтерни. ${pend? `${pend} записів очікують верифікації.`:'Черга верифікації порожня.'}</p>
+  </div>
+
+  <div class="grid g-side">
+    <div class="grid" style="gap:16px">
+      <div class="card">
+        <div class="card-h"><h3>Розподіл по операційних</h3><span class="sub">Сьогодні</span></div>
+        <div class="card-b tight scroll-x">
+          <table>
+            <thead><tr><th>Інтерн</th><th>ОР</th><th>Пара</th><th>Чек-лист</th><th>Процедури</th></tr></thead>
+            <tbody>${interns.map(id=>{
+              const u=USERS[id], ws=chkStats(id,'workstation_prep');
+              const partner = id==='i1'?'i2':id==='i2'?'i1':id==='i3'?'i4':'i3';
+              const done = S.logs.filter(l=>l.intern===id).length;
+              const cls = ws.status==='verified'?'t-go':ws.status==='submitted'?'t-wait':ws.pct?'t-info':'t-mute';
+              const txt = ws.status==='verified'?'Підтверджено':ws.status==='submitted'?'На перевірці':`${ws.pct}%`;
+              return `<tr><td><b>${esc(u.name)}</b></td><td class="mono">${u.room}</td>
+                <td style="color:var(--paper-faint)">${esc(USERS[partner].name.split(' ')[0])}</td>
+                <td><span class="tag ${cls}">${txt}</span></td>
+                <td class="mono">${done}</td></tr>`;
+            }).join('')}</tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-h"><h3>Черга верифікації</h3>
+          ${pend?`<span class="tag t-wait">${pend}</span>`:'<span class="tag t-go">Порожньо</span>'}
+          <button class="btn btn-sm" style="margin-left:auto" onclick="go('verify')">Відкрити</button>
+        </div>
+        <div class="card-b tight">${verifyRows(4)}</div>
+      </div>
+
+      <div class="card">
+        <div class="card-h"><h3>Розклад дня</h3>
+          <div style="margin-left:auto;display:flex;gap:4px">
+            ${WEEK.days.map(d=>{
+              const lk = d.n > session.unlocked;
+              return `<button class="btn btn-sm${lk?' day-locked':''}" title="${lk?'Ще закрито':esc(d.title)}"
+              style="${S.day===d.n?'background:var(--paper);color:var(--ink);border-color:var(--paper)':''}"
+              onclick="pickDay(${d.n})">Д${d.n}${lk?' 🔒':''}</button>`;
+            }).join('')}
+          </div>
+        </div>
+        <div class="card-b">${timeline(S.day)}</div>
+      </div>
+    </div>
+
+    <div class="grid" style="gap:16px">
+      <div class="card">
+        <div class="card-h"><h3>Сигнали</h3></div>
+        <div class="card-b tight">
+          <div class="vq"><div class="vq-main">
+            <b style="color:var(--press)">${esc(USERS.i4.name)}</b>
+            <div class="vq-meta">Чек-лист робочого місця не розпочато о 09:00</div>
+          </div></div>
+          <div class="vq"><div class="vq-main">
+            <b style="color:var(--alarm)">${esc(USERS.i1.name)}</b>
+            <div class="vq-meta">Інтубація: 2 спроби, втручання ментора — 14.07</div>
+          </div></div>
+          <div class="vq"><div class="vq-main">
+            <b>${esc(USERS.i3.name)}</b>
+            <div class="vq-meta">Випереджає норматив регіонарних процедур</div>
+          </div></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-h"><h3>Норматив тижня</h3></div>
+        <div class="card-b tight">
+          ${PROCEDURES.slice(0,5).map(p=>{
+            const tot = interns.reduce((a,i)=>a+S.logs.filter(l=>l.intern===i&&l.proc===p.id&&l.status==='verified').length,0);
+            const need = p.target*interns.length;
+            return `<div class="vq"><div class="vq-main">
+              <b style="font-size:11.5px">${esc(p.name)}</b>
+              <div class="meter"><i style="width:${Math.min(100,tot/need*100)}%"></i></div>
+            </div><span class="mono" style="font-size:11px;color:var(--paper-faint)">${tot}/${need}</span></div>`;
+          }).join('')}
+        </div>
+      </div>
+    </div>
+  </div>`;
+}
+
+function adminDash(){
+  const interns=['i1','i2','i3','i4'];
+  const totalLogs = S.logs.length;
+  const verified = S.logs.filter(l=>l.status==='verified').length;
+  const backlog = pendingCount();
+  return `
+  <div class="pagehead">
+    <div class="eyebrow">Когорта ANEST-2026-A · Тиждень ${WEEK.number}</div>
+    <h2>Огляд когорти</h2>
+    <p>4 інтерни, 1 ментор. Ефективність програми за поточний тиждень.</p>
+  </div>
+
+  <div class="grid g-3" style="margin-bottom:16px">
+    <div class="stat"><div class="stat-l">Записів у журналі</div><div class="stat-v">${totalLogs}</div>
+      <div class="stat-n">${verified} підтверджено ментором</div></div>
+    <div class="stat"><div class="stat-l">Черга верифікації</div>
+      <div class="stat-v" style="color:${backlog>4?'var(--press)':'var(--trace)'}">${backlog}</div>
+      <div class="stat-n">Цільовий поріг — до 5 записів</div></div>
+    <div class="stat"><div class="stat-l">Успішність інтубацій</div>
+      <div class="stat-v">${(()=>{ const e=S.logs.filter(l=>l.proc===4); return e.length?Math.round(e.filter(l=>l.out==='success').length/e.length*100):0; })()}%</div>
+      <div class="stat-n">З першої або другої спроби</div></div>
+  </div>
+
+  <div class="card">
+    <div class="card-h"><h3>Прогрес інтернів</h3><span class="sub">Підтверджені процедури щодо нормативу тижня</span></div>
+    <div class="card-b tight scroll-x">
+      <table>
+        <thead><tr><th>Інтерн</th><th>Чек-листи</th><th>Процедури</th><th>Інтубації</th><th>Симуляції</th><th>Прогрес</th></tr></thead>
+        <tbody>${interns.map(id=>{
+          const ps=procStats(id), tot=ps.reduce((a,p)=>a+p.ver,0), need=ps.reduce((a,p)=>a+p.target,0);
+          const ett=ps.find(p=>p.id===4);
+          const chk=['workstation_prep','preop_assessment','pacu_discharge']
+                    .filter(k=>chkState(id,k).status!=='draft').length;
+          const pct=Math.round(tot/need*100);
+          return `<tr>
+            <td><b>${esc(USERS[id].name)}</b></td>
+            <td class="mono">${chk}/3</td>
+            <td class="mono">${tot}/${need}</td>
+            <td class="mono">${ett.ver}/${ett.target}${ett.rate!==null?` · ${ett.rate}%`:''}</td>
+            <td class="mono">${id==='i1'?Object.keys(S.scenarioResults).length:0}/5</td>
+            <td style="min-width:110px"><div class="meter"><i style="width:${pct}%"></i></div></td>
+          </tr>`;
+        }).join('')}</tbody>
+      </table>
+    </div>
+  </div>`;
+}
+
+// ===== Розклад =====
+VIEWS.schedule = () => `
+  <div class="pagehead">
+    <div class="eyebrow">Тиждень ${WEEK.number}</div>
+    <h2>${esc(WEEK.title)}</h2>
+    <p>П'ять днів у операційному блоці. Кожен день — брифінг, практичний блок, дебрифінг.</p>
+  </div>
+  <div class="grid" style="gap:16px">
+  ${WEEK.days.map(d=>`
+    <div class="card">
+      <div class="card-h">
+        <span class="tag t-mute">День ${d.n}</span>
+        <h3>${esc(d.title)}</h3>
+        <span class="sub">${esc(d.focus)}</span>
+      </div>
+      <div class="card-b">${timeline(d.n)}</div>
+    </div>`).join('')}
+  </div>`;
+
+// ===== Чек-листи =====
+VIEWS.checklists = () => {
+  const keys = Object.keys(CHECKLISTS);
+  return `
+  <div class="pagehead">
+    <div class="eyebrow">Модуль Б</div>
+    <h2>Інтерактивні чек-листи операційної</h2>
+    <p>Критичні пункти позначені як обов'язкові — без них чек-лист не подається на верифікацію.</p>
+  </div>
+  <div class="grid" style="gap:16px">
+    ${keys.map(k=>checklistCard(k)).join('')}
+  </div>`;
+};
+
+function checklistCard(key){
+  const tpl = CHECKLISTS[key], st = chkState(S.me,key), stats = chkStats(S.me,key);
+  const locked = st.status==='submitted' || st.status==='verified';
+  const tagMap = { draft:['t-mute','Чернетка'], submitted:['t-wait','На перевірці'],
+                   verified:['t-go','Підтверджено'], rejected:['t-stop','Відхилено'] };
+  const [tc,tt] = tagMap[st.status];
+
+  return `<div class="card">
+    <div class="card-h">
+      <h3>${esc(tpl.title)}</h3>
+      <span class="tag ${tc}">${tt}</span>
+      <span class="mono" style="margin-left:auto;font-size:11px;color:var(--paper-faint)">
+        ${stats.done}/${stats.total}</span>
+    </div>
+    ${tpl.warn?`<div class="warnbar">${icon('warn')}<div>${esc(tpl.warn)}</div></div>`:''}
+    <div class="card-b tight">
+      ${tpl.sections.map(sec=>{
+        const d = sec.items.filter(i=>st.items[i.id]).length;
+        return `<div class="chk-sec">
+          <div class="chk-sec-h"><span>${esc(sec.name)}</span>
+            <span class="mono" style="color:${d===sec.items.length?'var(--trace)':'var(--paper-faint)'}">${d}/${sec.items.length}</span></div>
+          ${sec.items.map(it=>`
+            <div class="chk-item" data-on="${st.items[it.id]?1:0}"
+                 ${locked?'':`onclick="toggleChk('${key}','${it.id}')"`}
+                 role="checkbox" aria-checked="${!!st.items[it.id]}" tabindex="0"
+                 ${locked?'':`onkeydown="if(event.key===' '||event.key==='Enter'){event.preventDefault();toggleChk('${key}','${it.id}')}"`}>
+              <div class="chk-box">${icon('check')}</div>
+              <div class="chk-txt">
+                <b>${esc(it.label)}${it.crit?'<span class="crit">КРИТИЧНО</span>':''}</b>
+                ${it.hint?`<span>${esc(it.hint)}</span>`:''}
+              </div>
+            </div>`).join('')}
+        </div>`;
+      }).join('')}
+    </div>
+    <div class="card-b" style="border-top:1px solid var(--rule);display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+      ${st.status==='verified'
+        ? `<div style="font-size:12px;color:var(--trace)">Підтверджено${st.comment?`: «${esc(st.comment)}»`:''}</div>`
+        : st.status==='submitted'
+        ? `<div style="font-size:12px;color:var(--paper-dim)">Надіслано на перевірку. Редагування заблоковано.</div>`
+        : stats.critMissing.length
+        ? `<div style="font-size:11.5px;color:var(--press);flex:1">
+             Не позначено критичних пунктів: <b>${stats.critMissing.length}</b> — ${esc(stats.critMissing[0])}${stats.critMissing.length>1?' та інші':''}
+           </div>
+           <button class="btn" disabled>Надіслати на перевірку</button>`
+        : `<div style="font-size:11.5px;color:var(--trace);flex:1">Критичні пункти закриті.</div>
+           <button class="btn btn-go" onclick="submitChk('${key}')">Надіслати на перевірку</button>`}
+    </div>
+  </div>`;
+}
+
+function toggleChk(key,id){
+  const st = S.checklists[S.me][key];
+  st.items[id] = st.items[id] ? 0 : 1;
+  render();
+}
+function submitChk(key){
+  const stats = chkStats(S.me,key);
+  if(stats.critMissing.length){ toast('Критичні пункти не закриті','bad'); return; }
+  S.checklists[S.me][key].status = 'submitted';
+  toast('Чек-лист надіслано на перевірку');
+  report('чек-лист', S.day, key, 'надіслано');
+  render();
+}
+
+// ===== Журнал процедур =====
+VIEWS.procedures = () => {
+  const ps = procStats(S.me);
+  const mine = S.logs.filter(l=>l.intern===S.me).sort((a,b)=>b.at.localeCompare(a.at));
+  return `
+  <div class="pagehead">
+    <div class="eyebrow">Модуль В</div>
+    <h2>Журнал процедур і трекер навичок</h2>
+    <p>Фіксуйте кожну маніпуляцію одразу після виконання. Невдалі спроби заносяться так само, як успішні.</p>
+  </div>
+
+  <div class="grid g-side">
+    <div class="grid" style="gap:16px">
+      <div class="card">
+        <div class="card-h"><h3>Внести маніпуляцію</h3></div>
+        <div class="card-b">
+          <div class="grid g-2">
+            <div class="field"><label>Процедура</label>
+              <select id="f-proc">${PROCEDURES.map(p=>`<option value="${p.id}">${esc(p.name)}</option>`).join('')}</select></div>
+            <div class="field"><label>Код пацієнта</label>
+              <input id="f-code" placeholder="PT-0000" value="PT-0${150+mine.length}">
+              <div class="hint">Знеособлений код. ПІБ пацієнта не вноситься.</div></div>
+            <div class="field"><label>Рівень контролю</label>
+              <select id="f-sup">${Object.entries(SUPERVISION).map(([k,v])=>`<option value="${k}">${esc(v)}</option>`).join('')}</select></div>
+            <div class="field"><label>Результат</label>
+              <select id="f-out">${Object.entries(OUTCOME).map(([k,v])=>`<option value="${k}">${esc(v)}</option>`).join('')}</select></div>
+            <div class="field"><label>Кількість спроб</label>
+              <input id="f-att" type="number" min="1" max="9" value="1"></div>
+            <div class="field"><label>Cormack–Lehane (для ДШ)</label>
+              <select id="f-cl"><option value="">Не застосовно</option>
+                <option>1</option><option>2a</option><option>2b</option><option>3a</option><option>3b</option><option>4</option></select></div>
+          </div>
+          <div class="field"><label>Саморефлексія</label>
+            <textarea id="f-note" placeholder="Що вийшло, що ні, що зробити інакше наступного разу"></textarea></div>
+          <button class="btn btn-go btn-block" onclick="addLog()">Записати в журнал</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-h"><h3>Мої записи</h3><span class="sub">${mine.length} за тиждень</span></div>
+        <div class="card-b tight scroll-x">
+          ${mine.length? `<table>
+            <thead><tr><th>Дата</th><th>Процедура</th><th>Контроль</th><th>Результат</th><th>Спроб</th><th>Статус</th></tr></thead>
+            <tbody>${mine.map(l=>{
+              const p=PROCEDURES.find(x=>x.id===l.proc);
+              const oc = l.out==='success'?'t-go':l.out==='success_with_difficulty'?'t-wait':'t-stop';
+              const sc = l.status==='verified'?'t-go':'t-wait';
+              return `<tr>
+                <td class="mono" style="color:var(--paper-faint)">${l.at.slice(5,10).replace('-','.')} ${l.at.slice(11)}</td>
+                <td><b>${esc(p.name)}</b>${l.note?`<div style="font-size:10.5px;color:var(--paper-faint);margin-top:3px">${esc(l.note)}</div>`:''}</td>
+                <td style="font-size:11px">${esc(SUPERVISION[l.sup])}</td>
+                <td><span class="tag ${oc}">${esc(OUTCOME[l.out])}</span></td>
+                <td class="mono">${l.attempts}</td>
+                <td><span class="tag ${sc}">${l.status==='verified'?'Підтв.':'Очікує'}</span></td>
+              </tr>`;
+            }).join('')}</tbody></table>`
+          : `<div class="empty"><b>Записів ще немає</b>Внесіть першу маніпуляцію у формі вище.</div>`}
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-h"><h3>Норматив тижня</h3><span class="sub">Підтверджено / потрібно</span></div>
+      <div class="card-b tight">
+        ${ps.map(p=>`<div class="vq" style="display:block">
+          <div style="display:flex;justify-content:space-between;align-items:baseline;gap:10px">
+            <b style="font-size:11.5px;font-weight:600">${esc(p.name)}</b>
+            <span class="mono" style="font-size:11px;color:${p.ver>=p.target?'var(--trace)':'var(--paper-faint)'};flex:none">${p.ver}/${p.target}</span>
+          </div>
+          <div class="meter"><i style="width:${Math.min(100,p.ver/p.target*100)}%"></i></div>
+          ${p.pend?`<div style="font-size:10px;color:var(--press);margin-top:5px;font-family:'IBM Plex Mono'">+${p.pend} на перевірці</div>`:''}
+          ${p.rate!==null?`<div style="font-size:10px;color:var(--paper-faint);margin-top:4px;font-family:'IBM Plex Mono'">Успішність ${p.rate}%</div>`:''}
+        </div>`).join('')}
+      </div>
+    </div>
+  </div>`;
+};
+
+function addLog(){
+  const cl = el('f-cl').value;
+  S.logs.push({
+    id:'L'+(S.logs.length+1), intern:S.me,
+    proc:+el('f-proc').value,
+    at:'2026-07-18T'+new Date().toTimeString().slice(0,5),
+    sup:el('f-sup').value, out:el('f-out').value,
+    attempts:+el('f-att').value || 1,
+    code:el('f-code').value || 'PT-????',
+    status:'submitted',
+    note:(el('f-note').value||'') + (cl?`${el('f-note').value?' · ':''}Cormack–Lehane ${cl}`:'')
+  });
+  toast('Записано. Надіслано на верифікацію.');
+  report('процедура', S.day, (PROCEDURES.find(p=>p.id===+el('f-proc').value)||{}).name || 'процедура', 'записано');
+  render();
+}
+
+// ===== Карта наркозу =====
+VIEWS.record = () => {
+  const r = S.record;
+  return `
+  <div class="pagehead">
+    <div class="eyebrow">Модуль В · навчальна карта</div>
+    <h2>Анестезіологічна карта</h2>
+    <p>${esc(r.code)} · ${esc(r.surgery)} · ${esc(r.type)} · початок ${r.start}</p>
+  </div>
+
+  <div class="grid g-side">
+    <div class="grid" style="gap:16px">
+      <div class="card">
+        <div class="card-h"><h3>Тренди вітальних показників</h3>
+          <span class="sub">Зелена — ЧСС · бірюзова — SpO₂ · бурштинова — систолічний АТ · фіолетова — EtCO₂</span></div>
+        <div class="card-b">
+          <div class="grid" style="gap:14px">
+            ${spark('ЧСС / уд·хв⁻¹','hr','var(--trace)',40,160)}
+            ${spark('SpO₂ / %','spo2','var(--pleth)',85,100)}
+            ${spark('АТ сист. / мм рт.ст.','sbp','var(--press)',60,180)}
+            ${spark('EtCO₂ / мм рт.ст.','etco2','var(--violet)',0,60)}
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-h"><h3>Внести показники</h3><span class="sub">Кожні 5 хвилин або при зміні стану</span></div>
+        <div class="card-b">
+          <div class="grid" style="grid-template-columns:repeat(6,1fr);gap:10px">
+            <div class="field" style="margin:0"><label>Час</label><input id="v-t" value="${nextTime()}"></div>
+            <div class="field" style="margin:0"><label>ЧСС</label><input id="v-hr" type="number" value="74"></div>
+            <div class="field" style="margin:0"><label>АТс</label><input id="v-sbp" type="number" value="116"></div>
+            <div class="field" style="margin:0"><label>АТд</label><input id="v-dbp" type="number" value="70"></div>
+            <div class="field" style="margin:0"><label>SpO₂</label><input id="v-spo2" type="number" value="99"></div>
+            <div class="field" style="margin:0"><label>EtCO₂</label><input id="v-etco2" type="number" value="35"></div>
+          </div>
+          <button class="btn btn-block" style="margin-top:12px" onclick="addVital()">Додати запис</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="grid" style="gap:16px">
+      <div class="card">
+        <div class="card-h"><h3>Медикаменти</h3></div>
+        <div class="card-b tight">
+          ${r.drugs.map(d=>`<div class="vq">
+            <span class="mono" style="font-size:11px;color:var(--paper-faint);flex:none;width:38px">${d.t}</span>
+            <div class="vq-main"><b>${esc(d.n)}</b>
+              <div class="vq-meta">${esc(d.d)} · ${esc(d.r)}</div></div>
+          </div>`).join('')}
+        </div>
+        <div class="card-b" style="border-top:1px solid var(--rule)">
+          <div class="grid g-2" style="gap:9px">
+            <div class="field" style="margin:0"><label>Препарат</label><input id="d-n" placeholder="Фентаніл"></div>
+            <div class="field" style="margin:0"><label>Доза</label><input id="d-d" placeholder="50 мкг"></div>
+          </div>
+          <button class="btn btn-block" style="margin-top:10px" onclick="addDrug()">Зафіксувати введення</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-h"><h3>Записів у карті</h3></div>
+        <div class="card-b">
+          <div class="stat" style="border:none;padding:0">
+            <div class="stat-l">Вітальні показники</div>
+            <div class="stat-v">${r.vitals.length}</div>
+            <div class="stat-n">Останній о ${r.vitals[r.vitals.length-1].t}</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>`;
+};
+
+function spark(label,key,color,min,max){
+  return `<div>
+    <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:5px">
+      <span style="font-size:10px;font-weight:700;letter-spacing:.11em;text-transform:uppercase;color:var(--paper-faint)">${label}</span>
+      <span class="mono" style="font-size:15px;color:${color}">${S.record.vitals[S.record.vitals.length-1][key]}</span>
+    </div>
+    <canvas class="spark" data-key="${key}" data-color="${color}" data-min="${min}" data-max="${max}"></canvas>
+  </div>`;
+}
+
+function drawSparks(){
+  document.querySelectorAll('.spark').forEach(cv=>{
+    const key=cv.dataset.key, color=cv.dataset.color;
+    const min=+cv.dataset.min, max=+cv.dataset.max;
+    const dpr=window.devicePixelRatio||1;
+    const W=cv.clientWidth, H=cv.clientHeight;
+    cv.width=W*dpr; cv.height=H*dpr;
+    const c=cv.getContext('2d'); c.scale(dpr,dpr);
+    const data=S.record.vitals.map(v=>v[key]);
+    const pad=14, iw=W-pad*2, ih=H-pad*2;
+    const X=i=>pad+(i/(data.length-1))*iw;
+    const Y=v=>pad+ih-((v-min)/(max-min))*ih;
+
+    // grid
+    c.strokeStyle='#1A2431'; c.lineWidth=1;
+    for(let i=0;i<=4;i++){ const y=pad+(ih/4)*i;
+      c.beginPath(); c.moveTo(pad,y); c.lineTo(W-pad,y); c.stroke(); }
+
+    // area fill
+    const g=c.createLinearGradient(0,pad,0,H-pad);
+    g.addColorStop(0,color.replace('var(--','').length?hexAlpha(color,.18):'rgba(0,0,0,0)');
+    g.addColorStop(1,'rgba(0,0,0,0)');
+    c.beginPath(); c.moveTo(X(0),H-pad);
+    data.forEach((v,i)=>c.lineTo(X(i),Y(v)));
+    c.lineTo(X(data.length-1),H-pad); c.closePath();
+    c.fillStyle=g; c.fill();
+
+    // line
+    c.beginPath();
+    data.forEach((v,i)=> i?c.lineTo(X(i),Y(v)):c.moveTo(X(i),Y(v)));
+    c.strokeStyle=cssVar(color); c.lineWidth=1.8;
+    c.lineJoin='round'; c.lineCap='round'; c.stroke();
+
+    // dots
+    c.fillStyle=cssVar(color);
+    data.forEach((v,i)=>{ c.beginPath(); c.arc(X(i),Y(v),2.1,0,7); c.fill(); });
+  });
+}
+function cssVar(v){
+  if(!v.startsWith('var(')) return v;
+  return getComputedStyle(document.documentElement).getPropertyValue(v.slice(4,-1)).trim();
+}
+function hexAlpha(v,a){
+  const h=cssVar(v).replace('#','');
+  const r=parseInt(h.slice(0,2),16),g=parseInt(h.slice(2,4),16),b=parseInt(h.slice(4,6),16);
+  return `rgba(${r},${g},${b},${a})`;
+}
+function nextTime(){
+  const last=S.record.vitals[S.record.vitals.length-1].t;
+  let [h,m]=last.split(':').map(Number); m+=15; if(m>=60){m-=60;h++}
+  return `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}`;
+}
+function addVital(){
+  S.record.vitals.push({
+    t:el('v-t').value, hr:+el('v-hr').value, sbp:+el('v-sbp').value,
+    dbp:+el('v-dbp').value, spo2:+el('v-spo2').value, etco2:+el('v-etco2').value
+  });
+  toast('Показники внесені в карту');
+  render();
+}
+function addDrug(){
+  const n=el('d-n').value.trim();
+  if(!n){ toast('Вкажіть назву препарату','warn'); return; }
+  S.record.drugs.push({ t:new Date().toTimeString().slice(0,5), n, d:el('d-d').value||'—', r:'в/в болюс' });
+  toast('Введення зафіксовано');
+  render();
+}
+
+/* =====================================================================
+   Views (частина 2): ППНП, симуляції, верифікація, дебрифінг, оцінювання
+   ===================================================================== */
+
+// ===== ППНП =====
+const ALDRETE = {
+  activity:['Не рухає кінцівками','Рухає двома кінцівками','Рухає всіма чотирма кінцівками'],
+  respiration:['Апное','Задишка, обмежене дихання','Дихає глибоко, кашляє вільно'],
+  circulation:['АТ ±50% від вихідного','АТ ±20–50% від вихідного','АТ ±20% від вихідного'],
+  consciousness:['Не реагує','Прокидається на оклик','Повністю притомний'],
+  spo2:['SpO₂ <90% навіть з киснем','Потрібен кисень для SpO₂ >90%','SpO₂ >92% на повітрі']
+};
+const ALDRETE_LABEL = {
+  activity:'Активність', respiration:'Дихання', circulation:'Гемодинаміка',
+  consciousness:'Свідомість', spo2:'Оксигенація'
+};
+
+VIEWS.pacu = () => {
+  const p = S.pacu;
+  const total = Object.values(p.aldrete).reduce((a,b)=>a+b,0);
+  const ready = total>=9 && p.nrs!==null && p.nrs<=3;
+  const dis = chkStats(S.me,'pacu_discharge');
+
+  return `
+  <div class="pagehead">
+    <div class="eyebrow">День 4 · Модуль ППНП</div>
+    <h2>Палата післянаркозного нагляду</h2>
+    <p>Оцінка болю, свідомості та гемодинаміки. Критерії переведення обчислюються автоматично.</p>
+  </div>
+
+  <div class="grid g-side">
+    <div class="grid" style="gap:16px">
+
+      <div class="card">
+        <div class="card-h"><h3>Оцінка болю</h3>
+          <span class="sub">ВАШ — візуальна аналогова шкала · НРШ — числова рейтингова шкала</span></div>
+        <div class="card-b">
+          <div style="margin-bottom:20px">
+            <div style="display:flex;justify-content:space-between;margin-bottom:9px">
+              <span style="font-size:10px;font-weight:700;letter-spacing:.11em;text-transform:uppercase;color:var(--paper-faint)">ВАШ (0–10)</span>
+              <span class="mono" style="font-size:17px;color:${painColor(p.vas)}">${p.vas===null?'—':p.vas}</span>
+            </div>
+            ${painScale('vas',p.vas)}
+          </div>
+          <div>
+            <div style="display:flex;justify-content:space-between;margin-bottom:9px">
+              <span style="font-size:10px;font-weight:700;letter-spacing:.11em;text-transform:uppercase;color:var(--paper-faint)">НРШ (0–10)</span>
+              <span class="mono" style="font-size:17px;color:${painColor(p.nrs)}">${p.nrs===null?'—':p.nrs}</span>
+            </div>
+            ${painScale('nrs',p.nrs)}
+          </div>
+          ${p.nrs!==null && p.nrs>3 ? `<div class="warnbar" style="margin-top:16px">${icon('warn')}
+            <div>НРШ ${p.nrs} — біль недостатньо контрольований. Переведення з ППНП заблоковано до НРШ ≤ 3.</div></div>`:''}
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-h"><h3>Шкала Aldrete</h3>
+          <span class="mono" style="margin-left:auto;font-size:17px;color:${total>=9?'var(--trace)':total>=7?'var(--press)':'var(--alarm)'}">${total}/10</span></div>
+        <div class="card-b tight">
+          ${Object.keys(ALDRETE).map(k=>`
+            <div style="padding:13px 16px;border-bottom:1px solid var(--rule-soft)">
+              <div style="font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--paper-faint);margin-bottom:8px">${ALDRETE_LABEL[k]}</div>
+              <div style="display:flex;gap:7px;flex-wrap:wrap">
+                ${ALDRETE[k].map((lbl,v)=>`
+                  <button class="btn btn-sm" style="flex:1;min-width:150px;text-align:left;justify-content:flex-start;
+                    ${p.aldrete[k]===v?'border-color:var(--trace);background:rgba(61,220,145,.1);color:var(--trace)':''}"
+                    onclick="setAldrete('${k}',${v})">
+                    <span class="mono" style="opacity:.6">${v}</span> ${esc(lbl)}
+                  </button>`).join('')}
+              </div>
+            </div>`).join('')}
+        </div>
+      </div>
+    </div>
+
+    <div class="grid" style="gap:16px">
+      <div class="card">
+        <div class="card-h"><h3>Готовність до переведення</h3></div>
+        <div class="card-b">
+          <div style="text-align:center;padding:14px 0">
+            <div class="mono" style="font-size:38px;font-weight:600;color:${ready?'var(--trace)':'var(--press)'}">${total}</div>
+            <div style="font-size:11px;color:var(--paper-faint);margin-top:3px">балів Aldrete з 10</div>
+            <div style="margin-top:14px">
+              <span class="tag ${ready?'t-go':'t-wait'}">${ready?'Готовий до переведення':'Продовжити спостереження'}</span>
+            </div>
+          </div>
+          <div style="border-top:1px solid var(--rule-soft);padding-top:13px;font-size:11.5px;line-height:1.7;color:var(--paper-dim)">
+            <div style="display:flex;justify-content:space-between">
+              <span>Aldrete ≥ 9</span>
+              <span style="color:${total>=9?'var(--trace)':'var(--alarm)'}">${total>=9?'так':'ні'}</span></div>
+            <div style="display:flex;justify-content:space-between">
+              <span>НРШ ≤ 3</span>
+              <span style="color:${p.nrs!==null&&p.nrs<=3?'var(--trace)':'var(--alarm)'}">${p.nrs===null?'не оцінено':p.nrs<=3?'так':'ні'}</span></div>
+            <div style="display:flex;justify-content:space-between">
+              <span>Чек-лист ППНП</span>
+              <span style="color:${dis.pct===100?'var(--trace)':'var(--paper-faint)'}">${dis.done}/${dis.total}</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-h"><h3>Чек-лист переведення</h3>
+          <button class="btn btn-sm" style="margin-left:auto" onclick="go('checklists')">Відкрити</button></div>
+        <div class="card-b" style="font-size:11.5px;color:var(--paper-dim);line-height:1.6">
+          Повний перелік критеріїв — у розділі чек-листів. Критичні пункти: дихання,
+          гемодинаміка, SpO₂ та контроль болю.
+        </div>
+      </div>
+    </div>
+  </div>`;
+};
+
+function painScale(key,val){
+  return `<div style="display:flex;gap:3px">
+    ${Array.from({length:11},(_,i)=>`
+      <button onclick="setPain('${key}',${i})"
+        style="flex:1;padding:9px 0;border-radius:2px;font-family:'IBM Plex Mono';font-size:11px;font-weight:600;
+        border:1px solid ${val===i?painColor(i):'var(--rule)'};
+        background:${val===i?painColor(i):'var(--ink)'};
+        color:${val===i?'var(--ink)':'var(--paper-dim)'};transition:.15s"
+        aria-pressed="${val===i}">${i}</button>`).join('')}
+  </div>`;
+}
+function painColor(v){
+  if(v===null) return 'var(--paper-faint)';
+  return v<=3 ? 'var(--trace)' : v<=6 ? 'var(--press)' : 'var(--alarm)';
+}
+function setPain(k,v){ S.pacu[k]=v; render(); }
+function setAldrete(k,v){ S.pacu.aldrete[k]=v; render(); }
+
+// ===== Кризові симуляції =====
+
+VIEWS.sim = () => {
+  if(S.sim.code) return simStage();
+  const codes = Object.keys(SCENARIOS);
+  return `
+  <div class="pagehead">
+    <div class="eyebrow">Модуль Г · День 5</div>
+    <h2>Table-top симуляції кризових станів</h2>
+    <p>Кожне рішення обмежене в часі. Таймер не зупиняється — як і в операційній.
+       Пропущений дедлайн зараховується як бездіяльність.</p>
+  </div>
+
+  <div class="grid g-2">
+    ${codes.map(c=>{
+      const s=SCENARIOS[c], r=S.scenarioResults[c];
+      return `<div class="card">
+        <div class="card-h">
+          <h3>${esc(s.title)}</h3>
+          ${r?`<span class="tag ${r.pct>=70?'t-go':r.pct>=50?'t-wait':'t-stop'}">${r.pct}%</span>`:'<span class="tag t-mute">Не пройдено</span>'}
+          <span class="sub mono">${esc(s.ref)}</span>
+        </div>
+        <div class="card-b">
+          <p style="font-size:12px;line-height:1.6;color:var(--paper-dim);margin-bottom:14px">${esc(s.brief)}</p>
+          <div style="display:flex;gap:9px;align-items:center">
+            <button class="btn ${r?'':'btn-go'}" onclick="startSim('${c}')">${r?'Пройти знову':'Розпочати'}</button>
+            ${r?`<span style="font-size:11px;color:var(--paper-faint);font-family:'IBM Plex Mono'">
+              ${r.correct}/${r.steps} вірних · ${r.score} балів</span>`:''}
+          </div>
+        </div>
+      </div>`;
+    }).join('')}
+  </div>`;
+};
+
+function simStage(){
+  const sc = SCENARIOS[S.sim.code];
+  const nd = sc.nodes[S.sim.node];
+  const done = S.sim.done;
+  const v = done ? {hr:'—',bp:'—',spo2:'—',etco2:'—'} : nd.vitals;
+  const crit = done ? [] : (nd.crit||[]);
+  const pct = S.sim.steps ? Math.round(S.sim.correct/S.sim.steps*100) : 0;
+  const limit = nd.limit||30;
+  const frac = done ? 0 : (S.sim.left/limit*100);
+
+  return `
+  <div class="pagehead">
+    <div class="eyebrow">Симуляція · ${esc(sc.ref)}</div>
+    <h2>${esc(sc.title)}</h2>
+    <p>${esc(sc.brief)}</p>
+  </div>
+
+  <div class="grid g-side">
+    <div class="sim-stage">
+      <div class="sim-vitals">
+        <div class="sv hr ${crit.includes('hr')?'crit':''}"><div class="sv-l">ЧСС</div><div class="sv-v">${v.hr}</div></div>
+        <div class="sv bp ${crit.includes('bp')?'crit':''}"><div class="sv-l">АТ</div><div class="sv-v" style="font-size:20px">${v.bp}</div></div>
+        <div class="sv spo2 ${crit.includes('spo2')?'crit':''}"><div class="sv-l">SpO₂</div><div class="sv-v">${v.spo2}</div></div>
+        <div class="sv etco2 ${crit.includes('etco2')?'crit':''}"><div class="sv-l">EtCO₂</div><div class="sv-v">${v.etco2}</div></div>
+      </div>
+
+      <div class="sim-clock ${frac<35?'hot':''}"><i style="width:${frac}%"></i></div>
+
+      <div class="sim-body">
+        ${done ? `
+          <div style="text-align:center;padding:14px 0 20px">
+            <div class="mono" style="font-size:44px;font-weight:600;color:${pct>=70?'var(--trace)':pct>=50?'var(--press)':'var(--alarm)'}">${pct}%</div>
+            <div style="font-size:12px;color:var(--paper-faint);margin-top:4px">
+              відповідність протоколу · ${S.sim.correct} з ${S.sim.steps} рішень вірні · ${S.sim.score} балів</div>
+          </div>
+          <p style="font-size:13px;line-height:1.65;color:var(--paper-dim);padding:14px;background:var(--ink-2);
+             border-left:2px solid ${pct>=70?'var(--trace)':'var(--press)'};border-radius:2px">
+            ${esc(sc.nodes.end.text)}</p>
+          <div style="display:flex;gap:9px;margin-top:16px">
+            <button class="btn btn-go" onclick="startSim('${S.sim.code}')">Пройти знову</button>
+            <button class="btn" onclick="stopSim();go('sim')">До списку сценаріїв</button>
+          </div>
+        ` : `
+          <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:11px">
+            <span style="font-size:10px;font-weight:700;letter-spacing:.13em;text-transform:uppercase;color:var(--paper-faint)">
+              Рішення ${S.sim.steps+1}</span>
+            <span class="mono" style="font-size:13px;color:${S.sim.left<=7?'var(--alarm)':'var(--press)'}">
+              ${S.sim.left} с</span>
+          </div>
+          <div class="sim-prompt">${nd.prompt}</div>
+          ${nd.opts.map((o,i)=>`
+            <button class="sim-opt" onclick="decide(${i})">
+              <span class="role">${esc(o.role)}</span>${esc(o.l)}
+            </button>`).join('')}
+        `}
+      </div>
+
+      ${S.sim.log.length?`<div class="sim-log">
+        ${S.sim.log.map(L=>`<div class="sim-log-i ${L.k}">
+          <time>${L.t}</time><span>${esc(L.txt)}</span></div>`).join('')}
+      </div>`:''}
+    </div>
+
+    <div class="grid" style="gap:16px">
+      <div class="card">
+        <div class="card-h"><h3>Прогрес</h3></div>
+        <div class="card-b">
+          <div class="stat" style="border:none;padding:0;margin-bottom:14px">
+            <div class="stat-l">Відповідність протоколу</div>
+            <div class="stat-v" style="color:${pct>=70?'var(--trace)':'var(--press)'}">${pct}%</div>
+            <div class="meter"><i style="width:${pct}%"></i></div>
+          </div>
+          <div style="font-size:11.5px;line-height:1.7;color:var(--paper-dim);border-top:1px solid var(--rule-soft);padding-top:12px">
+            <div style="display:flex;justify-content:space-between"><span>Рішень прийнято</span><span class="mono">${S.sim.steps}</span></div>
+            <div style="display:flex;justify-content:space-between"><span>Вірних</span><span class="mono" style="color:var(--trace)">${S.sim.correct}</span></div>
+            <div style="display:flex;justify-content:space-between"><span>Балів</span><span class="mono">${S.sim.score}</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-h"><h3>Ролі в команді</h3></div>
+        <div class="card-b" style="font-size:11.5px;line-height:1.65;color:var(--paper-dim)">
+          Кожен варіант підписаний роллю, яка виконує дію. У реальній команді
+          ці рішення ухвалюються паралельно різними людьми — лідер розподіляє,
+          не виконує все сам.
+        </div>
+      </div>
+      ${S.sim.code?`<button class="btn" onclick="stopSim();go('sim')">Перервати симуляцію</button>`:''}
+    </div>
+  </div>`;
+}
+
+function startSim(code){
+  stopSim();
+  const sc = SCENARIOS[code];
+  S.sim = { code, node:sc.start, score:0, log:[], timer:null,
+            left:sc.nodes[sc.start].limit||30, done:false, steps:0, correct:0 };
+  S.view='sim';
+  render();
+  tickSim();
+}
+function tickSim(){
+  clearInterval(S.sim.timer);
+  S.sim.timer = setInterval(()=>{
+    if(S.sim.done){ clearInterval(S.sim.timer); return; }
+    S.sim.left--;
+    if(S.sim.left<=0){ timeoutSim(); return; }
+    const c = document.querySelector('.sim-clock');
+    if(c){
+      const nd = SCENARIOS[S.sim.code].nodes[S.sim.node];
+      const frac = S.sim.left/(nd.limit||30)*100;
+      c.querySelector('i').style.width = frac+'%';
+      c.classList.toggle('hot', frac<35);
+      const t = c.parentElement.querySelector('.sim-body .mono');
+      if(t) { t.textContent = S.sim.left+' с'; t.style.color = S.sim.left<=7?'var(--alarm)':'var(--press)'; }
+    }
+  },1000);
+}
+function stopSim(){ clearInterval(S.sim.timer); S.sim.timer=null; }
+
+function timeoutSim(){
+  const sc = SCENARIOS[S.sim.code], nd = sc.nodes[S.sim.node];
+  S.sim.log.push({ t:stamp(), k:'to', txt:'Час вичерпано. Бездіяльність — стан пацієнта погіршився.' });
+  S.sim.score -= 20; S.sim.steps++;
+  advance(nd.opts[0].nx);
+  toast('Дедлайн пропущено','bad');
+}
+function decide(i){
+  const sc = SCENARIOS[S.sim.code], nd = sc.nodes[S.sim.node], o = nd.opts[i];
+  S.sim.steps++; S.sim.score += o.s;
+  if(o.ok) S.sim.correct++;
+  S.sim.log.push({ t:stamp(), k:o.ok?'ok':'no', txt:(o.ok?'✓ ':'✗ ')+o.fb });
+  advance(o.nx);
+}
+function advance(next){
+  if(next && SCENARIOS[S.sim.code].nodes[next]){
+    S.sim.node = next;
+    S.sim.left = SCENARIOS[S.sim.code].nodes[next].limit||30;
+    render(); tickSim();
+  } else {
+    stopSim();
+    S.sim.done = true;
+    const pct = S.sim.steps? Math.round(S.sim.correct/S.sim.steps*100):0;
+    S.scenarioResults[S.sim.code] = { pct, score:S.sim.score, steps:S.sim.steps, correct:S.sim.correct };
+    render();
+  }
+}
+function stamp(){ return new Date().toTimeString().slice(0,8); }
+
+// ===== Верифікація (ментор) =====
+
+VIEWS.verify = () => `
+  <div class="pagehead">
+    <div class="eyebrow">Модуль В · ментор</div>
+    <h2>Верифікація записів</h2>
+    <p>Підтверджені записи потрапляють у норматив інтерна. Відхилені повертаються на доопрацювання з коментарем.</p>
+  </div>
+  <div class="card">
+    <div class="card-h"><h3>Черга</h3>
+      <span class="tag ${pendingCount()?'t-wait':'t-go'}">${pendingCount()||'порожньо'}</span></div>
+    <div class="card-b tight">${verifyRows(50)}</div>
+  </div>`;
+
+function verifyRows(limit){
+  const rows = [];
+
+  Object.keys(S.checklists).forEach(iid=>{
+    Object.keys(CHECKLISTS).forEach(k=>{
+      const st = chkState(iid,k);
+      if(st.status!=='submitted') return;
+      const s = chkStats(iid,k);
+      rows.push({ kind:'chk', iid, k,
+        title:CHECKLISTS[k].title,
+        meta:`${USERS[iid].name} · ${s.done}/${s.total} пунктів` });
+    });
+  });
+
+  S.logs.filter(l=>l.status==='submitted').forEach(l=>{
+    const p = PROCEDURES.find(x=>x.id===l.proc);
+    rows.push({ kind:'log', id:l.id,
+      title:p.name,
+      meta:`${USERS[l.intern].name} · ${SUPERVISION[l.sup]} · ${OUTCOME[l.out]} · спроб ${l.attempts}`,
+      note:l.note });
+  });
+
+  if(!rows.length) return `<div class="empty"><b>Черга порожня</b>Усі надіслані записи опрацьовані.</div>`;
+
+  return rows.slice(0,limit).map(r=>`
+    <div class="vq">
+      <div class="vq-main">
+        <b>${esc(r.title)}</b>
+        <div class="vq-meta">${esc(r.meta)}</div>
+        ${r.note?`<div style="font-size:11px;color:var(--paper-dim);margin-top:6px;line-height:1.5;font-style:italic">«${esc(r.note)}»</div>`:''}
+      </div>
+      <div class="vq-act">
+        <button class="btn btn-sm btn-go" onclick="${r.kind==='chk'?`verifyChk('${r.iid}','${r.k}',1)`:`verifyLog('${r.id}',1)`}">Підтвердити</button>
+        <button class="btn btn-sm" onclick="${r.kind==='chk'?`verifyChk('${r.iid}','${r.k}',0)`:`verifyLog('${r.id}',0)`}">Повернути</button>
+      </div>
+    </div>`).join('');
+}
+
+function verifyChk(iid,k,ok){
+  S.checklists[iid][k].status = ok?'verified':'draft';
+  toast(ok?'Чек-лист підтверджено':'Повернено на доопрацювання', ok?'':'warn');
+  render();
+}
+function verifyLog(id,ok){
+  const l = S.logs.find(x=>x.id===id);
+  if(ok){ l.status='verified'; toast('Запис підтверджено'); }
+  else { S.logs = S.logs.filter(x=>x.id!==id); toast('Запис повернено інтерну','warn'); }
+  render();
+}
+
+// ===== Інтерни (ментор/адмін) =====
+
+VIEWS.interns = () => {
+  const ids = ['i1','i2','i3','i4'];
+  return `
+  <div class="pagehead">
+    <div class="eyebrow">Когорта ANEST-2026-A</div>
+    <h2>Інтерни</h2>
+    <p>Прогрес за нормативом тижня та статус чек-листів.</p>
+  </div>
+  <div class="grid g-2">
+    ${ids.map(id=>{
+      const ps = procStats(id);
+      const tot = ps.reduce((a,p)=>a+p.ver,0), need = ps.reduce((a,p)=>a+p.target,0);
+      return `<div class="card">
+        <div class="card-h">
+          <div class="avatar">${USERS[id].init}</div>
+          <div><h3>${esc(USERS[id].name)}</h3>
+            <div class="sub">Операційна ${USERS[id].room}</div></div>
+          <span class="mono" style="margin-left:auto;font-size:15px">${tot}/${need}</span>
+        </div>
+        <div class="card-b tight">
+          ${['workstation_prep','preop_assessment','pacu_discharge'].map(k=>{
+            const s=chkStats(id,k);
+            const m={draft:['t-mute','Чернетка'],submitted:['t-wait','На перевірці'],verified:['t-go','Підтверджено'],rejected:['t-stop','Відхилено']}[s.status];
+            return `<div class="vq"><div class="vq-main">
+              <b style="font-size:11.5px">${esc(CHECKLISTS[k].title)}</b>
+              <div class="vq-meta">${s.done}/${s.total} пунктів</div></div>
+              <span class="tag ${m[0]}">${m[1]}</span></div>`;
+          }).join('')}
+        </div>
+        <div class="card-b" style="border-top:1px solid var(--rule)">
+          ${ps.filter(p=>p.total).map(p=>`
+            <div style="display:flex;justify-content:space-between;align-items:baseline;font-size:11px;margin-bottom:6px">
+              <span style="color:var(--paper-dim)">${esc(p.name)}</span>
+              <span class="mono" style="color:${p.ver>=p.target?'var(--trace)':'var(--paper-faint)'}">${p.ver}/${p.target}</span>
+            </div>`).join('') || '<div style="font-size:11.5px;color:var(--paper-faint)">Записів у журналі ще немає.</div>'}
+        </div>
+      </div>`;
+    }).join('')}
+  </div>`;
+};
+
+// ===== Дебрифінг =====
+
+VIEWS.debrief = () => {
+  const kinds = { note:['Нотатка','t-info'], question:['Питання','t-wait'], action_item:['Завдання','t-go'] };
+  return `
+  <div class="pagehead">
+    <div class="eyebrow">Модуль Д</div>
+    <h2>Дебрифінг дня</h2>
+    <p>Розбір помилок моніторингу, фармакології та складних кейсів.</p>
+  </div>
+
+  <div class="grid g-side">
+    <div class="card">
+      <div class="card-h"><h3>День ${S.day} · ${esc(WEEK.days[S.day-1].title)}</h3>
+        <span class="sub">Учасники: ${esc(USERS.m1.name)}, ${esc(USERS.i1.name)}</span></div>
+      <div class="card-b tight">
+        ${S.debrief.map(e=>{
+          const u=USERS[e.who], [kl,kc]=kinds[e.kind];
+          return `<div style="padding:14px 16px;border-bottom:1px solid var(--rule-soft);display:flex;gap:12px">
+            <div class="avatar" style="flex:none">${u.init}</div>
+            <div style="flex:1;min-width:0">
+              <div style="display:flex;align-items:center;gap:8px;margin-bottom:5px;flex-wrap:wrap">
+                <b style="font-size:12px">${esc(u.name)}</b>
+                <span class="tag ${kc}">${kl}</span>
+                <span class="mono" style="font-size:10px;color:var(--paper-faint);margin-left:auto">${e.at}</span>
+              </div>
+              <div style="font-size:12.5px;line-height:1.6;color:var(--paper-dim)">${esc(e.body)}</div>
+            </div>
+          </div>`;
+        }).join('')}
+      </div>
+      <div class="card-b" style="border-top:1px solid var(--rule)">
+        <div class="field"><label>Новий запис</label>
+          <textarea id="db-body" placeholder="${S.role==='mentor'?'Спостереження, зауваження, завдання для інтерна':'Питання або саморефлексія за підсумком дня'}"></textarea></div>
+        <div style="display:flex;gap:9px;flex-wrap:wrap">
+          <select id="db-kind" style="flex:1;min-width:130px;padding:8px 10px;background:var(--ink);border:1px solid var(--rule);border-radius:3px">
+            <option value="note">Нотатка</option>
+            <option value="question">Питання</option>
+            ${S.role==='mentor'?'<option value="action_item">Завдання</option>':''}
+          </select>
+          <button class="btn btn-go" onclick="addDebrief()">Додати</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-h"><h3>Теми дня</h3></div>
+      <div class="card-b tight">
+        ${['Преоксигенація: скільки насправді потрібно','Cormack–Lehane та документування невдач',
+           'Гемодинаміка при індукції пропофолом','Алгоритм DAS 2015: план A–D'].map(t=>
+          `<div class="vq"><div class="vq-main"><b style="font-size:11.5px;font-weight:500">${esc(t)}</b></div></div>`).join('')}
+      </div>
+    </div>
+  </div>`;
+};
+
+function addDebrief(){
+  const b = el('db-body').value.trim();
+  if(!b){ toast('Порожній запис','warn'); return; }
+  S.debrief.push({ who:S.me, at:new Date().toTimeString().slice(0,5),
+                   kind:el('db-kind').value, body:b });
+  toast('Запис додано до дебрифінгу');
+  render();
+}
+
+// ===== Підсумок тижня =====
+
+const COMPETENCIES = {
+  airway:'Дихальні шляхи', pharm:'Фармакологія', monitor:'Моніторинг',
+  regional:'Регіонарна анестезія', crisis:'Дії при кризі', teamwork:'Командна робота'
+};
+
+VIEWS.eval = () => {
+  const e = S.evaluation;
+  const isMentor = S.role==='mentor';
+  return `
+  <div class="pagehead">
+    <div class="eyebrow">Модуль Д · 360-оцінювання</div>
+    <h2>Підсумок тижня ${WEEK.number}</h2>
+    <p>Саморефлексія та рекомендації для самостійного навчання.</p>
+  </div>
+
+  <div class="grid g-2">
+    <div class="card">
+      <div class="card-h"><h3>Саморефлексія</h3>
+        <span class="tag ${isMentor?'t-mute':'t-info'}">${isMentor?'Заповнює інтерн':'Ваша частина'}</span></div>
+      <div class="card-b">
+        <div class="field"><label>Що вдалося цього тижня</label>
+          <textarea id="e-ach" ${isMentor?'disabled':''} placeholder="Конкретні досягнення, а не загальні слова">${esc(e.achievements)}</textarea></div>
+        <div class="field"><label>Що давалося складно</label>
+          <textarea id="e-dif" ${isMentor?'disabled':''} placeholder="Ситуації, де відчували невпевненість">${esc(e.difficulties)}</textarea></div>
+        <div class="field"><label>Загальна самооцінка</label>
+          <div style="display:flex;gap:6px">
+            ${[1,2,3,4,5].map(n=>`<button class="btn" style="flex:1;${e.rating===n?'background:var(--paper);color:var(--ink);border-color:var(--paper)':''}"
+              ${isMentor?'disabled':`onclick="S.evaluation.rating=${n};saveEval();render()"`}>${n}</button>`).join('')}
+          </div>
+          <div class="hint">1 — потребую значно більше практики · 5 — впевнено виконую самостійно</div></div>
+        ${isMentor?'':`<button class="btn btn-go btn-block" onclick="saveEval(true)">Зберегти саморефлексію</button>`}
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-h"><h3>Фідбек керівника</h3>
+        <span class="tag ${isMentor?'t-info':'t-mute'}">${isMentor?'Ваша частина':'Заповнює керівник'}</span></div>
+      <div class="card-b">
+        <div class="field"><label>Оцінка компетенцій</label>
+          ${Object.entries(COMPETENCIES).map(([k,label])=>`
+            <div style="display:flex;align-items:center;gap:11px;margin-bottom:7px">
+              <span style="flex:1;font-size:11.5px;color:var(--paper-dim)">${esc(label)}</span>
+              <div style="display:flex;gap:3px">
+                ${[1,2,3,4,5].map(n=>`<button
+                  style="width:26px;height:26px;border-radius:2px;font-family:'IBM Plex Mono';font-size:11px;
+                  border:1px solid ${e.comp[k]>=n?'var(--trace)':'var(--rule)'};
+                  background:${e.comp[k]>=n?'rgba(61,220,145,.15)':'var(--ink)'};
+                  color:${e.comp[k]>=n?'var(--trace)':'var(--paper-faint)'};transition:.12s"
+                  ${isMentor?`onclick="S.evaluation.comp['${k}']=${n};render()"`:'disabled'}>${n}</button>`).join('')}
+              </div>
+            </div>`).join('')}
+        </div>
+        <div class="field"><label>Розгорнутий фідбек</label>
+          <textarea id="e-fb" ${isMentor?'':'disabled'} placeholder="Конкретні спостереження за тиждень">${esc(e.feedback)}</textarea></div>
+        <div class="field"><label>Рекомендації для самостійного навчання</label>
+          <textarea id="e-rec" ${isMentor?'':'disabled'} placeholder="Що прочитати, що відпрацювати">${esc(e.recs)}</textarea></div>
+        ${isMentor?`<button class="btn btn-go btn-block" onclick="saveEval(true)">Зберегти та завершити оцінювання</button>`:''}
+      </div>
+    </div>
+  </div>`;
+};
+
+function saveEval(notify){
+  const g=id=>el(id)?el(id).value:'';
+  if(S.role!=='mentor'){
+    S.evaluation.achievements=g('e-ach'); S.evaluation.difficulties=g('e-dif');
+  } else {
+    S.evaluation.feedback=g('e-fb'); S.evaluation.recs=g('e-rec');
+  }
+  if(notify){ toast('Збережено'); render(); }
+}
+
+// ===== Аналітика (адмін) =====
+
+VIEWS.analytics = () => `
+  <div class="pagehead">
+    <div class="eyebrow">Адміністрування</div>
+    <h2>Аналітика програми</h2>
+    <p>Ефективність тижня 2 за когортою: вузькі місця чек-листів і розподіл процедур.</p>
+  </div>
+
+  <div class="grid g-2">
+    <div class="card">
+      <div class="card-h"><h3>Найчастіше пропущені пункти чек-листів</h3>
+        <span class="sub">Сигнал про прогалини у навчанні, а не про недбалість</span></div>
+      <div class="card-b"><canvas id="cv-miss" style="width:100%;height:260px;display:block"></canvas></div>
+    </div>
+    <div class="card">
+      <div class="card-h"><h3>Виконання нормативу процедур</h3>
+        <span class="sub">Підтверджено ментором, усі інтерни разом</span></div>
+      <div class="card-b"><canvas id="cv-proc" style="width:100%;height:260px;display:block"></canvas></div>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top:16px">
+    <div class="card-h"><h3>Результати кризових симуляцій</h3></div>
+    <div class="card-b tight scroll-x">
+      <table>
+        <thead><tr><th>Сценарій</th><th>Протокол</th><th>Пройдено</th><th>Відповідність</th></tr></thead>
+        <tbody>${Object.keys(SCENARIOS).map(c=>{
+          const s=SCENARIOS[c], r=S.scenarioResults[c];
+          return `<tr>
+            <td><b>${esc(s.title)}</b></td>
+            <td class="mono" style="color:var(--paper-faint)">${esc(s.ref)}</td>
+            <td class="mono">${r?'1':'0'}/4</td>
+            <td>${r?`<span class="tag ${r.pct>=70?'t-go':r.pct>=50?'t-wait':'t-stop'}">${r.pct}%</span>`:'<span class="tag t-mute">Немає даних</span>'}</td>
+          </tr>`;
+        }).join('')}</tbody>
+      </table>
+    </div>
+  </div>`;
+
+function drawAnalytics(){
+  // Пропущені пункти
+  const miss = {};
+  Object.keys(S.checklists).forEach(iid=>{
+    Object.keys(CHECKLISTS).forEach(k=>{
+      const st=chkState(iid,k);
+      if(st.status==='draft' && !Object.keys(st.items).length) return;
+      CHECKLISTS[k].sections.forEach(sec=>sec.items.forEach(it=>{
+        if(!st.items[it.id]) miss[it.label]=(miss[it.label]||0)+1;
+      }));
+    });
+  });
+  const top = Object.entries(miss).sort((a,b)=>b[1]-a[1]).slice(0,6);
+  bars('cv-miss', top.map(([l,v])=>({l, v})), '#F2A33C', 4, '×');
+
+  // Норматив
+  const ids=['i1','i2','i3','i4'];
+  const pd = PROCEDURES.map(p=>{
+    const done = ids.reduce((a,i)=>a+S.logs.filter(l=>l.intern===i&&l.proc===p.id&&l.status==='verified').length,0);
+    return { l:p.name, v:done, max:p.target*ids.length };
+  }).sort((a,b)=>b.v/b.max-a.v/a.max).slice(0,6);
+  bars('cv-proc', pd.map(d=>({l:d.l, v:Math.round(d.v/d.max*100)})), '#3DDC91', 100, '%');
+}
+
+function bars(id, data, color, max, unit){
+  const cv = el(id); if(!cv || !data.length) return;
+  const dpr=window.devicePixelRatio||1, W=cv.clientWidth, H=cv.clientHeight;
+  cv.width=W*dpr; cv.height=H*dpr;
+  const c=cv.getContext('2d'); c.scale(dpr,dpr);
+  c.clearRect(0,0,W,H);
+
+  const gap = 6;
+  const rowH = H/data.length;
+  const bh = Math.min(9, rowH*0.28);
+  const M = max || Math.max(...data.map(d=>d.v),1);
+  const valW = 40;
+  const bw = W - valW;
+
+  c.textBaseline='alphabetic';
+  data.forEach((d,i)=>{
+    const top = i*rowH;
+    // label above its own bar — no horizontal crowding
+    c.font='500 11px Inter,sans-serif';
+    c.fillStyle='#8A9BAD'; c.textAlign='left';
+    c.fillText(fit(c,d.l,bw-4), 0, top+rowH*0.42);
+    // track + fill
+    const by = top+rowH*0.42+7;
+    c.fillStyle='#18212E';
+    roundRect(c,0,by,bw,bh,bh/2); c.fill();
+    c.fillStyle=color;
+    roundRect(c,0,by,Math.max(bh,bw*Math.min(1,d.v/M)),bh,bh/2); c.fill();
+    // value at right
+    c.font='600 11px "IBM Plex Mono",monospace';
+    c.fillStyle='#E8EDF2'; c.textAlign='right'; c.textBaseline='middle';
+    c.fillText(d.v+(unit||''), W, by+bh/2);
+    c.textBaseline='alphabetic';
+  });
+}
+function fit(c,text,maxW){
+  if(c.measureText(text).width<=maxW) return text;
+  let t=text;
+  while(t.length>4 && c.measureText(t+'…').width>maxW) t=t.slice(0,-1);
+  return t+'…';
+}
+function roundRect(c,x,y,w,h,r){
+  c.beginPath();
+  c.moveTo(x+r,y); c.lineTo(x+w-r,y); c.quadraticCurveTo(x+w,y,x+w,y+r);
+  c.lineTo(x+w,y+h-r); c.quadraticCurveTo(x+w,y+h,x+w-r,y+h);
+  c.lineTo(x+r,y+h); c.quadraticCurveTo(x,y+h,x,y+h-r);
+  c.lineTo(x,y+r); c.quadraticCurveTo(x,y,x+r,y); c.closePath();
+}
+
+// ---------- Ініціалізація ----------
+bootGate();
+window.addEventListener('resize', ()=>{
+  if(S.view==='record') drawSparks();
+  if(S.view==='analytics') drawAnalytics();
+});
+
+</script>
+</body>
+</html>
