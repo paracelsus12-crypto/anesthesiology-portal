@@ -1,0 +1,1768 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>КардіоВІТ Інтерн | Інтенсивна терапія у кардіохірургії</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Inter', 'sans-serif'] },
+                    colors: {
+                        clinical: { 50:'#f0f9ff',100:'#e0f2fe',600:'#0284c7',700:'#0369a1',800:'#075985',900:'#0c4a6e' },
+                        heart: { 500:'#ef4444',600:'#dc2626',700:'#b91c1c' }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+
+        /* ---------- ACCESS GATE ---------- */
+        #gate{position:fixed;inset:0;z-index:200;background:#f8fafc;display:flex;
+          align-items:center;justify-content:center;padding:20px;overflow-y:auto}
+        .gate-card{width:100%;max-width:430px;background:#fff;border:1px solid #e2e8f0;
+          border-radius:16px;padding:32px;box-shadow:0 10px 40px rgba(15,23,42,.08)}
+        .gate-tabs{display:flex;gap:4px;margin-bottom:22px;border-bottom:1px solid #e2e8f0}
+        .gate-tabs button{flex:1;background:none;border:none;border-bottom:2px solid transparent;
+          padding:10px;color:#64748b;font-size:13px;font-weight:600;cursor:pointer}
+        .gate-tabs button[aria-selected=true]{color:#0369a1;border-bottom-color:#0369a1}
+        .gate-field{margin-bottom:14px}
+        .gate-field label{display:block;font-size:11px;text-transform:uppercase;letter-spacing:.08em;
+          color:#64748b;font-weight:700;margin-bottom:6px}
+        .gate-field input{width:100%;background:#f8fafc;border:1px solid #cbd5e1;color:#0f172a;
+          border-radius:8px;padding:11px 13px;font-size:14px;font-family:inherit}
+        .gate-field input:focus{outline:2px solid #0284c7;outline-offset:1px;background:#fff}
+        .gate-btn{width:100%;background:#0c4a6e;color:#fff;border:none;border-radius:8px;
+          padding:12px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit}
+        .gate-btn:hover{background:#075985}
+        .gate-btn:disabled{opacity:.6;cursor:default}
+        .gate-msg{font-size:12.5px;padding:11px 13px;border-radius:8px;margin-top:14px;display:none;line-height:1.5}
+        .gate-msg.err{display:block;background:#fef2f2;border:1px solid #fecaca;color:#b91c1c}
+        .gate-msg.ok{display:block;background:#f0fdf4;border:1px solid #bbf7d0;color:#15803d}
+        .code-out{font-family:ui-monospace,'SF Mono',Menlo,monospace;font-size:27px;font-weight:700;
+          color:#0369a1;text-align:center;padding:18px;background:#f0f9ff;border:1px dashed #7dd3fc;
+          border-radius:10px;letter-spacing:.08em;margin:16px 0}
+        .day-tab.locked{opacity:.5;cursor:not-allowed}
+        .lockwall{text-align:center;padding:60px 24px;background:#fff;border:1px solid #e2e8f0;border-radius:16px}
+        .lockwall .ico{font-size:42px;color:#cbd5e1;margin-bottom:14px}
+        .lockwall h3{font-size:18px;font-weight:700;color:#334155;margin-bottom:8px}
+        .lockwall p{color:#64748b;font-size:13.5px;max-width:46ch;margin:0 auto;line-height:1.6}
+        .custom-scroll::-webkit-scrollbar { width:6px; height:6px; }
+        .custom-scroll::-webkit-scrollbar-track { background:#f1f5f9; }
+        .custom-scroll::-webkit-scrollbar-thumb { background:#cbd5e1; border-radius:4px; }
+        .pulse-heart { animation: pulse 1.5s infinite; }
+        @keyframes pulse { 0%,100%{transform:scale(1);} 50%{transform:scale(1.1);} }
+        *:focus-visible { outline:2px solid #0284c7; outline-offset:2px; }
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after { animation-duration:0.001ms !important; transition-duration:0.001ms !important; }
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans min-h-screen flex flex-col antialiased">
+
+<div id="gate">
+  <div class="gate-card">
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:20px">
+      <div style="background:#dc2626;padding:10px;border-radius:12px;color:#fff;display:flex">
+        <i class="fa-solid fa-heart-pulse" style="font-size:20px"></i>
+      </div>
+      <div>
+        <div style="font-weight:800;font-size:17px;color:#0f172a;line-height:1.2">КардіоВІТ Інтерн</div>
+        <div style="font-size:11.5px;color:#64748b;margin-top:2px">Інтенсивна терапія у кардіохірургії</div>
+      </div>
+    </div>
+
+    <div class="gate-tabs" role="tablist">
+      <button id="gtLogin" role="tab" aria-selected="true" type="button">Вхід за кодом</button>
+      <button id="gtReg" role="tab" aria-selected="false" type="button">Перша реєстрація</button>
+    </div>
+
+    <div id="gateLogin">
+      <div class="gate-field">
+        <label for="inCode">Код доступу</label>
+        <input id="inCode" type="text" placeholder="CV-AB1234" autocomplete="off" spellcheck="false">
+      </div>
+      <button class="gate-btn" id="btnLogin" type="button">Увійти</button>
+    </div>
+
+    <div id="gateReg" style="display:none">
+      <div class="gate-field">
+        <label for="inName">Прізвище та ім'я</label>
+        <input id="inName" type="text" placeholder="Шевченко Тарас" autocomplete="off">
+      </div>
+      <div class="gate-field">
+        <label for="inGroup">Група / база стажування</label>
+        <input id="inGroup" type="text" placeholder="Інтернатура, 1-й рік" autocomplete="off">
+      </div>
+      <button class="gate-btn" id="btnReg" type="button">Зареєструватися</button>
+      <p style="font-size:11.5px;color:#94a3b8;margin:14px 0 0;line-height:1.5">Після реєстрації ви отримаєте
+      код доступу. Запишіть його — він знадобиться при вході з іншого пристрою.</p>
+    </div>
+
+    <div id="gateMsg" class="gate-msg"></div>
+
+    <div id="gateCode" style="display:none">
+      <div class="code-out" id="codeOut">—</div>
+      <button class="gate-btn" id="btnEnter" type="button">Почати навчання</button>
+    </div>
+  </div>
+</div>
+
+
+<header class="bg-clinical-900 text-white shadow-lg sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex items-center justify-between h-16">
+            <div class="flex items-center space-x-3">
+                <div class="bg-heart-600 p-2.5 rounded-xl shadow-md text-white pulse-heart flex items-center justify-center">
+                    <i class="fa-solid fa-heart-pulse text-xl"></i>
+                </div>
+                <div>
+                    <span class="font-extrabold text-lg tracking-tight block sm:inline">КардіоВІТ</span>
+                    <span class="text-xs bg-clinical-600 px-2 py-0.5 rounded-full ml-2 font-medium tracking-wide">ІНТЕРНАТУРА</span>
+                    <p class="text-[10px] text-slate-300 -mt-0.5 hidden sm:block">Інтенсивна терапія у кардіохірургії (Тиждень 2)</p>
+                </div>
+            </div>
+            <div class="flex items-center space-x-4">
+                <div id="whoami" class="hidden sm:flex items-center gap-2 text-[11px] text-slate-300">
+                    <span>Інтерн: <b id="whoName" class="text-white font-semibold">—</b></span>
+                    <span id="whoCode" class="text-slate-400"></span>
+                    <button id="btnLogout" type="button" class="underline hover:text-white">Вийти</button>
+                </div>
+                <div class="hidden md:flex items-center bg-clinical-800 px-3 py-1.5 rounded-lg text-xs space-x-2">
+                    <i class="fa-solid fa-graduation-cap text-sky-400"></i>
+                    <span>Прогрес тижня:</span>
+                    <span id="overall-progress-text" class="font-bold text-sky-300">0%</span>
+                    <div class="w-20 bg-slate-700 h-2 rounded-full overflow-hidden">
+                        <div id="overall-progress-bar" class="bg-sky-400 h-full transition-all duration-500" style="width:0%"></div>
+                    </div>
+                </div>
+                <button onclick="resetProgress()" class="text-xs bg-slate-800 hover:bg-slate-700 text-slate-300 px-2.5 py-1.5 rounded transition flex items-center gap-1">
+                    <i class="fa-solid fa-rotate-left"></i> Скинути прогрес
+                </button>
+            </div>
+        </div>
+    </div>
+</header>
+
+<div id="toast-container" class="fixed top-20 right-4 z-50 flex flex-col gap-2 pointer-events-none"></div>
+
+<main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
+    <section class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 mb-8 relative overflow-hidden">
+        <div class="absolute right-0 top-0 opacity-5 -mr-10 -mt-10 pointer-events-none text-clinical-900">
+            <i class="fa-solid fa-hospital text-[250px]"></i>
+        </div>
+        <div class="max-w-3xl">
+            <span class="text-xs font-semibold text-clinical-700 uppercase tracking-widest bg-clinical-50 px-3 py-1 rounded-full">НАВЧАЛЬНИЙ МОДУЛЬ</span>
+            <h1 class="text-2xl sm:text-3xl font-extrabold text-slate-900 mt-2">Тиждень 2. Інтенсивна терапія у кардіохірургії</h1>
+            <p class="text-slate-600 mt-2 text-sm sm:text-base leading-relaxed">
+                Інтерактивний робочий простір для анестезіологів-інтернів. Мета — інтегрувати теоретичні знання з практичними навичками ведення критичних пацієнтів у палатах інтенсивної терапії кардіохірургічного профілю.
+            </p>
+            <div class="grid grid-cols-2 sm:grid-cols-5 gap-3 mt-6">
+                <div class="bg-slate-50 p-2.5 rounded-xl border border-slate-100 flex flex-col justify-between">
+                    <div class="text-slate-400 text-xs mb-1"><i class="fa-solid fa-eye text-clinical-600"></i></div>
+                    <span class="text-xs font-bold text-slate-800">Активне спостереження</span>
+                </div>
+                <div class="bg-slate-50 p-2.5 rounded-xl border border-slate-100 flex flex-col justify-between">
+                    <div class="text-slate-400 text-xs mb-1"><i class="fa-solid fa-handshake-angle text-teal-600"></i></div>
+                    <span class="text-xs font-bold text-slate-800">Кероване асистування</span>
+                </div>
+                <div class="bg-slate-50 p-2.5 rounded-xl border border-slate-100 flex flex-col justify-between">
+                    <div class="text-slate-400 text-xs mb-1"><i class="fa-solid fa-user-doctor text-indigo-600"></i></div>
+                    <span class="text-xs font-bold text-slate-800">Нагляд ментора</span>
+                </div>
+                <div class="bg-slate-50 p-2.5 rounded-xl border border-slate-100 flex flex-col justify-between">
+                    <div class="text-slate-400 text-xs mb-1"><i class="fa-solid fa-clipboard-question text-amber-600"></i></div>
+                    <span class="text-xs font-bold text-slate-800">Кейс-орієнтованість</span>
+                </div>
+                <div class="bg-slate-50 p-2.5 rounded-xl border border-slate-100 flex flex-col justify-between col-span-2 sm:col-span-1">
+                    <div class="text-slate-400 text-xs mb-1"><i class="fa-solid fa-users text-heart-500"></i></div>
+                    <span class="text-xs font-bold text-slate-800">Командний підхід</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="mb-6">
+        <h2 class="text-sm font-semibold text-slate-500 uppercase tracking-wider mb-3">Навчальні Дні</h2>
+        <div class="grid grid-cols-5 gap-2 sm:gap-4" id="day-nav"></div>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+        <div class="lg:col-span-7 flex flex-col space-y-6" id="day-column">
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6" id="day-card">
+                <div class="flex items-start justify-between border-b border-slate-100 pb-4 mb-4">
+                    <div>
+                        <span id="day-number-label" class="text-xs font-semibold text-clinical-600 bg-clinical-50 px-2.5 py-1 rounded-md">ДЕНЬ 1</span>
+                        <h2 id="day-title" class="text-xl font-bold text-slate-900 mt-2"></h2>
+                    </div>
+                    <div class="flex flex-col items-end">
+                        <span class="text-xs text-slate-400">Контрольний час</span>
+                        <span id="day-hours" class="text-sm font-semibold text-slate-700"></span>
+                    </div>
+                </div>
+
+                <div class="flex space-x-1 bg-slate-100 p-1 rounded-lg mb-6 text-xs sm:text-sm overflow-x-auto custom-scroll">
+                    <button onclick="switchSubTab('brief')" id="tab-brief" class="sub-tab flex-1 py-1.5 px-3 rounded-md text-center font-medium transition focus:outline-none whitespace-nowrap">Брифінг</button>
+                    <button onclick="switchSubTab('theory')" id="tab-theory" class="sub-tab flex-1 py-1.5 px-3 rounded-md text-center font-medium transition focus:outline-none whitespace-nowrap">Теорія</button>
+                    <button onclick="switchSubTab('practice')" id="tab-practice" class="sub-tab flex-1 py-1.5 px-3 rounded-md text-center font-medium transition focus:outline-none whitespace-nowrap">Практика</button>
+                    <button onclick="switchSubTab('case')" id="tab-case" class="sub-tab flex-1 py-1.5 px-3 rounded-md text-center font-medium transition focus:outline-none whitespace-nowrap">Кейс</button>
+                    <button onclick="switchSubTab('debrief')" id="tab-debrief" class="sub-tab flex-1 py-1.5 px-3 rounded-md text-center font-medium transition focus:outline-none whitespace-nowrap">Дебрифінг</button>
+                </div>
+
+                <div class="space-y-4">
+                    <div id="content-brief" class="sub-content hidden space-y-3">
+                        <div class="flex items-center gap-2 text-amber-600 bg-amber-50 px-3 py-2 rounded-lg text-sm font-medium">
+                            <i class="fa-solid fa-mug-hot"></i> Ранковий Брифінг (30 хвилин)
+                        </div>
+                        <p class="text-sm text-slate-600 leading-relaxed" id="text-brief-desc"></p>
+                        <div class="border border-slate-100 rounded-xl p-4 bg-slate-50">
+                            <h4 class="text-xs font-bold uppercase tracking-wider text-slate-400 mb-2">Цілі на сьогодні:</h4>
+                            <ul id="list-brief-goals" class="space-y-2 text-sm text-slate-700"></ul>
+                        </div>
+                    </div>
+
+                    <div id="content-theory" class="sub-content hidden space-y-3">
+                        <div class="flex items-center gap-2 text-indigo-600 bg-indigo-50 px-3 py-2 rounded-lg text-sm font-medium">
+                            <i class="fa-solid fa-book-open"></i> Теоретична частина (2 години)
+                        </div>
+                        <p class="text-sm text-slate-600 leading-relaxed" id="text-theory-desc"></p>
+                        <div class="space-y-3 mt-4" id="theory-accordions"></div>
+                    </div>
+
+                    <div id="content-practice" class="sub-content hidden space-y-3">
+                        <div class="flex items-center gap-2 text-emerald-600 bg-emerald-50 px-3 py-2 rounded-lg text-sm font-medium">
+                            <i class="fa-solid fa-stethoscope"></i> Практична частина (3-4 години)
+                        </div>
+                        <p class="text-sm text-slate-600 leading-relaxed" id="text-practice-desc"></p>
+                        <div class="bg-emerald-50/50 rounded-xl p-4 border border-emerald-100">
+                            <h4 class="text-xs font-bold text-emerald-800 uppercase tracking-wider mb-2">Навички для відпрацювання:</h4>
+                            <div class="space-y-2" id="practice-skills-checklist"></div>
+                        </div>
+                    </div>
+
+                    <div id="content-case" class="sub-content hidden space-y-3">
+                        <div class="flex items-center gap-2 text-purple-600 bg-purple-50 px-3 py-2 rounded-lg text-sm font-medium">
+                            <i class="fa-solid fa-suitcase-medical"></i> Клінічний кейс-розбір
+                        </div>
+                        <div class="bg-purple-50/20 border border-purple-100 rounded-xl p-4">
+                            <h4 class="text-sm font-bold text-slate-900 mb-1" id="case-title"></h4>
+                            <p class="text-xs text-slate-500 mb-3" id="case-sub"></p>
+                            <div class="bg-white p-3 rounded-lg border border-slate-100 text-sm mb-4 leading-relaxed whitespace-pre-line" id="case-text"></div>
+                            <div id="case-questions-box" class="space-y-4"></div>
+                        </div>
+                    </div>
+
+                    <div id="content-debrief" class="sub-content hidden space-y-3">
+                        <div class="flex items-center gap-2 text-slate-700 bg-slate-100 px-3 py-2 rounded-lg text-sm font-medium">
+                            <i class="fa-solid fa-comments"></i> Дебрифінг (45 хвилин)
+                        </div>
+                        <p class="text-sm text-slate-600 leading-relaxed" id="text-debrief-desc"></p>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-4">
+                            <div class="border border-slate-100 rounded-lg p-3 bg-slate-50">
+                                <h5 class="text-xs font-bold text-slate-700 mb-1">Ключові теми дебрифінгу:</h5>
+                                <ul id="list-debrief-points" class="text-xs space-y-1 text-slate-600 list-disc list-inside"></ul>
+                            </div>
+                            <div class="border border-emerald-100 rounded-lg p-3 bg-emerald-50/20">
+                                <h5 class="text-xs font-bold text-emerald-800 mb-1">Самооцінка дня:</h5>
+                                <p class="text-xs text-emerald-700 leading-relaxed mb-2">Підтвердіть, що повністю розібрали теми поточного дня для отримання залікових балів.</p>
+                                <button id="btn-complete-day" onclick="completeActiveDay()" class="w-full text-xs bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-1.5 px-3 rounded transition flex items-center justify-center gap-1">
+                                    <i class="fa-solid fa-circle-check"></i> Підтвердити проходження дня
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
+                <button onclick="togglePrinciples()" class="w-full flex items-center justify-between font-bold text-slate-800 focus:outline-none">
+                    <span class="flex items-center gap-2 text-clinical-700"><i class="fa-solid fa-shield-halved"></i> Принципи безпечного навчання у ВІТ</span>
+                    <i id="principles-chevron" class="fa-solid fa-chevron-down text-slate-400 transition-transform"></i>
+                </button>
+                <div id="principles-content" class="hidden mt-4 text-xs sm:text-sm text-slate-600 space-y-2 border-t border-slate-100 pt-3">
+                    <p><strong>1. «Безпека перш за все»:</strong> Будь-яке розведення або титрування препаратів здійснюється з обов'язковим подвійним контролем (Double Check) разом з куратором або постовою сестрою.</p>
+                    <p><strong>2. Стерильність:</strong> Жодних маніпуляцій з центральним венозним катетером (ЦВК) чи артеріальною лінією без дотримання асептичних умов.</p>
+                    <p><strong>3. Комунікація «закритого циклу» (Closed-Loop):</strong> Призначення лікаря в кризовій ситуації повторюються вголос виконавцем перед виконанням.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="lg:col-span-5 flex flex-col space-y-6">
+            <div class="bg-slate-900 text-white rounded-2xl shadow-xl overflow-hidden border border-slate-800">
+                <div class="bg-slate-800 px-4 py-3 flex items-center justify-between border-b border-slate-700">
+                    <div class="flex items-center space-x-2">
+                        <span class="flex h-2.5 w-2.5 relative">
+                          <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-sky-400 opacity-75"></span>
+                          <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-sky-500"></span>
+                        </span>
+                        <h3 id="widget-title" class="text-xs sm:text-sm font-bold tracking-wide uppercase text-slate-300">Клінічний симулятор</h3>
+                    </div>
+                    <span id="widget-badge" class="bg-clinical-800 text-[10px] px-2 py-0.5 rounded font-semibold text-clinical-300">ДЕНЬ 1</span>
+                </div>
+
+                <div class="p-6">
+                    <!-- Day 1: Hemodynamics -->
+                    <div id="sim-day-1" class="space-y-4">
+                        <div class="text-xs bg-slate-800 p-3 rounded-lg border border-slate-700 text-slate-300 mb-2">
+                            <span class="text-sky-400 font-bold"><i class="fa-solid fa-circle-info"></i> Тренажер гемодинаміки:</span> Змінюйте переднавантаження та скоротливість міокарда, щоб спостерігати зміну АТ, ЦВТ та серцевого викиду.
+                        </div>
+                        <div class="bg-black rounded-lg p-4 border border-slate-800 flex flex-col space-y-3 font-mono">
+                            <div class="flex justify-between items-center text-xs text-green-400 border-b border-slate-900 pb-1">
+                                <span><i class="fa-solid fa-heart"></i> ЧСС: <span id="mon-hr">82</span> уд/хв</span>
+                                <span class="animate-pulse text-[10px] bg-green-950 px-1.5 py-0.5 rounded text-green-400">АКТИВНИЙ МОНІТОР</span>
+                            </div>
+                            <div class="relative bg-slate-950 h-28 rounded flex items-center overflow-hidden">
+                                <svg id="hemo-wave" viewBox="0 0 400 100" preserveAspectRatio="none" class="w-full h-full text-sky-400" style="transform-origin:center;">
+                                    <path d="M 0 50 Q 10 30 20 40 T 40 70 Q 50 85 60 85 T 80 50 Q 90 30 100 40 T 120 70 Q 130 85 140 85 T 160 50 Q 170 30 180 40 T 200 70 Q 210 85 220 85 T 240 50 Q 250 30 260 40 T 280 70 Q 290 85 300 85 T 320 50 Q 330 30 340 40 T 360 70 Q 370 85 380 85 T 400 50" fill="none" stroke="currentColor" stroke-width="2.5"></path>
+                                </svg>
+                                <span class="absolute right-2 top-2 text-[10px] text-sky-500 bg-sky-950/50 px-1 py-0.5 rounded">ІАТ (Інвазивний АТ)</span>
+                            </div>
+                            <div class="grid grid-cols-3 gap-2 text-center pt-2">
+                                <div class="bg-slate-900 p-2 rounded">
+                                    <span class="block text-[9px] text-slate-500 uppercase">АТ інвазивний</span>
+                                    <span id="mon-bp" class="text-sky-400 text-lg font-bold">120/80</span>
+                                    <span class="block text-[8px] text-slate-500">сер: <span id="mon-map">93</span> мм рт.ст</span>
+                                </div>
+                                <div class="bg-slate-900 p-2 rounded">
+                                    <span class="block text-[9px] text-slate-500 uppercase">ЦВТ (CVP)</span>
+                                    <span id="mon-cvp" class="text-rose-400 text-lg font-bold">8</span>
+                                    <span class="block text-[8px] text-slate-500">мм рт.ст (норма 4-12)</span>
+                                </div>
+                                <div class="bg-slate-900 p-2 rounded">
+                                    <span class="block text-[9px] text-slate-500 uppercase">Серц. Викид (CO)</span>
+                                    <span id="mon-co" class="text-emerald-400 text-lg font-bold">5.0</span>
+                                    <span class="block text-[8px] text-slate-500">л/хв (CI: <span id="mon-ci">2.7</span>)</span>
+                                </div>
+                            </div>
+                            <div class="grid grid-cols-3 gap-2 text-center">
+                                <div class="bg-slate-900 p-2 rounded">
+                                    <span class="block text-[9px] text-slate-500 uppercase">Ударний об'єм</span>
+                                    <span id="mon-sv" class="text-violet-400 text-base font-bold">70</span>
+                                    <span class="block text-[8px] text-slate-500">мл (норма 60-100)</span>
+                                </div>
+                                <div class="bg-slate-900 p-2 rounded">
+                                    <span class="block text-[9px] text-slate-500 uppercase">СЗО (SVR)</span>
+                                    <span id="mon-svr" class="text-amber-400 text-base font-bold">1100</span>
+                                    <span class="block text-[8px] text-slate-500">дин·с·см⁻⁵</span>
+                                </div>
+                                <div class="bg-slate-900 p-2 rounded">
+                                    <span class="block text-[9px] text-slate-500 uppercase">ScvO₂</span>
+                                    <span id="mon-scvo2" class="text-cyan-400 text-base font-bold">72</span>
+                                    <span class="block text-[8px] text-slate-500">% (норма &gt;65)</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="space-y-3 bg-slate-800 p-4 rounded-lg">
+                            <div>
+                                <div class="flex justify-between text-xs text-slate-300 mb-1">
+                                    <span>Переднавантаження (ОЦК / волемія)</span>
+                                    <span id="val-preload" class="font-bold text-sky-400">Норма (100%)</span>
+                                </div>
+                                <input type="range" id="slide-preload" min="20" max="160" value="100" class="w-full h-1.5 bg-slate-700 rounded-lg appearance-none cursor-pointer accent-sky-500" oninput="updateHemoSim()">
+                            </div>
+                            <div>
+                                <div class="flex justify-between text-xs text-slate-300 mb-1">
+                                    <span>Скоротливість (інотропія)</span>
+                                    <span id="val-contractility" class="font-bold text-emerald-400">Норма (100%)</span>
+                                </div>
+                                <input type="range" id="slide-contractility" min="20" max="160" value="100" class="w-full h-1.5 bg-slate-700 rounded-lg appearance-none cursor-pointer accent-emerald-500" oninput="updateHemoSim()">
+                            </div>
+                            <div>
+                                <div class="flex justify-between text-xs text-slate-300 mb-1">
+                                    <span>Післянавантаження (СЗО / SVR)</span>
+                                    <span id="val-svr" class="font-bold text-amber-400">Норма (100%)</span>
+                                </div>
+                                <input type="range" id="slide-svr" min="30" max="180" value="100" class="w-full h-1.5 bg-slate-700 rounded-lg appearance-none cursor-pointer accent-amber-500" oninput="updateHemoSim()">
+                            </div>
+                            <div class="flex flex-wrap gap-1.5 pt-1">
+                                <button type="button" onclick="applyHemoPreset('normal')" class="text-[10px] bg-slate-700 hover:bg-slate-600 text-slate-200 px-2 py-1 rounded transition">Норма</button>
+                                <button type="button" onclick="applyHemoPreset('hypovolemia')" class="text-[10px] bg-slate-700 hover:bg-slate-600 text-slate-200 px-2 py-1 rounded transition">Гіповолемія</button>
+                                <button type="button" onclick="applyHemoPreset('cardiogenic')" class="text-[10px] bg-slate-700 hover:bg-slate-600 text-slate-200 px-2 py-1 rounded transition">Кардіогенний шок</button>
+                                <button type="button" onclick="applyHemoPreset('vasoplegia')" class="text-[10px] bg-slate-700 hover:bg-slate-600 text-slate-200 px-2 py-1 rounded transition">Вазоплегія</button>
+                                <button type="button" onclick="applyHemoPreset('tamponade')" class="text-[10px] bg-slate-700 hover:bg-slate-600 text-slate-200 px-2 py-1 rounded transition">Тампонада</button>
+                            </div>
+                        </div>
+
+                        <div class="bg-slate-800/60 p-3 rounded-lg border border-slate-700">
+                            <div class="flex items-center justify-between mb-1">
+                                <span class="text-[10px] uppercase font-bold text-slate-400">Крива Франка-Старлінга</span>
+                                <span class="text-[9px] text-slate-500">SV від тиску наповнення</span>
+                            </div>
+                            <svg id="starling-svg" viewBox="0 0 260 110" class="w-full h-24">
+                                <line x1="30" y1="95" x2="252" y2="95" stroke="#475569" stroke-width="1"></line>
+                                <line x1="30" y1="8" x2="30" y2="95" stroke="#475569" stroke-width="1"></line>
+                                <path id="starling-curve-normal" d="" fill="none" stroke="#334155" stroke-width="1.5" stroke-dasharray="3 3"></path>
+                                <path id="starling-curve" d="" fill="none" stroke="#38bdf8" stroke-width="2"></path>
+                                <circle id="starling-dot" cx="0" cy="0" r="4" fill="#f0f9ff" stroke="#0ea5e9" stroke-width="2"></circle>
+                                <text x="140" y="107" fill="#64748b" font-size="7" text-anchor="middle">ЦВТ / переднавантаження →</text>
+                                <text x="10" y="50" fill="#64748b" font-size="7" text-anchor="middle" transform="rotate(-90 10 50)">УО →</text>
+                            </svg>
+                        </div>
+
+                        <div class="bg-slate-800/50 p-3 rounded-lg text-xs space-y-1.5 text-slate-300">
+                            <span class="font-bold text-white block"><i class="fa-solid fa-calculator"></i> Інтерпретація гемодинамічного профілю:</span>
+                            <p id="hemo-analysis-text">Усі показники стабільні. Перфузія тканин адекватна.</p>
+                        </div>
+                    </div>
+
+                    <!-- Day 2: Infusion Calculator -->
+                    <div id="sim-day-2" class="space-y-4 hidden">
+                        <div class="text-xs bg-slate-800 p-3 rounded-lg border border-slate-700 text-slate-300 mb-2">
+                            <span class="text-sky-400 font-bold"><i class="fa-solid fa-calculator"></i> Калькулятор титрування:</span> Введіть вагу пацієнта, дозування та параметри розведення для розрахунку швидкості інфузії.
+                        </div>
+                        <div class="space-y-3 bg-slate-800/80 p-4 rounded-xl border border-slate-700">
+                            <div class="grid grid-cols-2 gap-3">
+                                <div>
+                                    <label for="calc-drug" class="block text-[10px] text-slate-400 uppercase font-bold mb-1">Вазоактивний засіб</label>
+                                    <select id="calc-drug" class="w-full text-xs bg-slate-900 border border-slate-700 text-white rounded p-2 focus:ring-1 focus:ring-sky-500" onchange="onDrugChange()">
+                                        <option value="noradrenaline">Норадреналін (вазопресор)</option>
+                                        <option value="adrenaline">Адреналін (вазо/інотроп)</option>
+                                        <option value="dobutamine">Добутамін (інотроп)</option>
+                                        <option value="dopamine">Допамін (іно/вазопресор)</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label for="calc-weight" class="block text-[10px] text-slate-400 uppercase font-bold mb-1">Вага пацієнта (кг)</label>
+                                    <input type="number" id="calc-weight" value="80" min="1" class="w-full text-xs bg-slate-900 border border-slate-700 text-white rounded p-2 focus:ring-1 focus:ring-sky-500" oninput="updateInfusionRate()">
+                                </div>
+                            </div>
+                            <div class="grid grid-cols-3 gap-2">
+                                <div>
+                                    <label for="calc-mg" class="block text-[10px] text-slate-400 uppercase font-bold mb-1">Доза в ампулі (мг)</label>
+                                    <input type="number" id="calc-mg" value="4" min="0" class="w-full text-xs bg-slate-900 border border-slate-700 text-white rounded p-1.5" oninput="updateInfusionRate()">
+                                </div>
+                                <div>
+                                    <label for="calc-vol" class="block text-[10px] text-slate-400 uppercase font-bold mb-1">Об'єм шприца (мл)</label>
+                                    <input type="number" id="calc-vol" value="50" min="1" class="w-full text-xs bg-slate-900 border border-slate-700 text-white rounded p-1.5" oninput="updateInfusionRate()">
+                                </div>
+                                <div>
+                                    <label for="calc-target-dose" class="block text-[10px] text-slate-400 uppercase font-bold mb-1">Цільова доза</label>
+                                    <div class="flex items-center space-x-1">
+                                        <input type="number" step="0.01" id="calc-target-dose" value="0.05" min="0" class="w-full text-xs bg-slate-900 border border-slate-700 text-white rounded p-1.5" oninput="updateInfusionRate()">
+                                        <span id="calc-dose-unit" class="text-[9px] text-slate-400">мкг/кг/хв</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <p class="text-[10px] text-slate-500" id="calc-dose-hint"></p>
+                        </div>
+                        <div class="bg-sky-950/40 border border-sky-800 p-4 rounded-xl text-center space-y-1">
+                            <span class="text-[10px] text-sky-400 uppercase font-bold tracking-wider">Розрахована швидкість інфузії:</span>
+                            <div class="text-3xl font-extrabold text-white" id="calc-rate-result">3.0 <span class="text-lg font-normal text-sky-400">мл/год</span></div>
+                            <p class="text-xs text-slate-400" id="calc-concentration-text">Концентрація розчину: 80 мкг/мл</p>
+                        </div>
+                        <div class="bg-slate-800 p-3 rounded-lg text-xs space-y-2 text-slate-300 border border-slate-700">
+                            <span class="font-bold text-white block"><i class="fa-solid fa-triangle-exclamation text-amber-500"></i> Правило безпеки (Double Check):</span>
+                            <p class="leading-relaxed">Перед стартом введення норадреналіну переконайтесь, що лінія має вільний зворотний венозний відтік, а розведення верифіковано медичною сестрою. Введення вазопресорів у периферійну вену дозволено ТІЛЬКИ як тимчасовий захід.</p>
+                        </div>
+                    </div>
+
+                    <!-- Day 3: ECG -->
+                    <div id="sim-day-3" class="space-y-4 hidden">
+                        <div class="text-xs bg-slate-800 p-3 rounded-lg border border-slate-700 text-slate-300 mb-2">
+                            <span class="text-rose-400 font-bold"><i class="fa-solid fa-wave-square"></i> Тренажер ЕКГ-ритмів:</span> Розпізнайте ритм на моніторі та оберіть коректний діагноз.
+                        </div>
+                        <div class="bg-black p-4 rounded-xl border border-slate-800 space-y-2 font-mono">
+                            <div class="flex justify-between items-center text-xs text-red-500 border-b border-slate-900 pb-1">
+                                <span class="flex items-center gap-1"><i class="fa-solid fa-heart-pulse"></i> ВІТ Монітор: Відведення II</span>
+                                <span id="ecg-bpm" class="text-red-500 font-bold">142 уд/хв</span>
+                            </div>
+                            <div class="relative h-20 bg-slate-950 rounded overflow-hidden flex items-center justify-center">
+                                <svg id="ecg-svg" viewBox="0 0 300 80" preserveAspectRatio="none" class="w-full h-full text-red-500">
+                                    <path id="ecg-path" d="" fill="none" stroke="currentColor" stroke-width="2"></path>
+                                </svg>
+                            </div>
+                            <p id="ecg-hint" class="text-slate-400 text-[10px] text-center">Оцініть ритмічність, наявність зубців P та ширину комплексів QRS.</p>
+                        </div>
+                        <div class="bg-slate-800 p-3 rounded-xl border border-slate-700 space-y-2 text-xs">
+                            <span class="font-bold text-white block">Оберіть клінічний діагноз ритму:</span>
+                            <div class="grid grid-cols-2 gap-2">
+                                <button onclick="checkEcgAnswer('afib')" class="bg-slate-900 hover:bg-slate-700 p-2 rounded text-left transition border border-slate-700 text-slate-300">Фібриляція передсердь (швидка)</button>
+                                <button onclick="checkEcgAnswer('vt')" class="bg-slate-900 hover:bg-slate-700 p-2 rounded text-left transition border border-slate-700 text-slate-300">Шлуночкова тахікардія</button>
+                                <button onclick="checkEcgAnswer('sr')" class="bg-slate-900 hover:bg-slate-700 p-2 rounded text-left transition border border-slate-700 text-slate-300">Синусовий ритм</button>
+                                <button onclick="checkEcgAnswer('vf')" class="bg-slate-900 hover:bg-slate-700 p-2 rounded text-left transition border border-slate-700 text-slate-300">Фібриляція шлуночків</button>
+                            </div>
+                        </div>
+                        <div id="ecg-feedback" class="hidden bg-emerald-950/50 border border-emerald-800 p-3 rounded-lg text-xs text-emerald-400"></div>
+                    </div>
+
+                    <!-- Day 4: Drainage -->
+                    <div id="sim-day-4" class="space-y-4 hidden">
+                        <div class="text-xs bg-slate-800 p-3 rounded-lg border border-slate-700 text-slate-300 mb-2">
+                            <span class="text-amber-400 font-bold"><i class="fa-solid fa-droplet"></i> Контроль дренажних втрат:</span> Моніторинг виділень з грудної порожнини за першу годину після операції CABG.
+                        </div>
+                        <div class="bg-slate-900 p-4 rounded-xl border border-slate-700 space-y-3">
+                            <div class="flex items-center justify-between">
+                                <span class="text-xs text-slate-300 font-bold">Рівень дренажу за останню годину</span>
+                                <span id="drain-ml-val" class="text-sm font-extrabold text-amber-400">120 мл/год</span>
+                            </div>
+                            <input type="range" id="slide-drain" min="20" max="450" value="120" class="w-full h-1.5 bg-slate-700 rounded appearance-none cursor-pointer accent-amber-500" oninput="updateDrainSim()">
+                            <div class="relative w-28 h-40 bg-slate-950 border-2 border-slate-700 rounded-b-xl mx-auto overflow-hidden">
+                                <div id="drain-fluid" class="absolute bottom-0 w-full bg-red-800/80 transition-all duration-300" style="height:30%"></div>
+                                <div class="absolute inset-0 flex flex-col justify-between p-2 text-[9px] font-mono text-slate-500">
+                                    <span>400 мл</span><span>300 мл</span><span>200 мл</span><span>100 мл</span><span>0 мл</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="drain-alert-box" class="bg-slate-800 border p-3 rounded-lg text-xs space-y-1">
+                            <span class="font-bold block text-white" id="drain-alert-title">Нормальний темп виділення</span>
+                            <p id="drain-alert-desc" class="text-slate-300 leading-relaxed">Дренажні втрати в межах допустимого. Продовжуйте ретельне спостереження за гемодинамікою.</p>
+                        </div>
+                    </div>
+
+                    <!-- Day 5: Code Blue -->
+                    <div id="sim-day-5" class="space-y-4 hidden">
+                        <div class="text-xs bg-slate-800 p-3 rounded-lg border border-slate-700 text-slate-300 mb-2">
+                            <span class="text-red-400 font-bold"><i class="fa-solid fa-triangle-exclamation"></i> Симулятор «CODE BLUE»:</span> Пацієнт 62 років, 2-й день після заміни аортального клапана, раптово втратив свідомість. Ваші дії?
+                        </div>
+                        <div class="bg-black/40 p-4 rounded-xl border border-slate-800 space-y-3 text-xs">
+                            <div class="flex items-center justify-between text-[10px] text-slate-500 uppercase font-bold">
+                                <span id="codeblue-step-label">Крок 1 / 3</span>
+                                <span><i class="fa-solid fa-stopwatch"></i> ACLS / CALS</span>
+                            </div>
+                            <p id="codeblue-scenario" class="text-slate-300 leading-relaxed font-semibold"></p>
+                            <div id="codeblue-options" class="flex flex-col gap-2 pt-2"></div>
+                        </div>
+                        <div id="codeblue-status" class="hidden p-3 rounded-lg border text-xs"></div>
+                    </div>
+                </div>
+
+                <div class="bg-slate-950 px-4 py-3 flex items-center justify-between text-xs text-slate-400">
+                    <span>Віртуальна клінічна оцінка:</span>
+                    <span class="text-sky-400 font-bold" id="clinical-score-val">100 / 100 б.</span>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="font-bold text-slate-900 text-sm sm:text-base flex items-center gap-1.5"><i class="fa-solid fa-circle-question text-clinical-600"></i> Експрес-контроль знань</h3>
+                    <span id="quiz-badge" class="bg-slate-100 text-slate-600 text-[10px] font-bold px-2 py-0.5 rounded-full">Питання 1/3</span>
+                </div>
+                <div class="bg-slate-50 p-4 rounded-xl border border-slate-100 mb-4 text-xs sm:text-sm">
+                    <p id="quiz-question-text" class="text-slate-800 font-medium leading-relaxed"></p>
+                </div>
+                <div id="quiz-options-container" class="space-y-2 mb-4"></div>
+                <div id="quiz-feedback-box" class="hidden text-xs p-3 rounded-lg mb-4"></div>
+                <div class="flex justify-between items-center pt-2">
+                    <span class="text-xs text-slate-400">Отримано балів: <strong id="quiz-total-points">0</strong></span>
+                    <button id="quiz-next-btn" onclick="nextQuizQuestion()" class="text-xs bg-clinical-700 hover:bg-clinical-800 text-white font-semibold py-1.5 px-4 rounded-lg transition hidden">
+                        Наступне питання <i class="fa-solid fa-arrow-right ml-1"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
+                <h3 class="font-bold text-slate-900 text-sm sm:text-base mb-3 flex items-center gap-1.5"><i class="fa-solid fa-heart-pulse text-heart-500"></i> Швидкі протоколи (Невідкладно)</h3>
+                <div class="space-y-2">
+                    <button class="w-full flex items-center justify-between p-2 rounded-lg bg-red-50 text-red-900 text-xs hover:bg-red-100 transition text-left" onclick="showProtocolModal('tamponade')">
+                        <span class="font-bold"><i class="fa-solid fa-circle-exclamation mr-1"></i> Тампонада серця: розпізнання</span>
+                        <i class="fa-solid fa-chevron-right"></i>
+                    </button>
+                    <button class="w-full flex items-center justify-between p-2 rounded-lg bg-amber-50 text-amber-900 text-xs hover:bg-amber-100 transition text-left" onclick="showProtocolModal('low-co')">
+                        <span class="font-bold"><i class="fa-solid fa-triangle-exclamation mr-1"></i> Синдром низького серцевого викиду</span>
+                        <i class="fa-solid fa-chevron-right"></i>
+                    </button>
+                    <button class="w-full flex items-center justify-between p-2 rounded-lg bg-blue-50 text-blue-900 text-xs hover:bg-blue-100 transition text-left" onclick="showProtocolModal('afib-rv')">
+                        <span class="font-bold"><i class="fa-solid fa-bolt mr-1"></i> Фібриляція передсердь з високою ЧСС</span>
+                        <i class="fa-solid fa-chevron-right"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<div id="protocol-modal" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 hidden">
+    <div class="bg-white rounded-2xl shadow-xl max-w-lg w-full overflow-hidden">
+        <div class="bg-slate-900 text-white px-6 py-4 flex items-center justify-between">
+            <h4 id="protocol-modal-title" class="font-extrabold text-base">Клінічний протокол</h4>
+            <button onclick="closeProtocolModal()" class="text-slate-400 hover:text-white transition" aria-label="Закрити"><i class="fa-solid fa-xmark text-lg"></i></button>
+        </div>
+        <div class="p-6 max-h-[70vh] overflow-y-auto custom-scroll text-sm space-y-4" id="protocol-modal-body"></div>
+        <div class="bg-slate-50 px-6 py-3 border-t border-slate-100 flex justify-end">
+            <button onclick="closeProtocolModal()" class="bg-slate-900 hover:bg-slate-800 text-white text-xs font-semibold py-2 px-4 rounded-lg transition">Зрозуміло</button>
+        </div>
+    </div>
+</div>
+
+<footer class="bg-slate-900 text-slate-400 text-center py-6 border-t border-slate-800 text-xs mt-12">
+    <div class="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-4">
+        <p>© 2026 КардіоВІТ. Портал анестезіології та інтенсивної терапії.</p>
+        <p class="text-[10px] text-slate-500">Навчальний симулятор. Не є заміною клінічних протоколів вашого закладу.</p>
+    </div>
+</footer>
+
+<script>
+    // ---------- State ----------
+    const STORAGE_KEY = 'cardio_vit_progress_v2';
+    let activeDay = 1;
+    let activeSubTab = 'brief';
+
+    function safeLoad() {
+        try {
+            const raw = localStorage.getItem(STORAGE_KEY);
+            if (raw) return JSON.parse(raw);
+        } catch (e) { /* storage unavailable */ }
+        return null;
+    }
+    let userProgress = safeLoad() || {
+        completedDays: [], quizScore: 0, clinicalScore: 100, completedTasks: {}
+    };
+
+    function saveProgress() {
+        try { localStorage.setItem(STORAGE_KEY, JSON.stringify(userProgress)); } catch (e) {}
+    }
+
+    // ================= ACCESS / GATING =================
+    /* ВСТАВТЕ СЮДИ URL вашого Apps Script веб-застосунку (закінчується на /exec) */
+    var API = 'https://script.google.com/macros/s/AKfycbwjs0Jc7dQeY6-1WnRqF8EUyI0wtMidDwVHDHLW5hlBP2FJwm4MZYTl8f00gNjOKQ/exec';
+
+    var session = { code:null, name:'', group:'', unlocked:1, scores:[null,null,null,null,null], total:5 };
+    var DEMO = API.indexOf('ВСТАВТЕ') === 0;
+
+    function sGet(k){ try { return localStorage.getItem(k); } catch(e){ return null; } }
+    function sSet(k,v){ try { localStorage.setItem(k,v); } catch(e){} }
+    function sDel(k){ try { localStorage.removeItem(k); } catch(e){} }
+
+    function urlCode(){
+        var m = window.location.search.match(/[?&]k=([^&]+)/);
+        return m ? decodeURIComponent(m[1]) : null;
+    }
+
+    function api(params){
+        var qs = Object.keys(params).map(function(k){
+            return encodeURIComponent(k)+'='+encodeURIComponent(params[k]);
+        }).join('&');
+        return fetch(API+'?'+qs, { method:'GET', redirect:'follow' })
+               .then(function(r){ return r.json(); });
+    }
+
+    function gateMsg(text, kind){
+        var m = document.getElementById('gateMsg');
+        m.className = 'gate-msg ' + (kind || 'err');
+        m.textContent = text;
+    }
+
+    function showGate(show){
+        document.getElementById('gate').style.display = show ? 'flex' : 'none';
+        document.body.style.overflow = show ? 'hidden' : '';
+    }
+
+    function applySession(){
+        var wn = document.getElementById('whoName');
+        var wc = document.getElementById('whoCode');
+        if (wn) wn.textContent = session.name || '—';
+        if (wc) wc.textContent = session.code ? '['+session.code+']' : '';
+        var wa = document.getElementById('whoami');
+        if (wa && session.code) wa.classList.remove('hidden');
+
+        for (var d = 1; d <= 5; d++){
+            var btn = document.getElementById('btn-day-'+d);
+            if (!btn) continue;
+            var locked = d > session.unlocked;
+            btn.classList.toggle('locked', locked);
+            btn.setAttribute('aria-disabled', String(locked));
+        }
+        if (activeDay > session.unlocked) switchDay(1);
+        else renderLockWall();
+    }
+
+    function renderLockWall(){
+        var col = document.getElementById('day-column');
+        if (!col) return;
+        var card = document.getElementById('day-card');
+        var wall = col.querySelector('.lockwall');
+        if (activeDay > session.unlocked){
+            if (card) card.style.display = 'none';
+            Array.prototype.forEach.call(col.children, function(c){
+                if (!c.classList.contains('lockwall')) c.style.display = 'none';
+            });
+            if (!wall){
+                var w = document.createElement('div');
+                w.className = 'lockwall';
+                w.innerHTML = '<div class="ico"><i class="fa-solid fa-lock"></i></div>' +
+                    '<h3>День ' + activeDay + ' ще закрито</h3>' +
+                    '<p>Модуль відкриється наступного навчального дня. Кожен день стає доступним ' +
+                    'через 24 години після попереднього. Пройдені дні залишаються відкритими для повторення.</p>';
+                col.appendChild(w);
+            } else {
+                wall.querySelector('h3').textContent = 'День ' + activeDay + ' ще закрито';
+                wall.style.display = '';
+            }
+        } else {
+            if (wall) wall.remove();
+            Array.prototype.forEach.call(col.children, function(c){ c.style.display = ''; });
+        }
+    }
+
+    function report(type, day, detail, result, score){
+        if (DEMO || !session.code) return Promise.resolve();
+        var p = { action:'progress', code:session.code, type:type, day:day||'',
+                  detail:detail||'', result:result||'' };
+        if (score != null) p.score = score;
+        return api(p).then(function(r){
+            if (r && r.ok){
+                session.unlocked = r.unlocked;
+                session.scores = r.scores || session.scores;
+                applySession();
+            }
+        }).catch(function(){});
+    }
+
+    function doLogin(code, silent){
+        return api({ action:'state', code:code }).then(function(r){
+            if (!r.ok){ if(!silent) gateMsg(r.error || 'Код не знайдено.'); return false; }
+            session.code = r.code; session.name = r.name; session.group = r.group || '';
+            session.unlocked = r.unlocked; session.scores = r.scores || session.scores;
+            session.total = r.total || 5;
+            sSet('cardiovit_code', r.code);
+            applySession(); showGate(false);
+            return true;
+        }).catch(function(){
+            if(!silent) gateMsg('Немає зв\'язку з сервером. Перевірте інтернет.');
+            return false;
+        });
+    }
+
+    function bindGate(){
+        document.getElementById('gtLogin').onclick = function(){
+            this.setAttribute('aria-selected','true');
+            document.getElementById('gtReg').setAttribute('aria-selected','false');
+            document.getElementById('gateLogin').style.display = '';
+            document.getElementById('gateReg').style.display = 'none';
+            document.getElementById('gateMsg').className = 'gate-msg';
+        };
+        document.getElementById('gtReg').onclick = function(){
+            this.setAttribute('aria-selected','true');
+            document.getElementById('gtLogin').setAttribute('aria-selected','false');
+            document.getElementById('gateReg').style.display = '';
+            document.getElementById('gateLogin').style.display = 'none';
+            document.getElementById('gateMsg').className = 'gate-msg';
+        };
+
+        document.getElementById('btnReg').onclick = function(){
+            var name = document.getElementById('inName').value.trim();
+            var group = document.getElementById('inGroup').value.trim();
+            if (name.length < 3){ gateMsg('Вкажіть прізвище та ім\'я.'); return; }
+            var btn = this; btn.disabled = true; btn.textContent = 'Реєструємо…';
+            api({ action:'register', name:name, group:group }).then(function(r){
+                btn.disabled = false; btn.textContent = 'Зареєструватися';
+                if (!r.ok){ gateMsg(r.error || 'Не вдалося зареєструватися.'); return; }
+                session.code = r.code; session.name = r.name;
+                session.unlocked = r.unlocked; session.scores = r.scores || session.scores;
+                sSet('cardiovit_code', r.code);
+                document.getElementById('codeOut').textContent = r.code;
+                document.getElementById('gateReg').style.display = 'none';
+                document.getElementById('gateLogin').style.display = 'none';
+                document.querySelector('.gate-tabs').style.display = 'none';
+                document.getElementById('gateCode').style.display = '';
+                gateMsg(r.existed ? 'Ви вже зареєстровані — це ваш попередній код.'
+                                  : 'Реєстрація успішна. Запишіть код доступу.', 'ok');
+            }).catch(function(){
+                btn.disabled = false; btn.textContent = 'Зареєструватися';
+                gateMsg('Немає зв\'язку з сервером. Перевірте інтернет.');
+            });
+        };
+
+        document.getElementById('btnEnter').onclick = function(){ applySession(); showGate(false); };
+
+        document.getElementById('btnLogin').onclick = function(){
+            var c = document.getElementById('inCode').value.trim();
+            if (!c){ gateMsg('Введіть код доступу.'); return; }
+            var btn = this; btn.disabled = true; btn.textContent = 'Перевіряємо…';
+            doLogin(c, false).then(function(){ btn.disabled = false; btn.textContent = 'Увійти'; });
+        };
+        document.getElementById('inCode').addEventListener('keydown', function(e){
+            if (e.key === 'Enter') document.getElementById('btnLogin').click();
+        });
+
+        document.getElementById('btnLogout').onclick = function(){
+            sDel('cardiovit_code');
+            session.code = null;
+            window.location.search = '';
+        };
+    }
+
+    function bootGate(){
+        bindGate();
+        if (DEMO){
+            session.unlocked = 5; session.name = 'Демо-режим';
+            showGate(false); applySession();
+            return;
+        }
+        var code = urlCode() || sGet('cardiovit_code');
+        if (code){
+            document.getElementById('inCode').value = code;
+            doLogin(code, true).then(function(ok){ if (!ok) showGate(true); });
+        } else {
+            showGate(true);
+        }
+    }
+
+    // ---------- Curriculum data ----------
+    const curriculumData = {
+        1: {
+            short: "Моніторинг",
+            title: "Адаптація до ВІТ та розширений гемодинамічний моніторинг",
+            hours: "7-8 годин",
+            brief: "Перший день другого тижня. Занурюємось у серцево-судинну фізіологію та технології моніторингу — основу будь-яких рішень у кардіоВІТ. Розділяємось на міні-групи та закріплюємо роботу з інвазивним моніторингом АТ.",
+            briefGoals: [
+                "Ознайомитись із плануванням палат ВІТ, постами та черговою командою.",
+                "Зрозуміти різницю між веденням пацієнта на операційному столі та у ВІТ.",
+                "Вивчити принципи інвазивного артеріального тиску (ІАТ) та венозного доступу."
+            ],
+            theory: [
+                { title: "Фізіологія серцево-судинної системи (ССС)", text: "Серцевий викид (CO) = ЧСС × ударний об'єм (SV). На ударний об'єм впливають три фактори:\n1. Переднавантаження (Preload): кінцево-діастолічний об'єм шлуночків (залежить від ОЦК).\n2. Післянавантаження (Afterload): спротив викиду крові (системний судинний опір, SVR).\n3. Скоротливість (Inotropy): власна сила скорочення міокарда." },
+                { title: "Інвазивний артеріальний тиск (ІАТ)", text: "Золотий стандарт моніторингу в кардіохірургії. Встановлюється переважно в a. radialis або a. femoralis.\n• Техніка нулювання: давач тиску встановлюється на рівні флебостатичної осі (4-й міжреберний простір по середньо-пахвовій лінії), відкривається до атмосфери та калібрується в нуль." },
+                { title: "Центральний венозний тиск (ЦВТ)", text: "Показник тиску в правому передсерді. Норма 4-12 мм рт.ст. Важливий не стільки абсолютний рівень, скільки тренд і реакція на інфузійне навантаження." }
+            ],
+            practice: [
+                "Орієнтування в палатах ВІТ, ознайомлення з розміщенням обладнання",
+                "Робота з медичною документацією, ведення карти інтенсивного моніторингу",
+                "Заповнення системи для вимірювання інвазивного АТ фізрозчином під тиском",
+                "Симуляція техніки нулювання датчика тиску на флебостатичній осі",
+                "Спостереження за встановленням центрального венозного катетера куратором"
+            ],
+            case: {
+                title: "Кейс: Стабільна адаптація пацієнта після АКШ (CABG)",
+                sub: "Пацієнт К., 64 роки, доставлений з операційної після аортокоронарного шунтування.",
+                text: "Пацієнт на ШВЛ, гемодинамічно стабільний. ІАТ: 118/72 мм рт.ст. (середній 87). ЦВТ: 6 мм рт.ст. ЧСС: 78 уд/хв, ритм синусовий. Діурез: 70 мл/год. Дренаж: 30 мл/год.\n\nЗавдання: Оцініть стабільність пацієнта та первинні параметри моніторингу.",
+                questions: [{
+                    q: "Який середній артеріальний тиск (MAP) є мінімально прийнятним для адекватної перфузії органів у цього пацієнта?",
+                    a: ["65 мм рт.ст.", "50 мм рт.ст.", "80 мм рт.ст.", "95 мм рт.ст."],
+                    correct: 0,
+                    explain: "MAP ≥ 65 мм рт.ст. — загальноприйнятий цільовий показник органної перфузії у дорослих у критичному стані."
+                }]
+            },
+            debrief: {
+                desc: "На завершення дня обговорюємо труднощі при калібруванні систем моніторингу та детально розбираємо криву артеріального тиску.",
+                points: [
+                    "Артефакти вимірювання ІАТ (overdamping, underdamping).",
+                    "Критерії безпеки при роботі з артеріальними катетерами.",
+                    "Кореляція між ЦВТ та клінічною картиною волемії."
+                ]
+            }
+        },
+        2: {
+            short: "Вазоактиви",
+            title: "Вазоактивні препарати та механічна вентиляція у кардіоВІТ",
+            hours: "7-8 годин",
+            brief: "Вивчаємо найпотужніші інструменти фармакологічного впливу. Робота з інотропами та вазопресорами вимагає точності. Розглядаємо принципи вентиляції у пацієнтів з ураженою ССС.",
+            briefGoals: [
+                "Вивчити рецепторний профіль вазоактивних засобів (α1, β1, β2 рецептори).",
+                "Навчитися розраховувати дози та налаштовувати шприцеві насоси.",
+                "Зрозуміти вплив позитивного тиску (PEEP) на серцевий викид."
+            ],
+            theory: [
+                { title: "Вазопресори та інотропи", text: "• Норадреналін: переважно α1 → вазоконстрикція. Препарат першого вибору при кардіогенному/дистрибутивному шоці.\n• Добутамін: β1 → ↑ скоротливості та ЧСС. Може викликати тахікардію та аритмії.\n• Адреналін: у низьких дозах β (інотроп), у високих — α (потужний вазопресор)." },
+                { title: "Принципи МВЛ при серцевій недостатності", text: "МВЛ створює позитивний внутрішньогрудний тиск → зменшення венозного повернення (переднавантаження ЛШ) та зниження післянавантаження ЛШ. При набряку легень PEEP розкриває альвеоли та покращує оксигенацію." }
+            ],
+            practice: [
+                "Розрахунок концентрації та доз адреналіну/норадреналіну на кг маси тіла",
+                "Програмування шприцевого дозатора, запуск інфузії з подвійним контролем",
+                "Налаштування параметрів МВЛ на симуляторі (режими VCV та PCV)",
+                "Спостереження за процесом екстубації стабільного пацієнта"
+            ],
+            case: {
+                title: "Кейс: Синдром низького викиду після протезування клапана",
+                sub: "Пацієнт С., 58 років. Після операції з приводу аортального стенозу.",
+                text: "Норадреналін 0.1 мкг/кг/хв. АТ 90/55 (сер 66), ЧСС 95 уд/хв, ЦВТ 12 мм рт.ст., серцевий індекс (CI) 1.8 л/хв/м², діурез знизився до 25 мл/год.\n\nЗавдання: Визначити необхідність додавання інотропної підтримки.",
+                questions: [{
+                    q: "Який препарат найдоцільніше додати для покращення скоротливості при CI 1.8 та підвищеному ЦВТ?",
+                    a: ["Добутамін", "Збільшити норадреналін", "Нітрогліцерин", "Аміодарон"],
+                    correct: 0,
+                    explain: "Добутамін — β-інотроп, покращує серцевий викид (CI) при адекватному або підвищеному тиску наповнення."
+                }]
+            },
+            debrief: {
+                desc: "Обговорюємо плавне відлучення від вазопресорної підтримки та небезпеку раптової зупинки інфузії норадреналіну через виснаження шприца.",
+                points: [
+                    "Правила зміни шприців з вазоактивними речовинами (piggyback-техніка).",
+                    "Профілактика та терапія гіперергічних реакцій на введення інотропів."
+                ]
+            }
+        },
+        3: {
+            short: "Гомеостаз",
+            title: "Водно-електролітний баланс, аритмії та функція нирок",
+            hours: "7-8 годин",
+            brief: "День присвячений підтримці гомеостазу. Електролітні зсуви (особливо K+ та Mg2+) після штучного кровообігу — головна причина життєзагрозливих аритмій у ВІТ.",
+            briefGoals: [
+                "Опанувати швидку діагностику та лікування електролітних розладів.",
+                "Розпізнавати критичні порушення ритму на моніторі.",
+                "Зрозуміти патогенез гострого ураження нирок після кардіохірургії."
+            ],
+            theory: [
+                { title: "Водно-електролітний баланс та серце", text: "• Калій (K+): цільовий рівень у кардіоВІТ 4.5–5.0 ммоль/л. Гіпокаліємія ↑ ризик ФП та шлуночкових тахікардій.\n• Магній (Mg2+): цільовий > 1.0 ммоль/л. Важливий для стабілізації потенціалу дії кардіоміоцитів." },
+                { title: "Гостре ураження нирок (ГУН) після ШК", text: "Виникає у 10-30% пацієнтів внаслідок гіпоперфузії, гемолізу та системного запалення. Ключове у профілактиці — MAP ≥ 65-70 мм рт.ст. та діурез ≥ 0.5 мл/кг/год." }
+            ],
+            practice: [
+                "Інтерпретація аналізів газів крові та електролітів пацієнтів ВІТ",
+                "Розрахунок дози калію хлориду для корекції гіпокаліємії",
+                "Реєстрація та аналіз ЕКГ у 12 відведеннях",
+                "Ознайомлення з апаратом нирковозамісної терапії (CRRT)"
+            ],
+            case: {
+                title: "Кейс: Пароксизм тахісистолічної форми ФП",
+                sub: "Пацієнтка Н., 69 років, 3-тя доба після АКШ.",
+                text: "Раптово хаотичний ритм із ЧСС 140-150 уд/хв. АТ знизився з 120/75 до 95/60 мм рт.ст. K+ = 3.6 ммоль/л.\n\nЗавдання: Розробити тактику купірування аритмії.",
+                questions: [{
+                    q: "Який перший крок найважливіший для профілактики подальших аритмій паралельно зі специфічною терапією?",
+                    a: ["Корекція дефіциту калію до > 4.5 ммоль/л", "Введення високої дози атропіну", "Негайна дефібриляція 360 Дж", "Інфузія великого об'єму фізрозчину"],
+                    correct: 0,
+                    explain: "Антиаритмічна терапія малоефективна без корекції електролітів. Насамперед підняти K+ до 4.5-5.0 ммоль/л."
+                }]
+            },
+            debrief: {
+                desc: "Розглядаємо алгоритми дій при життєзагрозливих аритміях та безпечну роботу з дефібрилятором.",
+                points: [
+                    "Відмінність між дефібриляцією та синхронізованою кардіоверсією.",
+                    "Техніка безпеки при нанесенні електричного розряду."
+                ]
+            }
+        },
+        4: {
+            short: "Ускладнення",
+            title: "Післяопераційні ускладнення та знеболення у кардіохірургії",
+            hours: "7-8 годин",
+            brief: "Критично важливий день. Мета — миттєво діагностувати грізні ускладнення (кровотеча, тампонада серця) та освоїти мультимодальне знеболення.",
+            briefGoals: [
+                "Вивчити клінічні ознаки гострої тампонади серця.",
+                "Навчитися вести облік дренажних виділень та оцінювати темп кровотечі.",
+                "Ознайомитися з помпами для контрольованої пацієнтом анальгезії (PCA)."
+            ],
+            theory: [
+                { title: "Кровотечі та коагулопатія", text: "Кровотеча може бути наслідком хірургічного дефекту або порушень коагуляції після ШК (деструкція тромбоцитів). Кровотеча > 200 мл/год за перші 2-3 години — показання до реторакотомії." },
+                { title: "Тампонада серця", text: "Накопичення крові в порожнині перикарда.\nТріада Бека:\n1. Гіпотензія\n2. Глухі серцеві тони\n3. Набухання шийних вен (підвищений ЦВТ)." },
+                { title: "Мультимодальна анальгезія", text: "Адекватне знеболення — запорука відновлення та профілактики дихальних ускладнень. Комбінація опіоїдів, парацетамолу, НПЗЗ та регіонарних блокад." }
+            ],
+            practice: [
+                "Погодинний моніторинг об'єму та характеру виділень по дренажах",
+                "Базове неврологічне обстеження (шкала ком Глазго, реакція зіниць)",
+                "Оцінка рівня болю за візуально-аналоговою шкалою (ВАШ)",
+                "Налаштування та перевірка параметрів PCA-помпи"
+            ],
+            case: {
+                title: "Кейс: Підозра на гостру тампонаду серця",
+                sub: "Пацієнт Л., 60 років, 6 годин після протезування аортального клапана.",
+                text: "Раптово припинилося виділення крові по дренажах. Одночасно АТ ↓ до 80/45 мм рт.ст., ЦВТ ↑ з 8 до 18 мм рт.ст., ЧСС ↑ до 115 уд/хв. Тони серця глухі.\n\nЗавдання: Оцінити стан та визначити невідкладні заходи.",
+                questions: [{
+                    q: "Які першочергові дії при підозрі на гостру тампонаду серця з критичною гіпотензією?",
+                    a: ["Терміновий виклик хірурга для реторакотомії + УЗД серця на місці", "Призначення високих доз сечогінних", "Введення великої дози бета-блокаторів", "Проведення планової екстубації"],
+                    correct: 0,
+                    explain: "Гостра тампонада — хірургічна патологія. Виклик кардіохірурга для негайної ревізії/дренування та УЗД для підтвердження є пріоритетом."
+                }]
+            },
+            debrief: {
+                desc: "Аналізуємо координацію команди під час екстреної реторакотомії безпосередньо в палаті ВІТ.",
+                points: [
+                    "Організація стерильного столу для реторакотомії в умовах ВІТ.",
+                    "Роль анестезіолога в підтримці перфузії під час декомпресії перикарда."
+                ]
+            }
+        },
+        5: {
+            short: "Кризи",
+            title: "Невідкладні кардіологічні стани та інтеграція знань",
+            hours: "7-8 годин",
+            brief: "Фінальний день. Інтегруємо всі знання для найкритичніших ситуацій: зупинка кровообігу, кардіогенний шок, командна взаємодія за протоколами ACLS/CALS (Code Blue).",
+            briefGoals: [
+                "Опанувати розподіл ролей у реанімаційній бригаді.",
+                "Проаналізувати особливості СЛР у кардіохірургічного пацієнта (можливість відкритого масажу серця).",
+                "Здати фінальний залік з практичних навичок."
+            ],
+            theory: [
+                { title: "Кардіогенний шок", text: "Крайній ступінь лівошлуночкової недостатності: виражена гіпотензія (MAP < 60), низький CI (< 2.0), ознаки органної гіпоперфузії (холодна шкіра, олігурія, лактат-ацидоз). Потребує інотропів та механічної підтримки кровообігу (IABP, ECMO)." },
+                { title: "Особливості СЛР у кардіохірургічних хворих", text: "Протокол CALS (Cardiac Advanced Life Support) передбачає ранню реторакотомію (протягом ~5 хвилин при неефективності базових заходів) у пацієнтів після стернотомії в останні 10 днів." }
+            ],
+            practice: [
+                "Відпрацювання ролей у реанімаційній команді на манекені",
+                "Робота з реанімаційним візком (протишоковою укладкою) та дефібрилятором",
+                "Участь у підсумковому обході, доповідь клінічних випадків",
+                "Здача практичних навичок кураторам"
+            ],
+            case: {
+                title: "Кейс: Раптова зупинка кровообігу у кардіоВІТ",
+                sub: "Пацієнт Ш., 65 років, 1-ша доба після АКШ.",
+                text: "На моніторі раптово фібриляція шлуночків, пацієнт без свідомості, дихання агональне.\n\nЗавдання: Провести СЛР командою інтернів.",
+                questions: [{
+                    q: "Який перший захід при підтвердженні ФШ у пацієнта з підключеним монітором/дефібрилятором?",
+                    a: ["Нанести розряд дефібрилятора (за наявності) або розпочати компресії", "Ввести 10 мл кальцію хлориду", "Провести інтубацію трахеї", "Накрити пацієнта термоковдрою"],
+                    correct: 0,
+                    explain: "При ФШ кожна секунда затримки дефібриляції знижує шанси на виживання. Негайна дефібриляція або старт компресій."
+                }]
+            },
+            debrief: {
+                desc: "Підсумковий дебрифінг за весь тиждень. Оцінюємо досягнення та готовність до самостійної курації під наглядом.",
+                points: [
+                    "Оцінка командної роботи під час симуляційних сценаріїв.",
+                    "Висновки щодо заповнення індивідуальних щоденників інтернів."
+                ]
+            }
+        }
+    };
+
+    // ---------- Global quiz ----------
+    const quizQuestions = [
+        { q: "Що приймається за нульовий рівень відліку при калібруванні датчика інвазивного артеріального тиску на флебостатичній осі?",
+          options: ["Атмосферний тиск", "Центральний венозний тиск", "Тиск у правому шлуночку", "Середній артеріальний тиск"],
+          correct: 0, explain: "Датчик ІАТ калібрується за атмосферним тиском, який приймається за нульову точку відліку." },
+        { q: "Який із препаратів діє як вазопресор переважно без прямого інотропного впливу на міокард?",
+          options: ["Норадреналін (у низьких дозах)", "Добутамін", "Вазопресин", "Допамін"],
+          correct: 2, explain: "Вазопресин діє на V1-рецептори судин, викликаючи вазоконстрикцію без прямого впливу на рецептори міокарда." },
+        { q: "При шлуночковій тахікардії БЕЗ пульсу першочерговою дією є:",
+          options: ["Введення аміодарону 300 мг", "Негайна несинхронізована дефібриляція", "Інфузія магнію сульфату", "Штучне дихання рот-в-рот"],
+          correct: 1, explain: "ШТ без пульсу прирівнюється до ФШ і потребує негайної несинхронізованої дефібриляції." }
+    ];
+    let currentQuizIndex = 0;
+    let quizPoints = 0;
+
+    // ---------- Drug metadata for calculator ----------
+    const drugInfo = {
+        noradrenaline: { unit: "мкг/кг/хв", def: 0.05, hint: "Типовий діапазон: 0.02–1.0 мкг/кг/хв" },
+        adrenaline:    { unit: "мкг/кг/хв", def: 0.05, hint: "Типовий діапазон: 0.02–0.5 мкг/кг/хв" },
+        dobutamine:    { unit: "мкг/кг/хв", def: 5,    hint: "Типовий діапазон: 2.5–10 мкг/кг/хв" },
+        dopamine:      { unit: "мкг/кг/хв", def: 5,    hint: "Типовий діапазон: 2–20 мкг/кг/хв" }
+    };
+
+    // ---------- Init ----------
+    window.addEventListener('DOMContentLoaded', function () {
+        buildDayNav();
+        switchDay(1);
+        loadQuizQuestion();
+        updateUIProgress();
+        bootGate();
+        document.getElementById('clinical-score-val').innerText = `${userProgress.clinicalScore} / 100 б.`;
+        document.addEventListener('keydown', function (e) {
+            if (e.key === 'Escape') closeProtocolModal();
+        });
+    });
+
+    // ---------- Toast ----------
+    function showToast(message, type = 'info') {
+        const container = document.getElementById('toast-container');
+        const toast = document.createElement('div');
+        const base = "flex items-center gap-2 px-4 py-3 rounded-xl shadow-lg text-xs font-semibold text-white transition-all duration-300 transform pointer-events-auto max-w-sm ";
+        const color = type === 'success' ? 'bg-emerald-600 border border-emerald-500'
+                    : type === 'error' ? 'bg-rose-600 border border-rose-500'
+                    : 'bg-slate-800 border border-slate-700';
+        toast.className = base + color + ' opacity-0 translate-y-2';
+        const icon = type === 'success' ? 'fa-circle-check' : type === 'error' ? 'fa-triangle-exclamation' : 'fa-info';
+        const span = document.createElement('span');
+        span.textContent = message;
+        toast.innerHTML = `<i class="fa-solid ${icon}"></i>`;
+        toast.appendChild(span);
+        container.appendChild(toast);
+        requestAnimationFrame(() => { toast.classList.remove('opacity-0', 'translate-y-2'); });
+        setTimeout(() => {
+            toast.classList.add('opacity-0', 'translate-y-2');
+            setTimeout(() => toast.remove(), 300);
+        }, 3500);
+    }
+
+    // ---------- Day navigation ----------
+    function buildDayNav() {
+        const nav = document.getElementById('day-nav');
+        nav.innerHTML = '';
+        for (let d = 1; d <= 5; d++) {
+            const btn = document.createElement('button');
+            btn.id = `btn-day-${d}`;
+            btn.type = 'button';
+            btn.onclick = () => switchDay(d);
+            btn.className = "day-tab flex flex-col items-center justify-center p-3 sm:p-4 rounded-xl border transition-all duration-200 shadow-sm focus:outline-none bg-white text-slate-700 hover:bg-slate-50 border-slate-200";
+            btn.innerHTML = `
+                <span class="text-2xl font-bold">${d}</span>
+                <span class="text-[10px] sm:text-xs font-medium text-center mt-1 truncate w-full">${curriculumData[d].short}</span>
+                <span id="badge-day-${d}" class="hidden mt-1.5 w-2 h-2 rounded-full bg-emerald-500"></span>`;
+            nav.appendChild(btn);
+        }
+    }
+
+    function switchDay(day) {
+        if (typeof session !== 'undefined' && session.code && day > session.unlocked) {
+            showToast('День ' + day + ' ще закрито. Модулі відкриваються послідовно.', 'error');
+            return;
+        }
+        activeDay = day;
+        document.querySelectorAll('.day-tab').forEach(btn => {
+            btn.classList.remove('bg-clinical-900', 'text-white', 'border-clinical-900', 'scale-105');
+            btn.classList.add('bg-white', 'text-slate-700', 'border-slate-200');
+        });
+        const activeBtn = document.getElementById(`btn-day-${day}`);
+        if (activeBtn) {
+            activeBtn.classList.remove('bg-white', 'text-slate-700', 'border-slate-200');
+            activeBtn.classList.add('bg-clinical-900', 'text-white', 'border-clinical-900', 'scale-105');
+        }
+
+        const data = curriculumData[day];
+        document.getElementById('day-number-label').innerText = `ДЕНЬ ${day}`;
+        document.getElementById('day-title').innerText = data.title;
+        document.getElementById('day-hours').innerText = data.hours;
+        document.getElementById('text-brief-desc').innerText = data.brief;
+
+        const goalsList = document.getElementById('list-brief-goals');
+        goalsList.innerHTML = '';
+        data.briefGoals.forEach(goal => {
+            const li = document.createElement('li');
+            li.className = "flex items-start gap-2";
+            li.innerHTML = `<i class="fa-solid fa-circle-chevron-right text-clinical-600 mt-1"></i>`;
+            const s = document.createElement('span'); s.textContent = goal; li.appendChild(s);
+            goalsList.appendChild(li);
+        });
+
+        document.getElementById('text-theory-desc').innerText = "Опрацюйте теоретичні блоки. Натисніть на заголовок, щоб відкрити деталі.";
+        const theoryContainer = document.getElementById('theory-accordions');
+        theoryContainer.innerHTML = '';
+        data.theory.forEach((block, index) => {
+            const wrap = document.createElement('div');
+            wrap.className = "border border-slate-100 rounded-lg overflow-hidden";
+            wrap.innerHTML = `
+                <button type="button" onclick="toggleTheoryAccordion(${index})" class="w-full text-left bg-slate-50 hover:bg-slate-100 px-4 py-2.5 font-semibold text-xs sm:text-sm text-slate-800 flex items-center justify-between">
+                    <span></span>
+                    <i id="theory-chev-${index}" class="fa-solid fa-chevron-down text-slate-400"></i>
+                </button>
+                <div id="theory-text-${index}" class="hidden p-4 text-xs sm:text-sm text-slate-600 leading-relaxed bg-white border-t border-slate-100 whitespace-pre-line"></div>`;
+            wrap.querySelector('span').textContent = block.title;
+            wrap.querySelector(`#theory-text-${index}`).textContent = block.text;
+            theoryContainer.appendChild(wrap);
+        });
+
+        document.getElementById('text-practice-desc').innerText = "Виконайте під наглядом куратора або задокументуйте спостереження:";
+        const practiceContainer = document.getElementById('practice-skills-checklist');
+        practiceContainer.innerHTML = '';
+        data.practice.forEach((skill, index) => {
+            const taskId = `task-${day}-${index}`;
+            const label = document.createElement('label');
+            label.className = "flex items-start gap-3 p-2 bg-white rounded-lg border border-slate-100 cursor-pointer hover:bg-slate-50 transition";
+            const cb = document.createElement('input');
+            cb.type = 'checkbox'; cb.id = taskId;
+            cb.className = "mt-1 h-4 w-4 rounded border-slate-300 text-clinical-600 focus:ring-clinical-500";
+            cb.checked = !!userProgress.completedTasks[taskId];
+            cb.addEventListener('change', () => toggleTask(taskId));
+            const span = document.createElement('span');
+            span.className = "text-xs sm:text-sm text-slate-700";
+            span.textContent = skill;
+            label.appendChild(cb); label.appendChild(span);
+            practiceContainer.appendChild(label);
+        });
+
+        document.getElementById('case-title').innerText = data.case.title;
+        document.getElementById('case-sub').innerText = data.case.sub;
+        document.getElementById('case-text').innerText = data.case.text;
+
+        const questionsContainer = document.getElementById('case-questions-box');
+        questionsContainer.innerHTML = '';
+        data.case.questions.forEach((qObj, index) => {
+            const block = document.createElement('div');
+            block.className = "space-y-2 border-t border-slate-100 pt-3";
+            const p = document.createElement('p');
+            p.className = "text-xs font-bold text-slate-800";
+            p.textContent = "Питання: " + qObj.q;
+            block.appendChild(p);
+            const grid = document.createElement('div');
+            grid.className = "grid grid-cols-1 sm:grid-cols-2 gap-2";
+            qObj.a.forEach((opt, oIdx) => {
+                const b = document.createElement('button');
+                b.type = 'button';
+                b.className = "case-opt w-full text-left text-xs bg-white hover:bg-slate-100 p-2.5 rounded-lg border border-slate-200 text-slate-700 transition";
+                b.textContent = opt;
+                b.onclick = () => answerCaseQuestion(day, index, oIdx);
+                grid.appendChild(b);
+            });
+            block.appendChild(grid);
+            const fb = document.createElement('div');
+            fb.id = `case-feedback-${index}`;
+            fb.className = "hidden p-2.5 rounded-lg text-xs leading-relaxed";
+            block.appendChild(fb);
+            questionsContainer.appendChild(block);
+        });
+
+        document.getElementById('text-debrief-desc').innerText = data.debrief.desc;
+        const debriefPoints = document.getElementById('list-debrief-points');
+        debriefPoints.innerHTML = '';
+        data.debrief.points.forEach(pt => {
+            const li = document.createElement('li'); li.textContent = pt; debriefPoints.appendChild(li);
+        });
+
+        hideAllSimulators();
+        const activeSim = document.getElementById(`sim-day-${day}`);
+        if (activeSim) activeSim.classList.remove('hidden');
+        document.getElementById('widget-badge').innerText = `ДЕНЬ ${day}`;
+        const widgetTitles = {
+            1: "Симулятор гемодинаміки", 2: "Калькулятор титрування",
+            3: "ЕКГ-ритми & дефібриляція", 4: "Дренажний монітор", 5: "Тренажер CODE BLUE"
+        };
+        document.getElementById('widget-title').innerText = widgetTitles[day];
+
+        if (day === 1) updateHemoSim();
+        if (day === 2) { onDrugChange(); }
+        if (day === 3) loadEcgPattern('afib');
+        if (day === 4) { drainPenaltyApplied = false; updateDrainSim(); }
+        if (day === 5) resetCodeBlue();
+
+        const completeBtn = document.getElementById('btn-complete-day');
+        if (userProgress.completedDays.includes(day)) {
+            completeBtn.innerHTML = `<i class="fa-solid fa-check-double"></i> День успішно завершено`;
+            completeBtn.className = "w-full text-xs bg-slate-500 text-white font-semibold py-1.5 px-3 rounded cursor-default flex items-center justify-center gap-1";
+            completeBtn.disabled = true;
+        } else {
+            completeBtn.innerHTML = `<i class="fa-solid fa-circle-check"></i> Підтвердити проходження дня`;
+            completeBtn.className = "w-full text-xs bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-1.5 px-3 rounded transition flex items-center justify-center gap-1";
+            completeBtn.disabled = false;
+        }
+        switchSubTab('brief');
+    
+        if (typeof renderLockWall === 'function') renderLockWall();
+    }
+
+
+    function switchSubTab(tabName) {
+        activeSubTab = tabName;
+        document.querySelectorAll('.sub-tab').forEach(tab => {
+            tab.classList.remove('bg-white', 'text-slate-800', 'shadow-sm');
+            tab.classList.add('text-slate-500', 'hover:text-slate-800');
+        });
+        const btn = document.getElementById(`tab-${tabName}`);
+        if (btn) {
+            btn.classList.remove('text-slate-500', 'hover:text-slate-800');
+            btn.classList.add('bg-white', 'text-slate-800', 'shadow-sm');
+        }
+        document.querySelectorAll('.sub-content').forEach(c => c.classList.add('hidden'));
+        document.getElementById(`content-${tabName}`).classList.remove('hidden');
+    }
+
+    function toggleTheoryAccordion(index) {
+        const t = document.getElementById(`theory-text-${index}`);
+        const c = document.getElementById(`theory-chev-${index}`);
+        if (t.classList.contains('hidden')) { t.classList.remove('hidden'); c.classList.replace('fa-chevron-down', 'fa-chevron-up'); }
+        else { t.classList.add('hidden'); c.classList.replace('fa-chevron-up', 'fa-chevron-down'); }
+    }
+
+    function togglePrinciples() {
+        const c = document.getElementById('principles-content');
+        const ch = document.getElementById('principles-chevron');
+        if (c.classList.contains('hidden')) { c.classList.remove('hidden'); ch.classList.replace('fa-chevron-down', 'fa-chevron-up'); }
+        else { c.classList.add('hidden'); ch.classList.replace('fa-chevron-up', 'fa-chevron-down'); }
+    }
+
+    function hideAllSimulators() {
+        for (let i = 1; i <= 5; i++) {
+            const s = document.getElementById(`sim-day-${i}`);
+            if (s) s.classList.add('hidden');
+        }
+    }
+
+    // ---------- Day 1: Hemodynamics (Frank-Starling model) ----------
+    const BSA = 1.9; // м² для пацієнта ~80 кг
+
+    // Тиск наповнення (ЦВТ) як функція волемії; нелінійна — жорсткий шлуночок на високих об'ємах
+    function preloadToCVP(preload) {
+        const v = preload / 100;
+        // Показник >1 робить падіння тиску наповнення різким при втраті ОЦК
+        return Math.min(24, Math.max(0.2, 0.4 + 10.2 * Math.pow(v, 2.6)));
+    }
+
+    // Крива Франка-Старлінга: УО росте з тиском наповнення, виходить на плато,
+    // а при перерозтягненні (низька скоротливість) — знижується.
+    // contract = 1.0 -> норма. Скоротливість масштабує ВИСОТУ плато.
+    function starlingSV(cvp, contract) {
+        const vmax = 105 * contract;          // максимально досяжний УО
+        const k = 5.5 / Math.max(0.35, contract); // хворе серце потребує вищого тиску наповнення
+        let sv = vmax * (cvp / (k + cvp));    // гіперболічне насичення
+        // Спадне коліно кривої при перевантаженні слабкого міокарда
+        if (contract < 0.85 && cvp > 14) {
+            sv *= 1 - Math.min(0.35, (cvp - 14) * 0.035 * (1 - contract));
+        }
+        return Math.max(5, sv);
+    }
+
+    function applyHemoPreset(name) {
+        const presets = {
+            normal:      { p: 100, c: 100, s: 100 },
+            hypovolemia: { p: 45,  c: 100, s: 130 },
+            cardiogenic: { p: 130, c: 35,  s: 140 },
+            vasoplegia:  { p: 90,  c: 105, s: 52  },
+            // Тампонада: рестрикція наповнення — ефективна скоротливість різко обмежена
+            // попри високий виміряний ЦВТ (класична дисоціація тиск/об'єм)
+            tamponade:   { p: 155, c: 28,  s: 150 }
+        };
+        const v = presets[name];
+        if (!v) return;
+        document.getElementById('slide-preload').value = v.p;
+        document.getElementById('slide-contractility').value = v.c;
+        document.getElementById('slide-svr').value = v.s;
+        updateHemoSim();
+    }
+
+    function drawStarling(cvpNow, contract, svNow) {
+        const X0 = 30, X1 = 250, Y0 = 95, Y1 = 10;
+        const cvpMax = 26, svMax = 120;
+        const sx = c => X0 + (Math.min(c, cvpMax) / cvpMax) * (X1 - X0);
+        const sy = s => Y0 - (Math.min(s, svMax) / svMax) * (Y0 - Y1);
+
+        const build = (contr) => {
+            let d = '';
+            for (let c = 0; c <= cvpMax; c += 0.5) {
+                const s = starlingSV(c, contr);
+                d += (d ? ' L ' : 'M ') + sx(c).toFixed(1) + ' ' + sy(s).toFixed(1);
+            }
+            return d;
+        };
+        document.getElementById('starling-curve-normal').setAttribute('d', build(1.0));
+        document.getElementById('starling-curve').setAttribute('d', build(contract));
+        const dot = document.getElementById('starling-dot');
+        dot.setAttribute('cx', sx(cvpNow).toFixed(1));
+        dot.setAttribute('cy', sy(svNow).toFixed(1));
+    }
+
+    function updateHemoSim() {
+        const preload = parseInt(document.getElementById('slide-preload').value);
+        const contractPct = parseInt(document.getElementById('slide-contractility').value);
+        const svrPct = parseInt(document.getElementById('slide-svr').value);
+        const contract = contractPct / 100;
+
+        document.getElementById('val-preload').innerText =
+            (preload < 70 ? 'Гіповолемія' : preload > 125 ? 'Перевантаження' : 'Норма') + ` (${preload}%)`;
+        document.getElementById('val-contractility').innerText =
+            (contractPct < 70 ? 'Знижена' : contractPct > 125 ? 'Підвищена' : 'Норма') + ` (${contractPct}%)`;
+        document.getElementById('val-svr').innerText =
+            (svrPct < 70 ? 'Вазодилатація' : svrPct > 125 ? 'Вазоконстрикція' : 'Норма') + ` (${svrPct}%)`;
+
+        // 1) Тиск наповнення та ударний об'єм за Старлінгом
+        const cvp = preloadToCVP(preload);
+        let sv = starlingSV(cvp, contract);
+
+        // 2) Високий СЗО додатково знижує УО ураженого міокарда (afterload mismatch)
+        const svrFactor = svrPct / 100;
+        if (svrFactor > 1) sv *= 1 - Math.min(0.30, (svrFactor - 1) * 0.45 * (1.6 - contract));
+        sv = Math.max(5, sv);
+
+        // 3) Барорефлекс: помірна тахікардія, що лише ЧАСТКОВО компенсує втрату УО.
+        // Приріст ЧСС прив'язаний до дефіциту ударного об'єму, а не до MAP,
+        // інакше рефлекс "перекомпенсує" і серцевий викид парадоксально зростає.
+        const svrAbs = 1100 * svrFactor;
+        const svDeficit = Math.max(0, 1 - sv / 70);          // 0 при нормі, →1 при колапсі УО
+        const hr = Math.round(75 + Math.min(55, svDeficit * 75));
+        let co = (hr * sv) / 1000;
+        // MAP = (CO x SVR)/80 + ЦВТ — класична формула SVR.
+        // Коефіцієнт 62 калібрує модель так, щоб норма давала MAP ~85 мм рт.ст.
+        let map = Math.round((co * svrAbs) / 62 / 1.32 + cvp * 0.6);
+
+        const ci = co / BSA;
+        // Пульсовий тиск пропорційний УО; ригідні судини (високий СЗО) його звужують
+        // Пульсовий тиск росте з УО; при вазодилатації розширення обмежене,
+        // інакше діастолічний тиск падає до нефізіологічних значень.
+        const pulse = Math.max(10, Math.round(sv * 0.52 * Math.min(1.12, 1 / Math.max(0.85, svrFactor))));
+        let sysBP = Math.round(map + pulse * 0.60);
+        let diaBP = Math.round(map - pulse * 0.40);
+        diaBP = Math.max(15, Math.min(diaBP, sysBP - 12)); // фізіологічні межі
+        sysBP = Math.max(diaBP + 12, sysBP);
+
+        // ScvO₂: споживання фіксоване, доставка залежить від CO
+        const scvo2 = Math.max(20, Math.min(85, Math.round(75 - (5.0 - co) * 9)));
+
+        document.getElementById('mon-hr').innerText = hr;
+        document.getElementById('mon-bp').innerText = `${sysBP}/${diaBP}`;
+        document.getElementById('mon-map').innerText = map;
+        document.getElementById('mon-cvp').innerText = Math.round(cvp);
+        document.getElementById('mon-co').innerText = co.toFixed(1);
+        document.getElementById('mon-ci').innerText = ci.toFixed(1);
+        document.getElementById('mon-sv').innerText = Math.round(sv);
+        document.getElementById('mon-svr').innerText = Math.round(svrAbs);
+        document.getElementById('mon-scvo2').innerText = scvo2;
+
+        // Колірна індикація критичних значень
+        document.getElementById('mon-cvp').className =
+            (cvp < 4 || cvp > 15 ? 'text-amber-400' : 'text-rose-400') + ' text-lg font-bold';
+        document.getElementById('mon-ci').parentElement.className =
+            'block text-[8px] ' + (ci < 2.0 ? 'text-rose-400' : 'text-slate-500');
+        document.getElementById('mon-scvo2').className =
+            (scvo2 < 65 ? 'text-rose-400' : 'text-cyan-400') + ' text-base font-bold';
+
+        drawStarling(cvp, contract, sv);
+
+        // Інтерпретація профілю
+        let analysis, colorClass = 'text-emerald-400';
+        if (ci < 2.0 && cvp < 6) {
+            analysis = `Гіповолемічний профіль: низький ЦВТ (${Math.round(cvp)}) + низький CI (${ci.toFixed(1)}). Пацієнт на висхідній частині кривої Старлінга — показане інфузійне навантаження.`;
+            colorClass = 'text-amber-400';
+        } else if (ci < 2.2 && cvp > 14) {
+            analysis = `Кардіогенний профіль: високий ЦВТ (${Math.round(cvp)}) при низькому CI (${ci.toFixed(1)}). Пацієнт на плато/спадному коліні — рідина шкідлива, потрібні інотропи.`;
+            colorClass = 'text-rose-400';
+        } else if (map < 65 && svrAbs < 800) {
+            analysis = `Вазоплегія: MAP ${map} мм рт.ст. при нормальному/високому викиді та низькому СЗО (${Math.round(svrAbs)}). Показані вазопресори, не інотропи.`;
+            colorClass = 'text-rose-400';
+        } else if (svrAbs > 1600 && ci < 2.5) {
+            analysis = `Надмірне післянавантаження (СЗО ${Math.round(svrAbs)}) обмежує викид. Розгляньте обережну вазодилатацію за умови достатнього MAP.`;
+            colorClass = 'text-amber-400';
+        } else if (map < 65) {
+            analysis = `Гіпотензія: MAP ${map} мм рт.ст. — нижче порогу органної перфузії (65).`;
+            colorClass = 'text-rose-400';
+        } else if (scvo2 < 65) {
+            analysis = `ScvO₂ ${scvo2}% — доставка кисню не покриває потреби попри прийнятний тиск. Оцініть CI та гемоглобін.`;
+            colorClass = 'text-amber-400';
+        } else {
+            analysis = `Гемодинаміка компенсована: MAP ${map}, CI ${ci.toFixed(1)}, ScvO₂ ${scvo2}%. Перфузія адекватна.`;
+        }
+        const el = document.getElementById('hemo-analysis-text');
+        el.innerText = analysis;
+        el.className = `text-xs font-medium leading-relaxed ${colorClass}`;
+
+        // Амплітуда кривої ІАТ відображає пульсовий тиск
+        const scale = Math.max(0.25, Math.min(1.5, pulse / 45));
+        document.getElementById('hemo-wave').style.transform = `scaleY(${scale})`;
+    }
+
+    // ---------- Day 2: Infusion calculator ----------
+    function onDrugChange() {
+        const drug = document.getElementById('calc-drug').value;
+        const info = drugInfo[drug];
+        document.getElementById('calc-dose-unit').innerText = info.unit;
+        document.getElementById('calc-target-dose').value = info.def;
+        document.getElementById('calc-dose-hint').innerText = info.hint;
+        updateInfusionRate();
+    }
+
+    function updateInfusionRate() {
+        const weight = parseFloat(document.getElementById('calc-weight').value) || 0;
+        const mg = parseFloat(document.getElementById('calc-mg').value) || 0;
+        const volume = parseFloat(document.getElementById('calc-vol').value) || 0;
+        const targetDose = parseFloat(document.getElementById('calc-target-dose').value) || 0;
+
+        let concentration = volume > 0 ? (mg * 1000) / volume : 0; // мкг/мл
+        document.getElementById('calc-concentration-text').innerText =
+            `Концентрація розчину: ${concentration ? concentration.toFixed(1) : '—'} мкг/мл`;
+
+        let rate = concentration > 0 ? (targetDose * weight * 60) / concentration : 0;
+        if (!isFinite(rate) || isNaN(rate)) rate = 0;
+        document.getElementById('calc-rate-result').innerHTML =
+            `${rate.toFixed(1)} <span class="text-lg font-normal text-sky-400">мл/год</span>`;
+    }
+
+    // ---------- Day 3: ECG ----------
+    const ecgPatterns = {
+        afib: { path: "M 0 40 Q 10 35 20 40 Q 30 45 40 40 L 45 40 L 48 10 L 52 75 L 55 40 L 65 40 Q 75 42 85 40 Q 95 38 105 40 L 110 40 L 113 10 L 117 75 L 120 40 L 130 40 Q 140 45 150 40 L 155 40 L 158 10 L 162 75 L 165 40 L 175 40 Q 185 38 195 40 L 200 40 L 203 10 L 207 75 L 210 40",
+               bpm: "142 уд/хв", hint: "Хаотична активність передсердь, немає чітких зубців P, нерегулярні інтервали R-R." },
+        vt:   { path: "M 0 40 Q 10 10 20 70 Q 30 10 40 70 Q 50 10 60 70 Q 70 10 80 70 Q 90 10 100 70 Q 110 10 120 70 Q 130 10 140 70 Q 150 10 160 70 Q 170 10 180 70 Q 190 10 200 70 Q 210 10 220 70 Q 230 10 240 70",
+               bpm: "185 уд/хв", hint: "Широкі мономорфні комплекси QRS, регулярний швидкий ритм без зубців P." },
+        sr:   { path: "M 0 40 L 20 40 Q 30 30 35 40 L 45 40 L 48 15 L 52 70 L 55 40 L 65 40 Q 75 35 85 40 L 115 40 L 125 40 Q 135 30 140 40 L 150 40 L 153 15 L 157 70 L 160 40 L 170 40 Q 180 35 190 40",
+               bpm: "72 уд/хв", hint: "Регулярний ритм, зубець P перед кожним QRS, нормальна ширина комплексів." },
+        vf:   { path: "M 0 40 Q 5 25 10 55 Q 15 20 20 60 Q 25 35 30 50 Q 35 25 40 55 Q 45 15 50 65 Q 55 30 60 50 Q 65 20 70 60 Q 75 30 80 50 Q 85 20 90 60 Q 95 30 100 50 Q 105 20 110 60 Q 115 30 120 50 Q 125 20 130 60 Q 135 30 140 50 Q 145 20 150 60 Q 155 30 160 50",
+               bpm: "—", hint: "Хаотична безладна активність без організованих комплексів. Пульс відсутній." }
+    };
+    let activeEcgPattern = 'afib';
+
+    function loadEcgPattern(name) {
+        activeEcgPattern = name;
+        document.getElementById('ecg-path').setAttribute('d', ecgPatterns[name].path);
+        document.getElementById('ecg-bpm').innerText = ecgPatterns[name].bpm;
+        document.getElementById('ecg-hint').innerText = ecgPatterns[name].hint;
+        document.getElementById('ecg-feedback').classList.add('hidden');
+    }
+
+    function checkEcgAnswer(chosen) {
+        const feedback = document.getElementById('ecg-feedback');
+        feedback.classList.remove('hidden');
+        if (chosen === activeEcgPattern) {
+            feedback.innerHTML = `<span class="font-bold text-emerald-400">Правильно!</span> Це ${getEcgNameUkr(activeEcgPattern)}.`;
+            feedback.className = "bg-emerald-950/60 border border-emerald-800 p-3 rounded-lg text-xs text-emerald-400";
+            updateClinicalScore(10);
+            setTimeout(() => {
+                const rhythms = Object.keys(ecgPatterns);
+                let next; do { next = rhythms[Math.floor(Math.random() * rhythms.length)]; } while (next === activeEcgPattern);
+                loadEcgPattern(next);
+            }, 1800);
+        } else {
+            feedback.innerHTML = `<span class="font-bold text-rose-400">Помилка.</span> Оцініть ширину QRS та ритмічність. Спробуйте ще раз.`;
+            feedback.className = "bg-rose-950/60 border border-rose-800 p-3 rounded-lg text-xs text-rose-400";
+            updateClinicalScore(-5);
+        }
+    }
+    function getEcgNameUkr(n) {
+        return { afib: 'фібриляція передсердь', vt: 'шлуночкова тахікардія', sr: 'синусовий ритм', vf: 'фібриляція шлуночків' }[n];
+    }
+
+    // ---------- Day 4: Drainage ----------
+    let drainPenaltyApplied = false;
+    function updateDrainSim() {
+        const value = parseInt(document.getElementById('slide-drain').value);
+        document.getElementById('drain-ml-val').innerText = `${value} мл/год`;
+        document.getElementById('drain-fluid').style.height = `${Math.min(100, (value / 400) * 100)}%`;
+
+        const box = document.getElementById('drain-alert-box');
+        const title = document.getElementById('drain-alert-title');
+        const desc = document.getElementById('drain-alert-desc');
+
+        if (value < 100) {
+            box.className = "bg-emerald-950/40 border-emerald-800 p-3 rounded-lg text-xs space-y-1 text-emerald-400";
+            title.innerText = "Безпечний темп виділення";
+            desc.innerText = "Дренажна система працює адекватно. Патологічного накопичення не очікується.";
+            drainPenaltyApplied = false;
+        } else if (value < 200) {
+            box.className = "bg-amber-950/40 border-amber-800 p-3 rounded-lg text-xs space-y-1 text-amber-400";
+            title.innerText = "Підвищений темп виділення";
+            desc.innerText = "Уважно моніторуйте коагулограму. Повідомте куратора.";
+            drainPenaltyApplied = false;
+        } else {
+            box.className = "bg-rose-950/40 border-rose-800 p-3 rounded-lg text-xs space-y-1 text-rose-400 animate-pulse";
+            title.innerText = "Увага! Критична кровотеча / загроза тампонади";
+            desc.innerText = "Крововтрата > 200 мл/год! Готуйте пацієнта до екстреної реторакотомії, замовляйте еритроцитарну масу та СЗП.";
+            if (!drainPenaltyApplied) { updateClinicalScore(-5); drainPenaltyApplied = true; }
+        }
+    }
+
+    // ---------- Day 5: Code Blue (data-driven) ----------
+    const codeBlueFlow = [
+        {
+            scenario: "Крок 1. Пацієнт не відповідає на гучний окрик та струшування. Ваші першочергові дії?",
+            options: [
+                "Оцінити дихання та пульс на сонній артерії (до 10 секунд)",
+                "Ввести 1 мг адреналіну болюсно",
+                "Почати компресії без оцінки пульсу"
+            ],
+            correct: 0,
+            ok: "Правильно! Пульс відсутній, дихання агональне. Ви кличете допомогу («Code Blue!») та залучаєте дефібрилятор.",
+            bad: "Введення ліків чи компресії без швидкої верифікації зупинки кровообігу (пульс/дихання) — груба помилка.",
+            penalty: -15
+        },
+        {
+            scenario: "Крок 2. Прибув реанімаційний візок. На моніторі — шлуночкова тахікардія без пульсу (ШТ). Що далі?",
+            options: [
+                "Синхронізована кардіоверсія 100 Дж",
+                "Несинхронізований розряд дефібрилятора (200 Дж двофазний)",
+                "Продовжувати СЛР ще 2 хвилини, ігноруючи ритм"
+            ],
+            correct: 1,
+            ok: "Відмінно! ШТ без пульсу — дефібриляційний ритм. Розряд 200 Дж і негайне відновлення компресій на 2 хвилини.",
+            bad: "Синхронізація забере час при тахікардії без пульсу. Потрібна швидка несинхронізована дефібриляція.",
+            penalty: -10
+        },
+        {
+            scenario: "Крок 3. Після 2 хвилин СЛР та другого розряду ритм незмінний (ШТ без пульсу). Який антиаритмік — препарат першого вибору?",
+            options: [
+                "Аміодарон 300 мг внутрішньовенно",
+                "Лідокаїн 500 мг болюсно",
+                "Магнію сульфат 5 г"
+            ],
+            correct: 0,
+            ok: "Симуляція успішно пройдена! Аміодарон 300 мг після 3-го розряду відповідає гайдлайнам ERC/AHA.",
+            bad: "Лідокаїн — можлива альтернатива, але аміодарон 300 мг є першим вибором при рефрактерній ШТ/ФШ.",
+            penalty: -5
+        }
+    ];
+    let codeBlueStep = 0;
+
+    function resetCodeBlue() {
+        codeBlueStep = 0;
+        document.getElementById('codeblue-status').classList.add('hidden');
+        renderCodeBlueStep();
+    }
+
+    function renderCodeBlueStep() {
+        const step = codeBlueFlow[codeBlueStep];
+        document.getElementById('codeblue-step-label').innerText = `Крок ${codeBlueStep + 1} / ${codeBlueFlow.length}`;
+        document.getElementById('codeblue-scenario').innerText = step.scenario;
+        const box = document.getElementById('codeblue-options');
+        box.innerHTML = '';
+        step.options.forEach((opt, idx) => {
+            const b = document.createElement('button');
+            b.type = 'button';
+            b.className = "w-full bg-slate-900 hover:bg-slate-800 p-2 rounded text-left border border-slate-700 hover:border-slate-500 text-slate-300 transition";
+            b.textContent = `${String.fromCharCode(1040 + idx)}. ${opt}`;
+            b.onclick = () => answerCodeBlue(idx);
+            box.appendChild(b);
+        });
+    }
+
+    function answerCodeBlue(choice) {
+        const step = codeBlueFlow[codeBlueStep];
+        const status = document.getElementById('codeblue-status');
+        status.classList.remove('hidden');
+        if (choice === step.correct) {
+            const isLast = codeBlueStep === codeBlueFlow.length - 1;
+            status.className = "bg-emerald-950/50 border border-emerald-800 p-3 rounded-lg text-xs text-emerald-400" + (isLast ? " text-center font-bold" : "");
+            status.innerText = step.ok;
+            if (isLast) {
+                updateClinicalScore(30);
+                setTimeout(resetCodeBlue, 5000);
+            } else {
+                updateClinicalScore(5);
+                codeBlueStep++;
+                setTimeout(() => { status.classList.add('hidden'); renderCodeBlueStep(); }, 2500);
+            }
+        } else {
+            status.className = "bg-rose-950/50 border border-rose-800 p-3 rounded-lg text-xs text-rose-400";
+            status.innerText = step.bad;
+            updateClinicalScore(step.penalty);
+        }
+    }
+
+    // ---------- Clinical score ----------
+    function updateClinicalScore(val) {
+        userProgress.clinicalScore = Math.max(10, Math.min(100, userProgress.clinicalScore + val));
+        document.getElementById('clinical-score-val').innerText = `${userProgress.clinicalScore} / 100 б.`;
+        saveProgress();
+    }
+
+    // ---------- Quiz ----------
+    function loadQuizQuestion() {
+        const q = quizQuestions[currentQuizIndex];
+        document.getElementById('quiz-badge').innerText = `Питання ${currentQuizIndex + 1}/${quizQuestions.length}`;
+        document.getElementById('quiz-question-text').innerText = q.q;
+        const container = document.getElementById('quiz-options-container');
+        container.innerHTML = '';
+        q.options.forEach((opt, idx) => {
+            const b = document.createElement('button');
+            b.type = 'button';
+            b.className = "quiz-opt-btn w-full text-left text-xs bg-slate-50 hover:bg-slate-100 p-3 rounded-xl border border-slate-200 text-slate-700 transition";
+            b.textContent = opt;
+            b.onclick = () => selectQuizOption(idx);
+            container.appendChild(b);
+        });
+        document.getElementById('quiz-feedback-box').classList.add('hidden');
+        document.getElementById('quiz-next-btn').classList.add('hidden');
+    }
+
+    function selectQuizOption(idx) {
+        const q = quizQuestions[currentQuizIndex];
+        const fb = document.getElementById('quiz-feedback-box');
+        document.querySelectorAll('.quiz-opt-btn').forEach(b => b.disabled = true);
+        fb.classList.remove('hidden');
+        if (idx === q.correct) {
+            fb.className = "p-3 rounded-lg text-xs bg-emerald-50 text-emerald-800 border border-emerald-100";
+            fb.innerHTML = `<strong>Правильно!</strong> ${q.explain}`;
+            quizPoints += 10;
+            document.getElementById('quiz-total-points').innerText = quizPoints;
+            showToast("Правильна відповідь на тест!", "success");
+        } else {
+            fb.className = "p-3 rounded-lg text-xs bg-rose-50 text-rose-800 border border-rose-100";
+            fb.innerHTML = `<strong>Невірно.</strong> Правильна відповідь: ${q.options[q.correct]}. ${q.explain}`;
+            showToast("Неправильна відповідь на тест.", "error");
+        }
+        document.getElementById('quiz-next-btn').classList.remove('hidden');
+    }
+
+    function nextQuizQuestion() {
+        if (currentQuizIndex < quizQuestions.length - 1) {
+            currentQuizIndex++;
+            loadQuizQuestion();
+        } else {
+            showToast(`Тест закінчено. Набрано балів: ${quizPoints}`, "success");
+            report('тест', activeDay, 'питань: ' + quizQuestions.length, '', quizPoints);
+            currentQuizIndex = 0;
+            quizPoints = 0;
+            document.getElementById('quiz-total-points').innerText = quizPoints;
+            loadQuizQuestion();
+        }
+    }
+
+    // ---------- Tasks / day completion ----------
+    function toggleTask(taskId) {
+        const cb = document.getElementById(taskId);
+        userProgress.completedTasks[taskId] = cb.checked;
+        saveProgress();
+        updateUIProgress();
+        if (cb.checked) report('практичне завдання', activeDay, taskId, 'відмічено');
+    }
+
+    function completeActiveDay() {
+        if (!userProgress.completedDays.includes(activeDay)) {
+            userProgress.completedDays.push(activeDay);
+            saveProgress();
+            updateUIProgress();
+            const badge = document.getElementById(`badge-day-${activeDay}`);
+            if (badge) badge.classList.remove('hidden');
+            showToast(`День ${activeDay} успішно завершено!`, "success");
+            report('день завершено', activeDay, 'підтверджено інтерном', 'виконано');
+            switchDay(activeDay);
+        }
+    }
+
+    function answerCaseQuestion(day, qIdx, oIdx) {
+        const qObj = curriculumData[day].case.questions[qIdx];
+        const fb = document.getElementById(`case-feedback-${qIdx}`);
+        fb.classList.remove('hidden');
+        if (oIdx === qObj.correct) {
+            fb.className = "p-2.5 rounded-lg text-xs leading-relaxed bg-emerald-50 text-emerald-800 border border-emerald-100";
+            fb.innerHTML = `<strong>Вірно!</strong> ${qObj.explain}`;
+            updateClinicalScore(15);
+            showToast("Правильне вирішення клінічного кейсу!", "success");
+        } else {
+            fb.className = "p-2.5 rounded-lg text-xs leading-relaxed bg-rose-50 text-rose-800 border border-rose-100";
+            fb.innerHTML = `<strong>Невірно.</strong> Проаналізуйте фізіологію ще раз.`;
+            updateClinicalScore(-5);
+            showToast("Рішення кейсу містить помилки.", "error");
+        }
+    }
+
+    // ---------- Protocols ----------
+    const protocols = {
+        'tamponade': {
+            title: "Протокол: Підозра на гостру тампонаду серця",
+            body: `
+                <p><strong>1. Тріада Бека:</strong> глухість серцевих тонів, набухання вен шиї, системна артеріальна гіпотензія.</p>
+                <p><strong>2. Ехокардіографія (focus ultrasound):</strong> рідина за задньою стінкою ЛШ, колабування правого передсердя.</p>
+                <p><strong>3. Терапія підтримки:</strong> тимчасова інфузійна терапія для збільшення переднавантаження.</p>
+                <p><strong>4. Остаточне рішення:</strong> НЕГАЙНИЙ виклик кардіохірурга для реторакотомії / пункції перикарда. Інтубація може спричинити колапс через зниження венозного повернення.</p>`
+        },
+        'low-co': {
+            title: "Протокол: Синдром низького серцевого викиду (LCOS)",
+            body: `
+                <p><strong>Визначення:</strong> серцевий індекс < 2.0 л/хв/м², лактат > 2.0 ммоль/л, олігурія.</p>
+                <p><strong>Тактика:</strong></p>
+                <p>• Оптимізація переднавантаження: інфузія під контролем тиску наповнення (ЦВТ 8-12).</p>
+                <p>• Оптимізація скоротливості: старт добутаміну (2.5–10 мкг/кг/хв) або левосимендану.</p>
+                <p>• Зниження післянавантаження: якщо АТ дозволяє — обережно нітрогліцерин.</p>`
+        },
+        'afib-rv': {
+            title: "Протокол: Фібриляція передсердь (пароксизм у ВІТ)",
+            body: `
+                <p><strong>1. Стабільність:</strong> при шоці/ішемії міокарда — НЕГАЙНА синхронізована кардіоверсія.</p>
+                <p><strong>2. Контроль частоти:</strong> бета-блокатори (есмолол) або аміодарон при систолічній дисфункції.</p>
+                <p><strong>3. Електроліти:</strong> корекція K+ (> 4.5 ммоль/л) та Mg2+ (> 1.0 ммоль/л).</p>`
+        }
+    };
+
+    function showProtocolModal(key) {
+        const p = protocols[key];
+        document.getElementById('protocol-modal-title').innerText = p.title;
+        document.getElementById('protocol-modal-body').innerHTML = p.body;
+        document.getElementById('protocol-modal').classList.remove('hidden');
+    }
+    function closeProtocolModal() {
+        document.getElementById('protocol-modal').classList.add('hidden');
+    }
+
+    // ---------- Save / reset ----------
+    function resetProgress() {
+        userProgress = { completedDays: [], quizScore: 0, clinicalScore: 100, completedTasks: {} };
+        saveProgress();
+        updateUIProgress();
+        for (let i = 1; i <= 5; i++) {
+            const b = document.getElementById(`badge-day-${i}`);
+            if (b) b.classList.add('hidden');
+        }
+        currentQuizIndex = 0; quizPoints = 0;
+        document.getElementById('quiz-total-points').innerText = 0;
+        document.getElementById('clinical-score-val').innerText = "100 / 100 б.";
+        loadQuizQuestion();
+        switchDay(1);
+        showToast("Весь прогрес навчання скинуто", "info");
+    }
+
+    function updateUIProgress() {
+        const percent = Math.round((userProgress.completedDays.length / 5) * 100);
+        document.getElementById('overall-progress-text').innerText = `${percent}%`;
+        document.getElementById('overall-progress-bar').style.width = `${percent}%`;
+        userProgress.completedDays.forEach(day => {
+            const b = document.getElementById(`badge-day-${day}`);
+            if (b) b.classList.remove('hidden');
+        });
+    }
+</script>
+</body>
+</html>
